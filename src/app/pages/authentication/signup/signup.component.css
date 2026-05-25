@@ -37,9 +37,8 @@
 }
 
 .brand-name {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #333;
+  font: var(--font-primary);
+  color: var(--color-secundary);
   margin-top: 0.5rem;
 }
 
@@ -61,7 +60,7 @@
 }
 
 .btn-crear {
-  background-color: #6ab03b;
+  background-color: var(--primary-color);
   border: none;
   color: white;
   font-weight: 600;
@@ -71,7 +70,7 @@
 }
 
 .btn-crear:hover {
-  background-color: #6ab03b;
+  background-color: var(--primary-color);
 }
 
 .btn-crear:disabled {
