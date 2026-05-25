@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserPageInfo } from './user-page-info';
+import { UserPageInfoComponent } from './user-page-info';
 
-describe('UserPageInfo', () => {
-  let component: UserPageInfo;
-  let fixture: ComponentFixture<UserPageInfo>;
+describe('UserPageInfoComponent', () => {
+  let component: UserPageInfoComponent;
+  let fixture: ComponentFixture<UserPageInfoComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UserPageInfo]
+      imports: [UserPageInfoComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(UserPageInfo);
+    fixture = TestBed.createComponent(UserPageInfoComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
