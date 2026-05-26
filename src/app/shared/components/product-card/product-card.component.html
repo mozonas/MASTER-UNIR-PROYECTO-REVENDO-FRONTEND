@@ -1,0 +1,16 @@
+<div class="product-card">
+  <div class="product-card__image">
+    <img [src]="article.imagen || 'images/placeholder-product.png'" [alt]="article.titulo" />
+    @if (article.categoria_nombre) {
+      <span class="product-card__badge">{{ article.categoria_nombre }}</span>
+    }
+  </div>
+  <div class="product-card__body">
+    <h3 class="product-card__title">{{ article.titulo }}</h3>
+    <p class="product-card__desc">{{ article.descripcion }}</p>
+    <div class="product-card__footer">
+      <span class="product-card__price">{{ article.precio | currency: 'EUR' : 'symbol' : '1.2-2' }}</span>
+      <span class="product-card__location">{{ article.ubicacion }}</span>
+    </div>
+  </div>
+</div>
