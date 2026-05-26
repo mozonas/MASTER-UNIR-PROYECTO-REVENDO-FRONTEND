@@ -1,9 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-interface PersonalDetail {
-  label: string;
-  value: string;
+// Interfaz adaptada 100% a tu tabla `usuarios`
+interface Usuario {
+  id: number;
+  nombre: string;
+  apellidos: string;
+  email: string;
+  usuario: string;
+  foto: string;
+  // perfil: 'USUARIO' | 'MODERADOR' | 'ADMIN';
+  created_at: string;
 }
 
 interface Stat {
@@ -27,16 +34,22 @@ interface Product {
   templateUrl: './user-page-info.html',
   styleUrls: ['./user-page-info.css']
 })
-export class UserPageInfoComponent {
+export class UserPageInfoComponent implements OnInit {
 
-  personalDetails: PersonalDetail[] = [
-    { label: 'Cumpleaños', value: '4 Abr 1998' },
-    { label: 'Email',      value: 'info@domain.com' },
-    { label: 'Edad',       value: '22 años' },
-    { label: 'Teléfono',   value: '820-885-3321' },
-    { label: 'Residencia', value: 'Canada' },
-    { label: 'Dirección',  value: 'California, USA' },
-  ];
+  // Objeto que representa la fila de la base de datos
+  currentUser: Usuario = {
+    id: 1,
+    nombre: 'Alex',
+    apellidos: 'García Pérez',
+    email: 'info@domain.com',
+    usuario: 'alex_ux_designer',
+    foto: 'https://bootdey.com/img/Content/avatar/avatar7.png', // Mapeado a tu campo `foto`
+    // perfil: 'USUARIO', // Mapeado a tu ENUM
+    created_at: '2026-01-15 10:30:00'
+  };
+
+  // Mapeo dinámico para la sección "Información del vendedor"
+  personalDetails: { label: string; value: string; lowercase?: boolean }[] = [];
 
   stats: Stat[] = [
     { count: '500+', label: 'Clientes felices' },
@@ -80,8 +93,22 @@ export class UserPageInfoComponent {
     },
   ];
 
+  ngOnInit(): void {
+    this.generarDetallesPersonales();
+  }
+
+  // Estructura los datos reales de la BD para la vista
+  private generarDetallesPersonales(): void {
+    this.personalDetails = [
+      { label: 'Nombre', value: `${this.currentUser.nombre} ${this.currentUser.apellidos}` },
+      { label: 'Usuario', value: `@${this.currentUser.usuario}` },
+      { label: 'Email', value: this.currentUser.email, lowercase: true },
+      // { label: 'Rol de Perfil', value: this.currentUser.perfil },
+      { label: 'Miembro desde', value: new Date(this.currentUser.created_at).toLocaleDateString('es-ES') }
+    ];
+  }
+
   comprarProducto(productoId: number): void {
     console.log(`Producto ${productoId} añadido al carrito.`);
-    // Aquí puedes añadir lógica de redirección o pasarela de pago
   }
 }
