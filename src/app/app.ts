@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { WelcomeComponent } from './pages/authentication/welcome-component/welcome-component';
 
 @Component({
   selector: 'app-root',
