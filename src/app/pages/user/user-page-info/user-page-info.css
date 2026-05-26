@@ -1,0 +1,48 @@
+/* Custom utility helpers para complementar Bootstrap 5 */
+.font-sans {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Estilos de la Captura 1 para las estadísticas */
+.fw-extrabold {
+  font-weight: 800 !important;
+}
+
+.fs-7 {
+  font-size: 0.85rem !important;
+}
+
+.fs-8 {
+  font-size: 0.75rem !important;
+}
+
+/* Color personalizado de Wallapop para el botón principal de Bootstrap */
+.btn-primary {
+  background-color: #6ab03b !important;
+  border-color: #6ab03b !important;
+}
+
+.btn-primary:hover {
+  background-color: #4e8a2f !important;
+  border-color: #4e8a2f !important;
+}
+
+/* Efecto hover interactivo para las tarjetas de producto */
+.shadow-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.shadow-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Recorte inteligente de texto de descripción a dos líneas */
+.text-description-truncate {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 34px;
+  line-height: 1.4;
+}
