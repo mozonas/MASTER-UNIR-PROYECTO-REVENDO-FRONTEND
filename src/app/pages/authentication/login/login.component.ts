@@ -13,6 +13,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
+  submitted = false;
 
   constructor(private fb: FormBuilder) {}
 
@@ -24,8 +25,12 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin() {
-    if (this.loginForm.valid) {
-      console.log('Datos listos para enviar al servidor:', this.loginForm.value);
+    this.submitted = true;
+
+    if (this.loginForm.invalid) {
+      return;
     }
+
+    console.log('Datos listos para enviar al servidor:', this.loginForm.value);
   }
 }

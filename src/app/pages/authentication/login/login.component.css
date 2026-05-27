@@ -4,25 +4,26 @@
 
  .login-wrapper {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   align-items: center;
   justify-content: center;
   background-color: #f0f0f0;
+  padding: 20px;
 }
 
 .login-container {
   display: flex;
-  height: 400px;
-  width: 650px;
   align-items: center;
   justify-content: center;
-  background-color:white;
-  gap: 60px;
-  border: 2px solid #333;
-  border-radius: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 40px;
+  width: min(100%, 720px);
+  min-height: 420px;
+  background-color: white;
+  gap: 36px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 24px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+  padding: 32px;
 }
 
 .logo {
@@ -30,50 +31,95 @@
 }
 
 .logo img {
-  width: 110px;
+  width: 120px;
   height: auto;
 }
 
 .login-form {
-  background: white;
-  border: 2px solid #333;
-  border-radius: 20px;
-  padding: 25px;
-  width: 410px;
-  max-width: 420px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 24px;
+  padding: 32px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 .login-form h2 {
   text-align: center;
-  color: #999;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  margin: 0 0 30px 0;
+  color: #666;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin: 0 0 28px 0;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper.invalid .input-field {
+  border-color: #d93025;
 }
 
 .input-field {
-  width: 100%;
-  padding: 12px 15px;
+  width: 98%;
+  max-width: 98%;
+  padding: 12px 14px;
   border: 2px solid #ddd;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 14px;
   font-family: inherit;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  min-height: 44px;
+  line-height: 1.4;
 }
 
 .input-field:focus {
   outline: none;
   border-color: #b8e986;
+  box-shadow: 0 0 0 4px rgba(184, 233, 134, 0.16);
 }
 
 .input-field::placeholder {
   color: #999;
+}
+
+.field-error {
+  position: absolute;
+  bottom: -18px;
+  left: 14px;
+  right: 14px;
+  color: #d93025;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.btn-login {
+  width: 100%;
+  padding: 14px;
+  background-color: #b8e986;
+  color: #333;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.15s ease;
+  margin-top: 10px;
+}
+
+.btn-login:hover {
+  background-color: #a3d66f;
+}
+
+.btn-login:active {
+  transform: scale(0.99);
 }
 
 .btn-login {
