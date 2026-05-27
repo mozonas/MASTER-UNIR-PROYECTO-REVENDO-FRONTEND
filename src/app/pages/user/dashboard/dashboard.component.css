@@ -2,7 +2,16 @@
 
 *{
     box-sizing: border-box;
-    font-family: 'Geological', sans-serif;
+    font-family: 'Geologica', sans-serif;
+}
+
+body{
+    margin: 0;
+}
+
+.page-shell{
+    padding-left: 30px;
+    padding-right: 30px;
 }
 
 .logo-container {
@@ -12,16 +21,37 @@
   gap: 1px;
 }
 
-.marca {
+.texto-marca {
   font-family: 'Geologica', sans-serif;
   font-size: 2em;
-  font-weight: 700;
+  font-weight: 300;
   margin: 0;
   display: flex;
   align-items: center;
 }
 
-.nav-container{
-    display: flex;
-    justify-content: space-between;
+
+.avatar-dropdown .dropdown-menu {
+  right: 0;
+  left: auto;
+  transform-origin: top right;
 }
+
+.dropdown:hover .dropdown-menu .dropdown-item:active {
+  background-color: #8cd86a;
+  display: block;
+  margin-top: 0; 
+ ;
+}
+
+
+.dropdown-menu {
+  transition: opacity 0.1s ease-in-out;
+  opacity: 0;
+}
+
+.dropdown:hover .dropdown-menu {
+  opacity: 1;
+ 
+}
+

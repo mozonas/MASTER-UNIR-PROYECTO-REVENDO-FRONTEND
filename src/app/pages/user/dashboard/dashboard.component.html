@@ -1,3 +1,4 @@
+ <!-- cabezera -->
 <div class="page-shell">
         <header class="p-4 mb-3 border-bottom page-header">
           <div
@@ -14,11 +15,10 @@
                     height="50"
                   />
                 </a>
-                <p class="marca">ReVendo</p>
+                <p class="texto-marca">ReVendo</p>
               </div>
             </div>
-
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center gap-4">
               <form class="w-100 me-3" role="search">
                 <input
                   type="search"
@@ -27,7 +27,7 @@
                   aria-label="Search"
                 />
               </form>
-              <div class="flex-shrink-0 dropdown">
+              <div class="flex-shrink-0 dropdown avatar-dropdown">
                 <a
                   href="#"
                   class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
@@ -35,58 +35,105 @@
                   aria-expanded="false"
                 >
                   <img
-                    src="https://github.com/mdo.png"
-                    alt="mdo"
-                    width="32"
-                    height="32"
+                    src="/images/profile-avatar.svg"
+                    alt="Avatar de perfil"
+                    width="38"
+                    height="38"
                     class="rounded-circle"
                   />
                 </a>
-                <ul class="dropdown-menu text-small shadow">
+                <ul class="dropdown-menu dropdown-menu-end  text-small shadow">
                   <li><a class="dropdown-item" href="#">Nueva entrada</a></li>
                   <li><a class="dropdown-item" href="#">Perfil</a></li>
                   <li><a class="dropdown-item" href="#">Favoritos</a></li>
                   <li><hr class="dropdown-divider" /></li>
-                  <li><a class="dropdown-item" href="#">Sign out</a></li>
+                  <li><a class="dropdown-item" href="#">Salir</a></li>
                 </ul>
               </div>
             </div>
           </div>
         </header>
         <nav class="py-2 bg-body page-nav">
-          <div class="container d-flex flex-wrap">
+         <div class="container d-flex flex-wrap">
             <ul class="nav w-100 justify-content-between gap-2">
-              <li class="nav-item flex-fill text-center">
+              <!-- Todas las categorías -->
+              <li class="nav-item dropdown flex-fill text-center">
                 <a
+                  class="nav-link link-body-emphasis px-3"
                   href="#"
-                  class="nav-link link-body-emphasis px-3 active"
-                  aria-current="page"
-                  >Todas las categorias</a
+                  data-bs-toggle="dropdown"
                 >
+                  Todas las categorías
+                </a>
+              
               </li>
-              <li class="nav-item flex-fill text-center">
-                <a href="#" class="nav-link link-body-emphasis px-2">Categoria 1</a>
+
+              <!-- Categoría 1 -->
+              <li class="nav-item dropdown flex-fill text-center">
+                <a
+                  class="nav-link dropdown-toggle link-body-emphasis px-2"
+                  href="#"
+                  data-bs-toggle="dropdown"
+                >
+                  Moda y accesorios
+                </a>
+                <ul class="dropdown-menu w-100 text-center">
+                  <li><a class="dropdown-item" href="#">Calzado</a></li>
+                  <li><a class="dropdown-item" href="#">Ropa</a></li>
+                  <li><a class="dropdown-item" href="#">Joyería</a></li>
+                </ul>
               </li>
-              <li class="nav-item flex-fill text-center">
-                <a href="#" class="nav-link link-body-emphasis px-2">Categoria 2</a>
+            
+              <!-- Categoría 2 -->
+              <li class="nav-item dropdown flex-fill text-center">
+                <a
+                  class="nav-link dropdown-toggle link-body-emphasis px-2"
+                  href="#"
+                  data-bs-toggle="dropdown"
+                >
+                  Electrónica
+                </a>
+                <ul class="dropdown-menu w-100 text-center">
+                  <li><a class="dropdown-item" href="#">Telefonía</a></li>
+                  <li><a class="dropdown-item" href="#">Informática</a></li>
+                  <li><a class="dropdown-item" href="#">Audio</a></li>
+                </ul>
               </li>
-              <li class="nav-item flex-fill text-center">
-                <a href="#" class="nav-link link-body-emphasis px-2">Categoria 3</a>
+            
+              <!-- Categoría 3 -->
+              <li class="nav-item dropdown flex-fill text-center">
+                <a
+                  class="nav-link dropdown-toggle link-body-emphasis px-2"
+                  href="#"
+                  data-bs-toggle="dropdown"
+                >
+                  Hogar y muebles
+                </a>
+                <ul class="dropdown-menu w-100 text-center">
+                  <li><a class="dropdown-item" href="#">Muebles</a></li>
+                  <li><a class="dropdown-item" href="#">Decoración</a></li>
+                  <li><a class="dropdown-item" href="#">Electrodomésticos</a></li>
+                </ul>
               </li>
-              <li class="nav-item flex-fill text-center">
-                <a href="#" class="nav-link link-body-emphasis px-2">Categoria 4</a>
+            
+              <!-- Categoría 4 -->
+              <li class="nav-item dropdown flex-fill text-center">
+                <a
+                  class="nav-link dropdown-toggle link-body-emphasis px-2"
+                  href="#"
+                  data-bs-toggle="dropdown"
+                >
+                  Ocio y deportes
+                </a>
+                <ul class="dropdown-menu w-100 text-center">
+                  <li><a class="dropdown-item" href="#">Bicicletas</a></li>
+                  <li><a class="dropdown-item" href="#">Material deportivo</a></li>
+                  <li><a class="dropdown-item" href="#">Instrumentos musicales</a></li>
+                  <li><a class="dropdown-item" href="#">Juguetes</a></li>
+                  </ul>
               </li>
+            
             </ul>
           </div>
         </nav>
 
-        <div class="container-fluid pb-3 p-4">
-          <div class="d-grid gap-3" style="grid-template-columns: 2fr">
-            <div class="bg-body-tertiary border rounded-3">
-              <p>FEED</p>
-              <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-            </div>
-          </div>
-        </div>
-      </div>
-      
