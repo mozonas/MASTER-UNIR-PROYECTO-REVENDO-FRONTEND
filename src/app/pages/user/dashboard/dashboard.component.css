@@ -2,7 +2,21 @@
 
 *{
     box-sizing: border-box;
-    font-family: 'Geological', sans-serif;
+    font-family: 'Geologica', sans-serif;
+}
+
+body{
+    margin: 0;
+}
+
+.page-shell{
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.page-header{
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
 }
 
 .logo-container {
@@ -12,61 +26,33 @@
   gap: 1px;
 }
 
-.marca {
+.texto-marca {
   font-family: 'Geologica', sans-serif;
   font-size: 2em;
-  font-weight: 700;
+  font-weight: 300;
   margin: 0;
   display: flex;
   align-items: center;
 }
 
-.nav-container{
-    display: flex;
-    justify-content: space-between;
+.avatar-dropdown .dropdown-menu {
+  right: 0;
+  left: auto;
+  transform-origin: top right;
 }
 
-.category-item {
-  position: relative;
+.dropdown-menu {
+  transition: opacity 0.1s ease-in-out;
+  opacity: 0;
 }
 
-.category-item > .nav-link::after {
-  content: ' ▾';
-  font-size: 12px;
-  color: #000;
-}
-
-.category-item .category-dropdown {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: white;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 8px 0;
-  min-width: 180px;
-  list-style: none;
-  z-index: 1000;
-}
-
-.category-item:hover .category-dropdown {
+.dropdown:hover .dropdown-menu {
   display: block;
+  opacity: 1;
 }
 
-.category-dropdown .dropdown-item {
-  padding: 6px 16px;
-  font-size: 14px;
-  color: #333;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.category-dropdown .dropdown-item:hover {
-  background-color: #f0f8e8;
-  color: #6ab03b;
+.dropdown:hover .dropdown-menu .dropdown-item:active {
+  background-color: #8cd86a;
 }
 
 .section-title {
