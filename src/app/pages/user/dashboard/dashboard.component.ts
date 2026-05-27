@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
-import { Article } from '../../shared/models/article.model';
-import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
+import { Article } from '../../../shared/models/article.model';
+import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-dashboard',
   imports: [ProductCardComponent],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css',
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.css',
 })
-export class HomeComponent {
+export class DashboardComponent {
   articles: Article[] = [
     {
       id: 1,

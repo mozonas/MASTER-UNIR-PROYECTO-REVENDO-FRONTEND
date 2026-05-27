@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@300;700&display=swap');
+
+*{
+    box-sizing: border-box;
+    font-family: 'Geological', sans-serif;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1px;
+}
+
+.marca {
+  font-family: 'Geologica', sans-serif;
+  font-size: 2em;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.nav-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.category-item {
+  position: relative;
+}
+
+.category-item > .nav-link::after {
+  content: ' ▾';
+  font-size: 12px;
+  color: #000;
+}
+
+.category-item .category-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+  min-width: 180px;
+  list-style: none;
+  z-index: 1000;
+}
+
+.category-item:hover .category-dropdown {
+  display: block;
+}
+
+.category-dropdown .dropdown-item {
+  padding: 6px 16px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.category-dropdown .dropdown-item:hover {
+  background-color: #f0f8e8;
+  color: #6ab03b;
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #999;
+  margin-bottom: 20px;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
