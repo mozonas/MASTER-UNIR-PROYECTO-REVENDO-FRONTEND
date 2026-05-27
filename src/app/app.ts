@@ -1,10 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { DashboardComponent } from './pages/user/dashboard/dashboard.component';
+import { WelcomeComponent } from './pages/authentication/welcome-component/welcome-component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, DashboardComponent],
+  imports: [RouterOutlet, WelcomeComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

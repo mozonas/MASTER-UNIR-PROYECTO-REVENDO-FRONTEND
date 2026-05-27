@@ -1,2 +1,12 @@
+@font-face {
+  font-family: 'Geologica';
+  src: url('/fonts/Geologica_Auto-Bold.ttf') format('truetype');
+  font-weight: auto;
+  font-style: normal;
+}
 
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --primary-color: #6ab03b;
+  --secundary-color: #000;
+  --font-primary: 700 2rem 'Geologica', sans-serif;
+}
