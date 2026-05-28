@@ -10,6 +10,8 @@ interface Usuario {
   email: string;
   usuario: string;
   foto: string;
+  biografia: string;
+  ubicacion: string;
   created_at: string;
 }
 
@@ -21,10 +23,10 @@ interface Usuario {
   styleUrls: ['./user-page-edit.css']
 })
 export class UserPageEditComponent implements OnInit {
-  // 3. Inyecta el servicio Router
   private router = inject(Router);
   private fb = inject(FormBuilder);
 
+  // Valores por defecto alineados con "Captura de pantalla 2026-05-28 a las 19.03.02.png"
   currentUser: Usuario = {
     id: 1,
     nombre: 'Alex',
@@ -32,6 +34,8 @@ export class UserPageEditComponent implements OnInit {
     email: 'info@domain.com',
     usuario: 'alex_ux_designer',
     foto: 'https://bootdey.com/img/Content/avatar/avatar7.png',
+    biografia: 'Diseño y desarrollo servicios para clientes de todos los tamaños. Especializado en crear sitios web modernos, elegantes y tiendas online de alto impacto.',
+    ubicacion: 'Madrid',
     created_at: '2026-01-15 10:30:00'
   };
 
@@ -47,7 +51,9 @@ export class UserPageEditComponent implements OnInit {
       apellidos: [this.currentUser.apellidos, [Validators.required]],
       usuario: [this.currentUser.usuario, [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]+$/)]],
       email: [this.currentUser.email, [Validators.required, Validators.email]],
-      foto: [this.currentUser.foto]
+      foto: [this.currentUser.foto],
+      biografia: [this.currentUser.biografia, [Validators.maxLength(300)]], // Validación opcional de longitud
+      ubicacion: [this.currentUser.ubicacion]
     });
   }
 
@@ -68,13 +74,14 @@ export class UserPageEditComponent implements OnInit {
     };
 
     console.log('Guardando...', usuarioActualizado);
+    
+    // Aquí conectarías con el servicio (ej. UserService.update(usuarioActualizado)) 
+    // para persistir los cambios y que la vista de información los pinte.
 
-    // 4. Tras guardar, redirigimos al usuario a su perfil
     this.router.navigate(['/user-info']);
   }
 
   onCancelar(): void {
-    // 5. Redirecciona a la ruta 'user-info' definida en Routes
     this.router.navigate(['/user-info']);
   }
 }
