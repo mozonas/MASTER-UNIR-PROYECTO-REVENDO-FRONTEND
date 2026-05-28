@@ -1,0 +1,135 @@
+* {
+  box-sizing: border-box;
+}
+
+ .login-wrapper {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  padding: 20px;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: min(100%, 500px);
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 24px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+  padding: 0;
+  overflow: hidden;
+}
+
+.login-header {
+  width: 100%;
+  padding: 20px 0 20px 32px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+}
+
+.header-logo {
+  width: auto;
+  height: 40px;
+}
+
+.logo {
+  flex-shrink: 0;
+}
+
+.logo img {
+  width: auto;
+  height: 40px;
+}
+
+.login-form {
+  background: #ffffff;
+  padding: 32px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-form h2 {
+  text-align: center;
+  color: #666;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin: 0 0 28px 0;
+}
+
+.form-group {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper.invalid .input-field {
+  border-color: #d93025;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  min-height: 44px;
+  line-height: 1.4;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #b8e986;
+  box-shadow: 0 0 0 4px rgba(184, 233, 134, 0.16);
+}
+
+.input-field::placeholder {
+  color: #999;
+}
+
+.field-error {
+  position: absolute;
+  bottom: -18px;
+  left: 14px;
+  right: 14px;
+  color: #d93025;
+  font-size: 12px;
+  line-height: 1.2;
+  margin-top: 4px;
+}
+
+.btn-login {
+  width: 100%;
+  padding: 12px;
+  background-color: #b8e986;
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.btn-login:hover {
+  background-color: #a3d66f;
+}
+
+.btn-login:active {
+  transform: scale(0.98);
+}
