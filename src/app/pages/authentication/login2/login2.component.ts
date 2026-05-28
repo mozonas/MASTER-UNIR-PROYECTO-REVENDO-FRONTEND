@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-
+import { FooterComponent } from '../../../shared/footer/footer.component';
 
 @Component({
   selector: 'app-login2',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FooterComponent],
   standalone: true,
   templateUrl: './login2.component.html',
   styleUrls: ['./login2.component.css'],
