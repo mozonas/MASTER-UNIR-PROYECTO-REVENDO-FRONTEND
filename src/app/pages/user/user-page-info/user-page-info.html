@@ -1,77 +1,106 @@
 <div class="bg-light py-5 min-vh-100 font-sans">
-  <div class="container" style="max-width: 1140px;">
+  <div class="container container-max-width">
 
     <header class="card border-light rounded-4 p-4 p-md-5 mb-5 shadow-sm">
-      <div class="row g-4 align-items-center">
+      <div class="row g-4">
 
-        <div class="col-12 col-md-auto d-flex justify-content-center">
-          <div class="position-relative" style="width: 240px; height: 240px;">
-            <img [src]="currentUser.foto || 'https://bootdey.com/img/Content/avatar/avatar7.png'" alt="Avatar de usuario"
-              class="w-100 h-100 rounded-circle object-fit-cover border border-3 border-white shadow-sm">
-            <span class="position-absolute bottom-0 end-0 bg-success border border-3 border-white rounded-circle"
-              style="width: 20px; height: 20px;" title="Conectado"></span>
-          </div>
-        </div>
+        <div class="col-12 col-md-5 d-flex flex-column gap-4">
 
-        <div class="col-12 col-md text-center text-md-start">
-          <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-start gap-2 mb-2">
-            <h2 class="fw-bold m-0 fs-3 text-dark">{{ currentUser.nombre }} {{ currentUser.apellidos }}</h2>
-            <!-- <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1.5 fs-7 fw-semibold">
-              <i class="fa fa-user me-1"></i> {{ currentUser.perfil }}
-            </span> -->
-          </div>
-
-          <p class="text-secondary fs-6 mb-2 lh-base">
-            Diseño y desarrollo servicios para clientes de todos los tamaños.
-            Especializado en crear sitios web modernos, elegantes y tiendas online de alto impacto.
-          </p>
-
-          <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 small text-muted mb-4">
-            <div class="text-warning">
-              <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
+          <div class="d-flex justify-content-center w-100">
+            <div class="position-relative avatar-container">
+              <img [src]="currentUser.foto || 'https://bootdey.com/img/Content/avatar/avatar7.png'"
+                alt="Avatar de usuario"
+                class="w-100 h-100 rounded-circle object-fit-cover border border-3 border-white shadow-sm">
+              <span
+                class="position-absolute bottom-0 end-0 bg-success border border-3 border-white rounded-circle status-indicator"
+                title="Conectado"></span>
             </div>
-            <span>(48 valoraciones)</span>
           </div>
+
+          <div class="text-center">
+            <div class="d-flex flex-wrap align-items-center justify-content-center gap-2 my-3">
+              <h2 class="fw-bold m-0 fs-3 text-dark">{{ currentUser.nombre }} {{ currentUser.apellidos }}</h2>
+            </div>
+
+            <p class="text-secondary fs-6 mb-2 lh-base mx-auto bio-text">
+              Diseño y desarrollo servicios para clientes de todos los tamaños.
+              Especializado en crear sitios web modernos, elegantes y tiendas online de alto impacto.
+            </p>
+
+            <div class="d-flex align-items-center justify-content-center gap-2 small text-muted mb-3">
+              <div class="text-warning">
+                <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                  class="fa fa-star"></i><i class="fa fa-star"></i>
+              </div>
+              <span>(48 valoraciones)</span>
+            </div>
+
+            <div class="d-flex justify-content-center">
+              <button class="btn btn-outline-secondary btn-sm px-3 rounded-pill fw-semibold" (click)="irAEditar()">
+                <i class="fa fa-pencil me-1"></i> Editar perfil
+              </button>
+            </div>
+          </div>
+
         </div>
 
-        <div class="col-12 col-lg-4">
-          <div class="p-4 rounded-4" style="background-color: #f6f8fa;">
-            <h3 class="fw-bold text-dark fs-7 tracking-wider text-uppercase mb-4">Información del vendedor</h3>
-            <div class="d-flex flex-column gap-3">
+        <div class="col-12 col-md-7 d-flex flex-column gap-3">
+          <div class="p-4 rounded-4 flex-grow-1 info-vendedor-bg">
+            <h3 class="fw-bold text-dark text-uppercase mb-4 info-vendedor-title">
+              Información del vendedor
+            </h3>
+
+            <div class="d-flex flex-column gap-3 mb-3">
               @for (detail of personalDetails; track detail.label) {
-                <div class="d-flex justify-content-between align-items-center fs-7">
-                  <span class="text-muted fw-medium">{{ detail.label }}</span>
-                  <span class="fw-bold text-dark text-end" [class.text-lowercase]="detail.lowercase">{{ detail.value }}</span>
-                </div>
+              <div class="d-flex justify-content-between align-items-center info-vendedor-item">
+                <span class="text-muted fw-medium">{{ detail.label }}</span>
+                <span class="fw-bold text-dark text-end" [class.text-lowercase]="detail.lowercase">
+                  {{ detail.value }}
+                </span>
+              </div>
               }
             </div>
+
+            <div class="map-container overflow-hidden rounded-3 border border-light shadow-sm">
+              <iframe width="100%" height="150" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                src="https://maps.google.com/maps?q=Madrid&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                title="Ubicación del vendedor">
+              </iframe>
+            </div>
+
+            <div class="col-12 border-top pt-4 mt-4 d-flex justify-content-center">
+              <div class="stats-grid gap-2">
+                @for (stat of stats; track stat.label) {
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                  <span class="fs-2 fw-bolder text-dark tracking-tight">{{ stat.count }}</span>
+                  <span class="fs-7 fw-medium text-dark-emphasis lh-sm text-start stat-label"
+                    [innerHTML]="stat.label.replace(' ', '<br>')"></span>
+                </div>
+                }
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="d-flex flex-wrap justify-content-center justify-content-md-center gap-4 border-top pt-4">
-          @for (stat of stats; track stat.label) {
-            <div class="d-flex align-items-center gap-2">
-              <span class="fs-2 fw-extrabold text-dark tracking-tight">{{ stat.count }}</span>
-              <span class="fs-7 fw-medium text-dark-emphasis lh-sm text-start" [innerHTML]="stat.label.replace(' ', '<br>')"></span>
-            </div>
-          }
-        </div>
 
       </div>
     </header>
 
     <main>
       <div class="mb-4">
-        <h3 class="fw-bold fs-4 text-dark">Productos en venta <span class="text-muted fw-normal fs-5">({{ products.length }})</span></h3>
+        <h3 class="fw-bold fs-4 text-dark">Productos en venta <span class="text-muted fw-normal fs-5">({{
+            products.length }})</span></h3>
       </div>
 
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         @for (product of products; track product.id) {
         <div class="col">
-          <article class="card h-100 border-light rounded-3 overflow-hidden shadow-hover transition-all">
+          <article class="card h-100 border-light rounded-3 overflow-hidden shadow-sm shadow-hover">
 
-            <div class="position-relative bg-light" style="height: 180px;">
-              <span class="position-absolute top-0 start-0 bg-dark bg-opacity-75 text-white fs-8 px-2 py-1 m-2 rounded">
+            <div class="position-relative bg-light product-img-container">
+              <span
+                class="position-absolute top-0 start-0 bg-dark bg-opacity-75 text-white px-2 py-1 m-2 rounded product-badge">
                 {{ product.category }}
               </span>
               <img [src]="product.image" [alt]="product.name" class="w-100 h-100 object-fit-cover" loading="lazy">
@@ -80,10 +109,13 @@
             <div class="card-body d-flex flex-column p-3">
               <span class="fw-bold text-dark fs-4 mb-1">{{ product.price.toFixed(2) }}€</span>
               <h4 class="fw-medium text-dark fs-6 mb-1 text-truncate" [title]="product.name">{{ product.name }}</h4>
-              <p class="text-muted fs-7 mb-3 text-description-truncate">{{ product.description }}</p>
+
+              <p class="text-muted mb-3 text-start small text-description-truncate">
+                {{ product.description }}
+              </p>
 
               <div class="d-flex align-items-center justify-content-between mt-auto pt-2 border-top border-light">
-                <span class="text-muted fs-8"><i class="fa fa-map-marker me-1"></i> Envíos disp.</span>
+                <span class="text-muted product-shipping"><i class="fa fa-map-marker me-1"></i> Envíos disp.</span>
                 <button class="btn btn-primary btn-sm px-3 fw-semibold text-white d-flex align-items-center gap-1"
                   (click)="comprarProducto(product.id)">
                   <i class="fa fa-shopping-cart"></i> Comprar
