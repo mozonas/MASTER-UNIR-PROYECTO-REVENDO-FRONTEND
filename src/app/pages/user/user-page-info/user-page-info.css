@@ -3,20 +3,20 @@
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Estilos de la Captura 1 para las estadísticas */
 .fw-extrabold {
   font-weight: 800 !important;
 }
 
-.fs-7 {
-  font-size: 0.7rem !important;
+/* Clases de utilidad específicas para evitar pisar el core de Bootstrap */
+.custom-fs-7 {
+  font-size: 0.825rem !important;
 }
 
-.fs-8 {
-  font-size: 0.8rem !important;
+.custom-fs-8 {
+  font-size: 0.75rem !important;
 }
 
-/* Color personalizado de Wallapop para el botón principal de Bootstrap */
+/* Color de marca (Wallapop/Revendo style) */
 .btn-primary {
   background-color: #6ab03b !important;
   border-color: #6ab03b !important;
@@ -27,73 +27,71 @@
   border-color: #4e8a2f !important;
 }
 
-/* Efecto hover interactivo para las tarjetas de producto */
+/* Interacciones de tarjetas */
 .shadow-hover {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .shadow-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* Recorte inteligente de texto de descripción a dos líneas */
+/* Limitador de líneas para descripciones de producto */
 .text-description-truncate {
   display: -webkit-box;
-  /* -webkit-line-clamp: 2; */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  height: 34px;
+  text-overflow: ellipsis;
+  height: 38px;
   line-height: 1.4;
 }
 
-/* Optimizaciones para el contenedor del mapa */
+/* Optimizaciones de iframe de mapas */
 .map-container {
   position: relative;
   transition: opacity 0.3s ease;
-  background-color: #e5e3df; /* Color de fondo simulando carga de mapa */
+  background-color: #e5e3df;
 }
 
 .map-container iframe {
   border: 0;
   display: block;
-  filter: grayscale(10%) contrast(95%); /* Suaviza los colores para integrarse con la app */
+  filter: grayscale(10%) contrast(95%);
   transition: filter 0.3s ease;
 }
 
 .map-container iframe:hover {
-  filter: grayscale(0%) contrast(100%); /* Recupera color al pasar el cursor */
+  filter: grayscale(0%) contrast(100%);
 }
 
-
-/* Contenedores principales y anchos maximos */
+/* Dimensiones del Layout */
 .container-max-width {
   max-width: 1140px;
 }
 
-/* Avatar y estados */
 .avatar-container {
-  width: 300px;
-  height: 300px;
+  width: 200px;
+  height: 200px;
 }
 
 .status-indicator {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
-/* Textos informativos */
 .bio-text {
   max-width: 400px;
 }
 
-/* Sección de Información del Vendedor */
+/* Información de vendedor */
 .info-vendedor-bg {
   background-color: #f6f8fa;
 }
 
 .info-vendedor-title {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   letter-spacing: 0.05em;
 }
 
@@ -101,27 +99,20 @@
   font-size: 0.875rem;
 }
 
-/* Estadísticas globales */
-.stat-label {
-  font-size: 0.875rem;
-}
-
+/* Grid de estadísticas flexible y seguro */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   width: 100%;
-  max-width: 500px; /* Ajusta este ancho según quieras que estén de juntos los bloques */
 }
 
-/* Tarjetas de productos y badges */
-.product-img-container {
-  height: 180px;
+@media (min-width: 576px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
-.product-badge {
-  font-size: 0.75rem;
-}
-
-.product-shipping {
-  font-size: 0.75rem;
+.stat-label {
+  display: inline-block;
+  max-width: 90px; /* Limita el ancho del texto forzando el salto de palabra natural de manera limpia */
 }
