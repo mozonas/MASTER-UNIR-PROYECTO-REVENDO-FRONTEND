@@ -29,4 +29,8 @@ export class UserService {
     getPerfilUsuario(id: number): Observable<Usuario> {
         return this.http.get<Usuario>(`${this.apiUrl}/por-id/${id}`);
     }
+
+    updatePerfilUsuario(id: number, datos: Partial<Usuario>): Observable<{ message: string }> {
+        return this.http.put<{ message: string }>(`${this.apiUrl}/${id}`, datos);
+    }
 }
