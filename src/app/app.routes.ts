@@ -9,6 +9,9 @@ import { ArticleDetailComponent } from './pages/article-detail-component/article
 import { AdminHeaderComponent } from './shared/headers/admin-header/admin-header.component';
 import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.component';
 
+//import { roleGuard } from './guards/role.guard';
+
+
 export const routes: Routes = [
   { path: "", pathMatch: 'full', redirectTo: "home" },
   { path: "home", component: WelcomeComponent },
@@ -20,5 +23,4 @@ export const routes: Routes = [
   { path: 'article-detail', component: ArticleDetailComponent },
   { path: 'header-menu', component: HeaderMenuComponent},
   { path: 'admin-header', component: AdminHeaderComponent}
-  
 ];
