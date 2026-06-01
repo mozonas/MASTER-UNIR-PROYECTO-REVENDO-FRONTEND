@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ProductService } from '../../../services/product.service';
 import { Product } from '../../../interfaces/product.interface';
+import { FooterComponent } from '../../../shared/footer/footer.component';
 
 @Component({
   selector: 'app-user-page-sell',
-  imports: [CommonModule],
+  imports: [CommonModule, FooterComponent],
   templateUrl: './user-page-sell.html',
   styleUrls: ['./user-page-sell.css'],
 })
