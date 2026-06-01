@@ -1,0 +1,89 @@
+*{
+    box-sizing: border-box;
+    font-family: 'Geologica', sans-serif;
+}
+
+body{
+    margin: 0;
+}
+
+.page-shell{
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.page-header{
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1px;
+}
+
+.texto-marca {
+  font-family: 'Geologica', sans-serif;
+  font-size: 2em;
+  font-weight: 300;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.texto-admin{
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 0;
+
+}
+
+.texto-admin p:first-child {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.texto-admin p:last-child {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+
+.dropdown:hover .dropdown-menu .dropdown-item:active {
+  background-color: #8cd86a;
+  display: block;
+  margin-top: 0; 
+ 
+}
+
+.menu-gestiones{
+    display: flex;
+    gap:50px;
+    flex-direction: column;  
+}
+
+.buscador{
+    width: 350px;
+}
+
+.menu-buscadores{
+    display: flex;
+    justify-content: center;
+    gap: 50px
+}
+
+.btn-gestiones {
+  background-color: #8cd86a;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.btn-gestiones:hover {
+  background-color: #7ac55c;
+  color: #fff;
+}
