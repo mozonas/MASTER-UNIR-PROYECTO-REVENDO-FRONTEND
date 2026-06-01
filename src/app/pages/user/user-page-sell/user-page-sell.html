@@ -1,0 +1,145 @@
+﻿<div class="container-fluid py-5 px-4">
+  <div class="container">
+    <!-- Encabezado con título y botón -->
+    <div class="row mb-5">
+      <div class="col-12 d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="mb-2">Mis Artículos en Venta</h1>
+          <p class="text-muted">Gestiona los productos que tienes disponibles para vender</p>
+        </div>
+        <button class="btn btn-success btn-lg" (click)="addNewProduct()">
+          <i class="bi bi-plus-lg"></i> Nuevo Artículo
+        </button>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="filter-container">
+          <button 
+            class="filter-btn" 
+            [class.active]="selectedFilter() === 'all'"
+            (click)="setFilter('all')"
+          >
+            <span class="filter-label">Todos</span>
+            <span class="filter-count">{{ getFilterCount('all') }}</span>
+          </button>
+          <button 
+            class="filter-btn" 
+            [class.active]="selectedFilter() === 'available'"
+            (click)="setFilter('available')"
+          >
+            <span class="filter-label">Disponibles</span>
+            <span class="filter-count">{{ getFilterCount('available') }}</span>
+          </button>
+          <button 
+            class="filter-btn" 
+            [class.active]="selectedFilter() === 'sold'"
+            (click)="setFilter('sold')"
+          >
+            <span class="filter-label">Vendidos</span>
+            <span class="filter-count">{{ getFilterCount('sold') }}</span>
+          </button>
+          <button 
+            class="filter-btn" 
+            [class.active]="selectedFilter() === 'reported'"
+            (click)="setFilter('reported')"
+          >
+            <span class="filter-label">Reportados</span>
+            <span class="filter-count">{{ getFilterCount('reported') }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensaje cuando no hay artículos filtrados -->
+    @if (filteredProducts().length === 0) {
+      <div class="row">
+        <div class="col-12">
+          <div class="alert alert-info text-center" role="alert">
+            <h5>No hay artículos en esta categoría</h5>
+            <p class="mb-0">Intenta con otro filtro</p>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <!-- Cuadrícula de artículos -->
+      <div class="row g-4">
+        @for (product of filteredProducts(); track product.id) {
+          <div class="col-lg-4 col-md-6">
+            <div class="card product-card h-100" [class.sold-product]="product.status === 'sold'">
+              <!-- Contenedor de imagen -->
+              <div class="product-image-container position-relative">
+                <img 
+                  [src]="product.image" 
+                  [alt]="product.title"
+                  class="card-img-top product-image"
+                />
+                
+                <!-- Badge de estado -->
+                <div class="position-absolute top-0 end-0 p-2">
+                  <span 
+                    class="badge" 
+                    [ngClass]="'badge-' + (product.status === 'sold' ? 'danger' : product.status === 'reported' ? 'warning' : 'success')"
+                  >
+                    {{ getStatusText(product.status) }}
+                  </span>
+                </div>
+
+                <!-- Overlay vendido -->
+                @if (product.status === 'sold') {
+                  <div class="sold-overlay">
+                    <div class="sold-text">VENDIDO</div>
+                  </div>
+                }
+
+                <!-- Overlay reportado -->
+                @if (product.status === 'reported') {
+                  <div class="reported-overlay">
+                    <div class="reported-text">REPORTADO</div>
+                  </div>
+                }
+              </div>
+
+              <!-- Cuerpo de la tarjeta -->
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ product.title }}</h5>
+                <p class="card-text text-muted flex-grow-1">{{ product.description }}</p>
+                
+                <!-- Precio -->
+                <div class="price-section mb-3">
+                  <p class="h4 mb-0 text-primary fw-bold">{{ product.price.toLocaleString('es-ES') }} €</p>
+                  <small class="text-muted">
+                    Publicado: {{ product.createdAt | date:'d/M/yyyy' }}
+                  </small>
+                </div>
+              </div>
+
+              <!-- Botones de acción -->
+              <div class="card-footer bg-light border-top">
+                <div class="d-grid gap-2">
+                  <button 
+                    type="button"
+                    class="btn btn-outline-primary"
+                    (click)="editProduct(product)"
+                    [disabled]="product.status === 'sold'"
+                  >
+                    <i class="bi bi-pencil"></i> Editar
+                  </button>
+                  <button 
+                    type="button"
+                    class="btn btn-outline-danger"
+                    (click)="deleteProduct(product)"
+                  >
+                    <i class="bi bi-trash"></i> Eliminar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

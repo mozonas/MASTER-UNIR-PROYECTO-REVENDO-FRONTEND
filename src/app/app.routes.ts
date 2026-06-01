@@ -4,6 +4,7 @@ import { LoginComponent } from './pages/authentication/login/login.component';
 import { SignupComponent } from './pages/authentication/signup/signup.component';
 import { UserPageInfoComponent } from './pages/user/user-page-info/user-page-info';
 import { UserPageEditComponent } from './pages/user/user-page-edit/user-page-edit';
+import { UserPageSell } from './pages/user/user-page-sell/user-page-sell';
 
 export const routes: Routes = [
   { path: "", pathMatch: 'full', redirectTo: "home" },
@@ -11,5 +12,6 @@ export const routes: Routes = [
   { path: "login", component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'user-info', component: UserPageInfoComponent },
-  { path: 'user-edit', component: UserPageEditComponent }
+  { path: 'user-edit', component: UserPageEditComponent },
+  { path: 'user-sell', component: UserPageSell }
 ];
