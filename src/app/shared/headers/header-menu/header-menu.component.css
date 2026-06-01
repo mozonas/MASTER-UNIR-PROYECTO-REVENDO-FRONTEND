@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@300;700&display=swap');
+
+*{
+    box-sizing: border-box;
+    font-family: 'Geologica', sans-serif;
+}
+
+body{
+    margin: 0;
+}
+
+.page-shell{
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.page-header{
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1px;
+}
+
+.texto-marca {
+  font-family: 'Geologica', sans-serif;
+  font-size: 2em;
+  font-weight: 300;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+
+.avatar-dropdown .dropdown-menu {
+  right: 0;
+  left: auto;
+  transform-origin: top right;
+}
+
+.dropdown:hover .dropdown-menu .dropdown-item:active {
+  background-color: #8cd86a;
+  display: block;
+  margin-top: 0; 
+ ;
+}
+
+
+.dropdown-menu {
+  transition: opacity 0.1s ease-in-out;
+  opacity: 0;
+}
+
+.dropdown:hover .dropdown-menu {
+  opacity: 1;
+ 
+}
+
