@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Product } from '../interfaces/product.interface';
 
 @Injectable({
@@ -62,14 +61,14 @@ export class ProductService {
       status: 'available',
       createdAt: new Date('2024-04-25')
     },
-      {
-        id: '7',
-        title: 'Monitor LG UltraWide 34"',
-        description: 'Monitor ultraancho 34 pulgadas para productividad',
-        price: 599,
-        image: 'https://via.placeholder.com/300x300?text=LG+Monitor',
-        status: 'reported',
-        createdAt: new Date('2024-04-20')
+    {
+      id: '7',
+      title: 'Monitor LG UltraWide 34"',
+      description: 'Monitor ultraancho 34 pulgadas para productividad',
+      price: 599,
+      image: 'https://via.placeholder.com/300x300?text=LG+Monitor',
+      status: 'reported',
+      createdAt: new Date('2024-04-20')
     },
     {
       id: '8',
@@ -115,23 +114,26 @@ export class ProductService {
       image: 'https://via.placeholder.com/300x300?text=iPad+Air',
       status: 'reported',
       createdAt: new Date('2024-02-18')
-  }
+    }
+  ];
 
-  getProductById(id: string) {
+  products = signal<Product[]>(this.mockProducts);
+
+  getProductById(id: string): Product | undefined {
     return this.products().find(p => p.id === id);
   }
 
-  deleteProduct(id: string) {
+  deleteProduct(id: string): void {
     const updatedProducts = this.products().filter(p => p.id !== id);
     this.products.set(updatedProducts);
   }
 
-  updateProduct(id: string, updatedProduct: Partial<Product>) {
-    const products = this.products();
+  updateProduct(id: string, updatedProduct: Partial<Product>): void {
+    const products = [...this.products()];
     const index = products.findIndex(p => p.id === id);
     if (index !== -1) {
       products[index] = { ...products[index], ...updatedProduct };
-      this.products.set([...products]);
+      this.products.set(products);
     }
   }
 }

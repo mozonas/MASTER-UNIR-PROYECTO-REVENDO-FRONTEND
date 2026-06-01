@@ -142,7 +142,7 @@
             <li class="page-item" [class.disabled]="currentPage() === 1">
               <button type="button" class="page-link" (click)="setPage(currentPage() - 1)">Anterior</button>
             </li>
-            @for (page of pageNumbers()) {
+            @for (page of pageNumbers(); track page) {
               <li class="page-item" [class.active]="currentPage() === page">
                 <button type="button" class="page-link" (click)="setPage(page)">{{ page }}</button>
               </li>

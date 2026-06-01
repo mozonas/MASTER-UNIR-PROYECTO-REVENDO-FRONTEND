@@ -8,7 +8,7 @@ import { Product } from '../../../interfaces/product.interface';
   selector: 'app-user-page-sell',
   imports: [CommonModule],
   templateUrl: './user-page-sell.html',
-  styleUrl: './user-page-sell.css',
+  styleUrls: ['./user-page-sell.css'],
 })
 export class UserPageSell {
   private productService = inject(ProductService);
