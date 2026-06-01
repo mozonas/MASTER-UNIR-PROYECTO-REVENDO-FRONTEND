@@ -1,0 +1,66 @@
+<div class="chat-wrapper">
+
+  <!-- Lista de conversaciones -->
+  <div class="conversaciones-panel">
+    <div class="conversaciones-header">
+      <h5>Mensajes</h5>
+    </div>
+
+    @for (conv of conversaciones; track conv.id) {
+      <div class="conversacion-item"
+           [class.activa]="conversacionActiva?.id === conv.id"
+           (click)="seleccionarConversacion(conv)">
+        <img [src]="conv.avatar" alt="avatar" class="conv-avatar"/>
+        <div class="conv-info">
+          <span class="conv-nombre">{{ conv.nombre }}</span>
+          <span class="conv-articulo">{{ conv.articulo }}</span>
+          <span class="conv-ultimo">{{ conv.ultimoMensaje }}</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Ventana de chat -->
+  <div class="chat-panel">
+
+    @if (conversacionActiva) {
+      <!-- Header del chat -->
+      <div class="chat-header">
+        <img [src]="conversacionActiva.avatar" alt="avatar" class="conv-avatar"/>
+        <div>
+          <span class="conv-nombre">{{ conversacionActiva.nombre }}</span>
+          <span class="conv-articulo">{{ conversacionActiva.articulo }}</span>
+        </div>
+      </div>
+
+      <!-- Mensajes -->
+      <div class="mensajes-container">
+        @for (mensaje of conversacionActiva.mensajes; track mensaje.hora) {
+          <div class="mensaje" [class.mio]="mensaje.mio" [class.suyo]="!mensaje.mio">
+            <div class="mensaje-burbuja">
+              {{ mensaje.texto }}
+              <span class="mensaje-hora">{{ mensaje.hora }}</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Input enviar -->
+      <div class="chat-input">
+        <input type="text" class="form-control"
+               placeholder="Escribe un mensaje..."
+               [(ngModel)]="nuevoMensaje"
+               (keyup)="enviarConEnter($event)"/>
+        <button class="btn btn-enviar" (click)="enviarMensaje()">
+          Enviar
+        </button>
+      </div>
+
+    } @else {
+      <div class="chat-vacio">
+        <p>Selecciona una conversación para empezar</p>
+      </div>
+    }
+
+  </div>
+</div>
