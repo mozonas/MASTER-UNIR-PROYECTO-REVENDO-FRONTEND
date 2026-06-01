@@ -12,10 +12,22 @@ body{
     padding-right: 30px;
 }
 
+main {
+  margin-left: 250px; 
+  margin-top: 138px; /* misma altura que el header */
+  height: calc(100vh - 138px);
+  overflow-y: auto;
+}
+
 /*Logo + brand*/
 .page-header{
     width: 100vw;
     margin-left: calc(50% - 50vw);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
 }
 
 .logo-container {

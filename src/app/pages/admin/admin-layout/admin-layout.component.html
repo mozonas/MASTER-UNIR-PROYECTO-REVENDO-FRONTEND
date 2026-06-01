@@ -41,7 +41,7 @@
   </header>
 
  <!--menú-->
- <body>
+ <body class = "d-flex">
 
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
       <symbol id="calendar3" viewBox="0 0 16 16">
@@ -136,7 +136,7 @@
     <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
       <ul class="nav flex-column">
         <li class="nav-item">
-          <a class="nav-link d-flex align-items-center gap-2 active" href="#">
+          <a class="nav-link d-flex align-items-center gap-2 active" [routerLink]="['/admin/dashboard']">
             <svg class="bi"><use xlink:href="#house-fill"></use></svg>
             Dashboard
           </a>
@@ -173,7 +173,7 @@
         </li>
       </ul>
       <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-uppercase">
-        <span>Informes guardados</span>
+        <span>Actividad reciente</span>
         <a href="#">
           <svg class="bi"><use xlink:href="#plus-circle"></use></svg>
         </a>
@@ -182,25 +182,20 @@
         <li class="nav-item">
           <a class="nav-link d-flex align-items-center gap-2" href="#">
             <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg>
-            Mes actual
+            Diaria
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center gap-2" href="#">
+            <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg>
+            Último mes
+          </a>
+        </li>
+     
         <li class="nav-item">
           <a class="nav-link d-flex align-items-center gap-2" href="#">
             <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg>
             Último trimestre
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link d-flex align-items-center gap-2" href="#">
-            <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg>
-            Interacción social
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link d-flex align-items-center gap-2" href="#">
-            <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg>
-            Ventas de fin de año
           </a>
         </li>
       </ul>
@@ -208,4 +203,11 @@
     </div>
   </div>
 </div>
+<main class ="flex-grow-1 p-4">
+
+    <app-admin-dashboard></app-admin-dashboard>
+  
+  
+</main>
 </body>
+

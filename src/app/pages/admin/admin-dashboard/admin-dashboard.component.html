@@ -1,0 +1,142 @@
+ 
+  <!-- gráfica -->
+ <div class="chart-container card p-4 shadow-sm">
+  <h4 class="mb-3">Ventas al año</h4>
+  <canvas id="ventasAnualesChart"></canvas>
+</div>
+
+ 
+ <!-- metric cards -->
+<div class="dashboard-grid">
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-title">Artículos publicados </div>
+            <div class="metric-value">{{ newArticles }}</div>
+              <div class="metric-sub">
+
+                @if (articlesDiff > 0) {
+                  <svg class="arrow up" viewBox="0 0 24 24">
+                    <path d="M12 4l-8 8h5v8h6v-8h5z"/>
+                  </svg>
+                }
+            
+                @if (articlesDiff < 0) {
+                  <svg class="arrow down" viewBox="0 0 24 24">
+                    <path d="M12 20l8-8h-5V4h-6v8H4z"/>
+                  </svg>
+                }
+            
+                {{ articlesDiff }}% respecto al mes anterior
+                </div>
+            </div>
+
+  <!-- Usuarios nuevos -->
+  <div class="metric-card">
+    <div class="metric-title">Usuarios registrados</div>
+    <div class="metric-value">{{ newUsers }}</div>
+
+    <div class="metric-sub">
+
+      @if (usersDiff > 0) {
+        <svg class="arrow up" viewBox="0 0 24 24">
+          <path d="M12 4l-8 8h5v8h6v-8h5z"/>
+        </svg>
+      }
+
+      @if (usersDiff < 0) {
+        <svg class="arrow down" viewBox="0 0 24 24">
+          <path d="M12 20l8-8h-5V4h-6v8H4z"/>
+        </svg>
+      }
+
+      {{ usersDiff }}% crecimiento mensual
+    </div>
+  </div>
+  <div class="metric-card active-users">
+  <div class="metric-title">Usuarios activos</div>
+  <div class="metric-value">{{ activeUsers }}</div>
+
+  <div class="metric-sub">
+
+    @if (activeUsersDiff > 0) {
+      <svg class="arrow up" viewBox="0 0 24 24">
+        <path d="M12 4l-8 8h5v8h6v-8h5z"/>
+      </svg>
+    }
+
+    @if (activeUsersDiff < 0) {
+      <svg class="arrow down" viewBox="0 0 24 24">
+        <path d="M12 20l8-8h-5V4h-6v8H4z"/>
+      </svg>
+    }
+
+    {{ activeUsersDiff }}% respecto al mes anterior
+  </div>
+</div>
+
+
+  <!-- Artículos reportados -->
+  <div class="metric-card red">
+    <div class="metric-title">Artículos reportados</div>
+    <div class="metric-value">{{ reportedArticles }}</div>
+
+    <div class="metric-sub">
+      <svg class="warning" viewBox="0 0 24 24">
+        <path d="M1 21h22L12 2 1 21zm12-3h-2v2h2v-2zm0-6h-2v5h2v-5z"/>
+      </svg>
+      Pendientes de revisión
+    </div>
+  </div>
+</div>
+  
+<!-- Gráfica ventas -->
+    
+        <div class="chart-mes card p-4 shadow-sm">
+             <h4 class="mb-3">Artículos vendidos (último mes)</h4>
+             <canvas id="ventasMesChart"></canvas>
+        </div>
+    </div>
+
+
+
+
+
+<!-- Actividad reciente -->
+  <div class="recent-activity card p-4 shadow-sm mt-4">
+  <h4 class="mb-3">Actividad reciente</h4>
+  <table class="table table-hover align-middle">
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>Descripción</th>
+        <th>Usuario</th>
+        <th>Fecha</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of recentActivity; track $index) {
+        <tr>
+          <td>
+            @switch (item.type) {
+                @case ('usuario') {
+                  <span class="badge bg-primary">Usuario</span>
+                }
+
+                @case ('articulo') {
+                  <span class="badge bg-success">Artículo</span>
+                }
+
+                @case ('reporte') {
+                  <span class="badge bg-danger">Reporte</span>
+                }
+            }
+          </td>
+          <td>{{ item.description }}</td>
+          <td>{{ item.user }}</td>
+          <td>{{ item.date | date:'dd/MM/yyyy HH:mm' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+

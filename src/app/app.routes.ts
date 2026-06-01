@@ -5,6 +5,7 @@ import { SignupComponent } from './pages/authentication/signup/signup.component'
 import { UserPageInfoComponent } from './pages/user/user-page-info/user-page-info';
 import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.component';
 import { AdminLayoutComponent } from './pages/admin/admin-layout/admin-layout.component';
+import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 
 
 export const routes: Routes = [
@@ -14,6 +15,13 @@ export const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'user-info', component: UserPageInfoComponent },
   { path: 'header-menu', component: HeaderMenuComponent},
-  { path: 'admin-layout', component: AdminLayoutComponent},
+  { path: 'admin', component: AdminLayoutComponent,
+    children: [
+      { path: '', component: AdminDashboardComponent},
+      { path: 'dashboard', component: AdminDashboardComponent}
+    ]
+  },
+  
+
  
 ];
