@@ -1,29 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-
-interface Usuario {
-  id: number;
-  nombre: string;
-  apellidos: string;
-  email: string;
-  usuario: string;
-  foto: string;
-  created_at: string;
-}
+import { UserService, Usuario } from '../../../services/user.service'; // Asegura la ruta correcta
 
 interface Stat {
   count: string;
   label: string;
-}
-
-interface Product {
-  id: number;
-  name: string;
-  category: string;
-  price: number;
-  image: string;
-  description: string;
 }
 
 @Component({
@@ -34,17 +16,24 @@ interface Product {
   styleUrls: ['./user-page-info.css']
 })
 export class UserPageInfoComponent implements OnInit {
-  // 3. Inyecta el Router
   private router = inject(Router);
+  private userService = inject(UserService); // Inyectamos el servicio HTTP
+  private cdr = inject(ChangeDetectorRef);   // 🔥 Inyectamos el detector de cambios de Angular
 
+  // Flag de control para el bloque condicional del HTML (@if)
+  isLoaded: boolean = false;
+
+  // Inicializamos el objeto con valores vacíos por defecto pero con la estructura correcta
   currentUser: Usuario = {
-    id: 1,
-    nombre: 'Alex',
-    apellidos: 'García Pérez',
-    email: 'info@domain.com',
-    usuario: 'alex_ux_designer',
-    foto: 'https://bootdey.com/img/Content/avatar/avatar7.png',
-    created_at: '2026-01-15 10:30:00'
+    id: 0,
+    nombre: '',
+    apellidos: '',
+    email: '',
+    usuario: '',
+    foto: null,
+    perfil: 'USUARIO',
+    fecha_nacimiento: null,
+    created_at: ''
   };
 
   personalDetails: { label: string; value: string; lowercase?: boolean }[] = [];
@@ -56,59 +45,74 @@ export class UserPageInfoComponent implements OnInit {
     { count: '190', label: 'Llamadas realizadas' },
   ];
 
-  products: Product[] = [
-    {
-      id: 1,
-      name: 'Biokinetic Interface Theme',
-      category: 'UI Templates',
-      price: 49.99,
-      image: 'https://bootdey.com/img/Content/avatar/avatar1.png',
-      description: 'Layout limpio, ligero y super responsive.'
-    },
-    {
-      id: 2,
-      name: 'Adaptive Agenda Plugin',
-      category: 'Angular Tools',
-      price: 29.50,
-      image: 'https://bootdey.com/img/Content/avatar/avatar7.png',
-      description: 'Motor fluido de workflow para tu IDE personal.'
-    },
-    {
-      id: 3,
-      name: 'Flow Map Dashboard',
-      category: 'Kinetic Aesthetics',
-      price: 79.00, image: 'https://bootdey.com/img/Content/avatar/avatar6.png',
-      description: 'Módulos avanzados de datos y estadísticas.'
-    },
-    {
-      id: 4,
-      name: 'Bio-Command Core Pack',
-      category: 'Bundles',
-      price: 120.00,
-      image: 'https://bootdey.com/img/Content/avatar/avatar2.png',
-      description: 'Blueprint completo y optimización de motor.'
-    },
-  ];
-
   ngOnInit(): void {
-    this.generarDetallesPersonales();
+    console.log('🔄 Iniciando carga del perfil del usuario 34...');
+    const userIdParaCargar = 34;
+
+    this.userService.getPerfilUsuario(userIdParaCargar).subscribe({
+      next: (userData: any) => {
+        console.log('✅ Datos recibidos tras recargar:', userData);
+
+        // Si el backend te devuelve un array, extraemos el objeto
+        const userObj = Array.isArray(userData) ? userData[0] : userData;
+
+        if (userObj) {
+          // Asignamos los datos reales sustituyendo los vacíos
+          this.currentUser = userObj;
+          
+          // Generamos los textos planos del listado del perfil
+          this.generarDetallesPersonales();
+
+          // 🔥 Marcamos que ya está listo y forzamos el redibujado síncrono del HTML
+          this.isLoaded = true;
+          this.cdr.detectChanges();
+        }
+      },
+      error: (err) => {
+        console.error('❌ Error en la petición HTTP al recargar:', err);
+      }
+    });
   }
 
   private generarDetallesPersonales(): void {
+    if (!this.currentUser) return;
+
     this.personalDetails = [
-      { label: 'Nombre', value: `${this.currentUser.nombre} ${this.currentUser.apellidos}` },
-      { label: 'Usuario', value: `@${this.currentUser.usuario}` },
-      { label: 'Email', value: this.currentUser.email, lowercase: true },
-      { label: 'Miembro desde', value: new Date(this.currentUser.created_at).toLocaleDateString('es-ES') }
+      {
+        label: 'Nombre',
+        value: `${this.currentUser.nombre || ''} ${this.currentUser.apellidos || ''}`.trim() || 'No especificado'
+      },
+      {
+        label: 'Usuario',
+        value: this.currentUser.usuario ? `@${this.currentUser.usuario}` : 'No especificado'
+      },
+      {
+        label: 'Email',
+        value: this.currentUser.email || 'No especificado',
+        lowercase: true
+      },
+      {
+        label: 'Rol de Cuenta',
+        value: this.currentUser.perfil || 'USUARIO'
+      },
+      {
+        label: 'Cumpleaños',
+        value: this.currentUser.fecha_nacimiento && this.currentUser.fecha_nacimiento !== ''
+          ? new Date(this.currentUser.fecha_nacimiento).toLocaleDateString('es-ES')
+          : 'No especificado'
+      },
+      {
+        label: 'Miembro desde',
+        // Validamos de forma estricta que la fecha exista y no sea un string vacío antes de instanciar el objeto Date
+        value: this.currentUser.created_at && this.currentUser.created_at !== ''
+          ? new Date(this.currentUser.created_at).toLocaleDateString('es-ES')
+          : 'No especificado'
+      }
     ];
   }
 
-  // 4. Método para redirigir a la ruta de edición
   irAEditar(): void {
     this.router.navigate(['/user-edit']);
   }
 
-  comprarProducto(productoId: number): void {
-    console.log(`Producto ${productoId} añadido al carrito.`);
-  }
 }
