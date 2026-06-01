@@ -1,15 +1,6 @@
 <div class="container-fluid p-3">
 
-    <!-- Header -->
-    <div class="card mb-3">
-       <h1>Cabecera</h1>
-    </div>
-
-    <!-- Menú -->
-    <div class="card mb-3">
-        <h1>Menú</h1>
-    </div>
-
+    <app-header-menu></app-header-menu>
     <!-- Artículo -->
     <div class="card shadow-sm">
 
@@ -23,14 +14,17 @@
             <!-- Carrusel -->
             <div id="carouselArticulo" class="carousel slide mb-4" data-bs-ride="carousel">
 
-                <div class="carousel-inner rounded carrusel-fondo">
-
-                    <div class="carousel-item active">
-                        <img src="assets/articulos/guitarra1.jpg" class="d-block mx-auto imagen-articulo" alt="">
+                <div class="carousel-inner rounded carousel-fondo">
+                    <div class="item active carousel-item">
+                        <img class="d-block w-100 img-fluid imagen-articulo" src="./images/test-carrusel/g1.jpg" alt="">
                     </div>
 
                     <div class="carousel-item">
-                        <img src="assets/articulos/guitarra2.jpg" class="d-block mx-auto imagen-articulo" alt="">
+                        <img class="d-block w-100 img-fluid imagen-articulo" src="./images/test-carrusel/g2.jpg" alt="">
+                    </div>
+
+                    <div class="carousel-item">
+                        <img class="d-block w-100 img-fluid imagen-articulo" src="./images/test-carrusel/g2.jpg" alt="">
                     </div>
 
                 </div>
