@@ -6,6 +6,7 @@ import { UserPageInfoComponent } from './pages/user/user-page-info/user-page-inf
 import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.component';
 import { AdminLayoutComponent } from './pages/admin/admin-layout/admin-layout.component';
 
+
 export const routes: Routes = [
   { path: "", pathMatch: 'full', redirectTo: "home" },
   { path: "home", component: WelcomeComponent },
@@ -13,6 +14,6 @@ export const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'user-info', component: UserPageInfoComponent },
   { path: 'header-menu', component: HeaderMenuComponent},
-  { path: 'admin-layout', component: AdminLayoutComponent}
-  
+  { path: 'admin-layout', component: AdminLayoutComponent},
+ 
 ];

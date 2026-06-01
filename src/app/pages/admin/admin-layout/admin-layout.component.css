@@ -11,6 +11,8 @@ body{
     padding-left: 30px;
     padding-right: 30px;
 }
+
+/*Logo + brand*/
 .page-header{
     width: 100vw;
     margin-left: calc(50% - 50vw);
@@ -32,6 +34,7 @@ body{
   align-items: center;
 }
 
+/*admin text*/
 .texto-admin{
     display: flex;
     flex-direction: column;
@@ -50,7 +53,7 @@ body{
   color: #666;
 }
 
-
+/*avatar*/
 .dropdown:hover .dropdown-menu .dropdown-item:active {
   background-color: #8cd86a;
   display: block;
@@ -58,33 +61,75 @@ body{
  
 }
 
-.menu-gestiones{
-    display: flex;
-    gap:50px;
-    flex-direction: column;  
+
+/* Fondo general */
+.sidebar,
+#sidebarMenu,
+.offcanvas-body {
+  background-color: #8cd86a;
+  color: #ffffff;
 }
 
-.buscador{
-    width: 350px;
-}
-
-
-.menu-buscadores{
-    display: flex;
-    justify-content: center;
-    gap: 50px
-}
-
-.btn-gestiones {
+.sidebar {
+  border: none;
+  position: fixed;
+  top: 138px;          
+  bottom: 0;
+  left: 0;
+  width: 250px;
   background-color: #8cd86a;
   color: #fff;
   border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  transition: 0.2s;
+
 }
 
-.btn-gestiones:hover {
-  background-color: #7ac55c;
-  color: #fff;
+
+.sidebar,
+#sidebarMenu,
+.offcanvas-body {
+  overflow-x: hidden;
+}
+
+/* Enlaces */
+.sidebar .nav-link,
+#sidebarMenu .nav-link {
+  color: #ffffff;
+  font-weight: 500;
+  white-space: nowrap; /* evita que el texto rompa y genere scroll */
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
+/* Hover más oscuro */
+.sidebar .nav-link:hover,
+#sidebarMenu .nav-link:hover {
+  background-color: #5eaa47;
+  color: #ffffff;
+}
+
+/* Activo */
+.sidebar .nav-link.active,
+#sidebarMenu .nav-link.active {
+  background-color: #6fbf54;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* Iconos blancos y tamaño fijo */
+.sidebar svg,
+#sidebarMenu svg {
+  filter: brightness(0) invert(1);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0; 
+}
+
+/* Títulos del sidebar */
+.sidebar-heading {
+  color: #ffffff;
+}
+
+/* Botón cerrar (offcanvas) */
+.btn-close {
+  filter: brightness(0) invert(1);
 }
