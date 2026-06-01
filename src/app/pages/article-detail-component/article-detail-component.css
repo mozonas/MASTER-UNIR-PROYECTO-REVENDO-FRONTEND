@@ -1,0 +1,33 @@
+.estado-articulo {
+  background-color: #b8e269;
+  color: #000;
+  font-size: 0.9rem;
+}
+
+.categoria-badge {
+  background-color: #b8e269;
+  color: #000;
+}
+
+.carrusel-fondo {
+  background-color: #b8e269;
+  min-height: 320px;
+}
+
+.imagen-articulo {
+  max-height: 320px;
+  object-fit: contain;
+  padding: 20px;
+}
+
+.btn-success {
+  background-color: #b8e269;
+  border-color: #b8e269;
+  color: #000;
+}
+
+.btn-success:hover {
+  background-color: #a8d152;
+  border-color: #a8d152;
+  color: #000;
+}
