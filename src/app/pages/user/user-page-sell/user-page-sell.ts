@@ -17,6 +17,8 @@ export class UserPageSell {
   products = this.productService.products;
 
   selectedFilter = signal<'all' | 'available' | 'sold' | 'reported'>('all');
+  currentPage = signal(1);
+  pageSize = 6;
 
   filteredProducts = computed(() => {
     const filter = this.selectedFilter();
@@ -25,8 +27,29 @@ export class UserPageSell {
     return allProducts.filter(p => p.status === filter);
   });
 
+  pageCount = computed(() => {
+    return Math.max(1, Math.ceil(this.filteredProducts().length / this.pageSize));
+  });
+
+  pageNumbers = computed(() => {
+    return Array.from({ length: this.pageCount() }, (_, index) => index + 1);
+  });
+
+  currentPageProducts = computed(() => {
+    const start = (this.currentPage() - 1) * this.pageSize;
+    return this.filteredProducts().slice(start, start + this.pageSize);
+  });
+
   setFilter(filter: 'all' | 'available' | 'sold' | 'reported') {
     this.selectedFilter.set(filter);
+    this.currentPage.set(1);
+  }
+
+  setPage(page: number) {
+    if (page < 1 || page > this.pageCount()) {
+      return;
+    }
+    this.currentPage.set(page);
   }
 
   editProduct(product: Product) {
@@ -46,6 +69,7 @@ export class UserPageSell {
     
     if (confirmed) {
       this.productService.deleteProduct(product.id);
+      this.currentPage.set(Math.min(this.currentPage(), this.pageCount()));
       console.log('Producto eliminado:', product.title);
     }
   }
