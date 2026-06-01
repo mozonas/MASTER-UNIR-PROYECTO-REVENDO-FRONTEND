@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { inject } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import {signal} from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,9 @@ import {signal} from '@angular/core';
 })
 
 export class LoginComponent {
-private fb = inject(FormBuilder);
+  private router = inject(Router);
+
+  private fb = inject(FormBuilder);
   private authService = inject(AuthService);
 
   loading = signal(false);
@@ -37,6 +40,25 @@ private fb = inject(FormBuilder);
         console.log('LOGIN OK =>', resp);
         this.loading.set(false);
         sessionStorage.setItem('token', resp.token);
+        // Obtener rol desde el token
+      const role = this.authService.getUserRole();
+
+      console.log('ROL DECODIFICADO =>', role);
+              // Redirección según rol
+      switch (role) {
+        //redireccionar al dashboard del administrador
+        case 'admin':
+          this.router.navigate(['/admin']);
+          break;
+        //redireccionar al dashboard de moderador
+        case 'moderador':
+          this.router.navigate(['/moderador']);
+          break;
+        //redireccionar a la página de usuario que se decida, yo lo redireccionaría al listado de productos a vender
+        default:
+          this.router.navigate(['/usuario']);
+          break;
+      }
       },
       error: (err) => {
         console.error('LOGIN ERROR =>', err);
