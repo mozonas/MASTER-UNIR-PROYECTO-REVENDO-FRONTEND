@@ -1,19 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-
-interface Usuario {
-  id: number;
-  nombre: string;
-  apellidos: string;
-  email: string;
-  usuario: string;
-  foto: string;
-  biografia: string;
-  ubicacion: string;
-  created_at: string;
-}
+import { UserService, Usuario } from '../../../services/user.service'; // Ajusta la ruta si es necesario
 
 @Component({
   selector: 'app-user-page-edit',
@@ -25,35 +14,73 @@ interface Usuario {
 export class UserPageEditComponent implements OnInit {
   private router = inject(Router);
   private fb = inject(FormBuilder);
+  private userService = inject(UserService);
+  private cdr = inject(ChangeDetectorRef);
 
-  // Valores por defecto alineados con "Captura de pantalla 2026-05-28 a las 19.03.02.png"
-  currentUser: Usuario = {
-    id: 1,
-    nombre: 'Alex',
-    apellidos: 'García Pérez',
-    email: 'info@domain.com',
-    usuario: 'alex_ux_designer',
-    foto: 'https://bootdey.com/img/Content/avatar/avatar7.png',
-    biografia: 'Diseño y desarrollo servicios para clientes de todos los tamaños. Especializado en crear sitios web modernos, elegantes y tiendas online de alto impacto.',
-    ubicacion: 'Madrid',
-    created_at: '2026-01-15 10:30:00'
-  };
-
+  isLoaded: boolean = false;
   editForm!: FormGroup;
+
+  currentUser: Usuario = {
+    id: 34, // ID fijo temporalmente
+    nombre: '',
+    apellidos: '',
+    email: '',
+    usuario: '',
+    foto: null,
+    perfil: 'USUARIO',
+    fecha_nacimiento: null,
+    created_at: ''
+  };
 
   ngOnInit(): void {
     this.initForm();
+    this.cargarDatosUsuario();
   }
 
   private initForm(): void {
     this.editForm = this.fb.group({
-      nombre: [this.currentUser.nombre, [Validators.required, Validators.minLength(2)]],
-      apellidos: [this.currentUser.apellidos, [Validators.required]],
-      usuario: [this.currentUser.usuario, [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]+$/)]],
-      email: [this.currentUser.email, [Validators.required, Validators.email]],
-      foto: [this.currentUser.foto],
-      biografia: [this.currentUser.biografia, [Validators.maxLength(300)]], // Validación opcional de longitud
-      ubicacion: [this.currentUser.ubicacion]
+      nombre: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+      apellidos: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      usuario: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_.]+$/)]],
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
+      foto: [null],
+      perfil: ['USUARIO', [Validators.required]],
+      fecha_nacimiento: [null]
+    });
+  }
+
+  private cargarDatosUsuario(): void {
+    console.log('🔄 Cargando datos del usuario 34 para edición...');
+    this.userService.getPerfilUsuario(this.currentUser.id).subscribe({
+      next: (userData: any) => {
+        const userObj = Array.isArray(userData) ? userData[0] : userData;
+        
+        if (userObj) {
+          this.currentUser = userObj;
+
+          // Formateamos la fecha a YYYY-MM-DD para que el input type="date" la entienda perfectamente
+          let fechaFormateada = null;
+          if (this.currentUser.fecha_nacimiento) {
+            fechaFormateada = new Date(this.currentUser.fecha_nacimiento).toISOString().split('T')[0];
+          }
+
+          // Rellenamos el formulario con los valores reales de la DB
+          this.editForm.patchValue({
+            nombre: this.currentUser.nombre,
+            apellidos: this.currentUser.apellidos,
+            usuario: this.currentUser.usuario,
+            email: this.currentUser.email,
+            foto: this.currentUser.foto,
+            perfil: this.currentUser.perfil,
+            fecha_nacimiento: fechaFormateada
+          });
+
+          this.isLoaded = true;
+          this.cdr.detectChanges();
+          console.log('✅ Formulario cargado con éxito.');
+        }
+      },
+      error: (err) => console.error('❌ Error al recuperar usuario:', err)
     });
   }
 
@@ -68,17 +95,24 @@ export class UserPageEditComponent implements OnInit {
       return;
     }
 
-    const usuarioActualizado: Usuario = {
-      ...this.currentUser,
+    // Fusionamos los datos viejos con los nuevos del formulario
+    const usuarioActualizado: Partial<Usuario> = {
       ...this.editForm.value
     };
 
-    console.log('Guardando...', usuarioActualizado);
-    
-    // Aquí conectarías con el servicio (ej. UserService.update(usuarioActualizado)) 
-    // para persistir los cambios y que la vista de información los pinte.
+    console.log('🚀 Enviando actualización al backend...', usuarioActualizado);
 
-    this.router.navigate(['/user-info']);
+    this.userService.updatePerfilUsuario(this.currentUser.id, usuarioActualizado).subscribe({
+      next: (response) => {
+        console.log('🎉 Backend dice:', response.message);
+        // Redirigimos de vuelta a la vista de información para ver los cambios
+        this.router.navigate(['/user-info']);
+      },
+      error: (err) => {
+        console.error('❌ Error al guardar los cambios en el servidor:', err);
+        alert('Hubo un error al guardar los cambios.');
+      }
+    });
   }
 
   onCancelar(): void {

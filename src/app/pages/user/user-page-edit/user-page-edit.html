@@ -1,3 +1,4 @@
+@if (isLoaded) {
 <div class="bg-light py-5 min-vh-100 font-sans">
     <div class="container" style="max-width: 800px;">
 
@@ -10,29 +11,23 @@
 
         <form [formGroup]="editForm" (ngSubmit)="onGuardar()" class="card border-light rounded-4 p-4 p-md-5 shadow-sm">
 
-            <!-- Fila del Avatar / URL de Foto -->
             <div class="row mb-5 align-items-center border-bottom pb-4 g-4">
                 <div class="col-12 col-sm-auto text-center">
                     <div class="position-relative mx-auto" style="width: 140px; height: 140px;">
-                        <img [src]="editForm.get('foto')?.value || 'https://bootdey.com/img/Content/avatar/avatar7.png'"
+                        <img [src]="editForm.get('foto')?.value ? 'assets/images/' + editForm.get('foto')?.value : 'https://bootdey.com/img/Content/avatar/avatar7.png'"
                             alt="Previsualización de Avatar"
                             class="w-100 h-100 rounded-circle object-fit-cover border border-3 border-white shadow-sm">
                     </div>
                 </div>
                 <div class="col-12 col-sm">
-                    <label for="foto" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">URL de la Foto</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="fa fa-image"></i></span>
-                        <input type="text" id="foto" formControlName="foto" class="form-control bg-white border-start-0"
-                            placeholder="https://ejemplo.com/tu-foto.jpg">
-                    </div>
-                    <div class="form-text text-muted fs-8 mt-1">Introduce una URL directa a tu imagen de perfil.</div>
+                    <label for="foto" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Nombre del archivo de imagen (foto)</label>
+                    <input type="text" id="foto" formControlName="foto" class="form-control p-2.5 rounded-3"
+                        placeholder="Ej: avatar.jpg o dejar vacío">
+                    <div class="form-text text-muted fs-8 mt-1">Introduce el nombre de la imagen guardada en tu carpeta assets.</div>
                 </div>
             </div>
 
-            <!-- Campos del Formulario -->
             <div class="row g-4">
-
                 <div class="col-12 col-md-6">
                     <label for="nombre" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Nombre</label>
                     <input type="text" id="nombre" formControlName="nombre" class="form-control p-2.5 rounded-3"
@@ -49,11 +44,11 @@
 
                 <div class="col-12 col-md-6">
                     <label for="usuario" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Nombre de Usuario</label>
-                    <div class="input-group has-validation">
-                        <span class="input-group-text bg-light text-muted">&#64;</span>
-                        <input type="text" id="usuario" formControlName="usuario" class="form-control p-2.5"
+                    <div class="input-group">
+                        <span class="input-group-text bg-light text-muted border-end-0">@</span>
+                        <input type="text" id="usuario" formControlName="usuario" class="form-control p-2.5 border-start-0"
                             [class.is-invalid]="isInvalid('usuario')">
-                        <div class="invalid-feedback">Introduce un usuario válido (letras, números o guiones bajos).</div>
+                        <div class="invalid-feedback">Usuario inválido (solo letras, números, puntos o guiones bajos).</div>
                     </div>
                 </div>
 
@@ -61,38 +56,44 @@
                     <label for="email" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Correo Electrónico</label>
                     <input type="email" id="email" formControlName="email" class="form-control p-2.5 rounded-3"
                         [class.is-invalid]="isInvalid('email')">
-                    <div class="invalid-feedback">Por favor, introduce un email válido.</div>
+                    <div class="invalid-feedback">Ingresa un correo electrónico válido.</div>
                 </div>
 
-                <div class="col-12">
-                    <label for="ubicacion" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Ubicación (Ciudad)</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-white text-muted"><i class="fa fa-map-marker-alt"></i></span>
-                        <input type="text" id="ubicacion" formControlName="ubicacion" class="form-control p-2.5"
-                            placeholder="Ej. Madrid, España">
-                    </div>
+                <div class="col-12 col-md-6">
+                    <label for="perfil" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Rol de Cuenta</label>
+                    <select id="perfil" formControlName="perfil" class="form-select p-2.5 rounded-3" [class.is-invalid]="isInvalid('perfil')">
+                        <option value="USUARIO">USUARIO</option>
+                        <option value="MODERADOR">MODERADOR</option>
+                        <option value="ADMIN">ADMIN</option>
+                    </select>
+                    <div class="invalid-feedback">Selecciona un rol válido.</div>
                 </div>
 
-                <div class="col-12">
-                    <label for="biografia" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Biografía / Presentación</label>
-                    <textarea id="biografia" formControlName="biografia" class="form-control p-2.5 rounded-3" rows="4"
-                        placeholder="Describe tus servicios o perfil profesional..." [class.is-invalid]="isInvalid('biografia')"></textarea>
-                    <div class="form-text text-muted fs-8 mt-1">Este texto aparecerá debajo de tu nombre en la tarjeta principal.</div>
-                    <div class="invalid-feedback">La biografía no puede superar los 300 caracteres.</div>
+                <div class="col-12 col-md-6">
+                    <label for="fecha_nacimiento" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Fecha de Nacimiento</label>
+                    <input type="date" id="fecha_nacimiento" formControlName="fecha_nacimiento" class="form-control p-2.5 rounded-3"
+                        [class.is-invalid]="isInvalid('fecha_nacimiento')">
+                    <div class="invalid-feedback">Por favor introduce una fecha válida.</div>
                 </div>
-
             </div>
 
-            <!-- Botones de Acción -->
             <div class="d-flex justify-content-end gap-3 border-top pt-4 mt-5">
                 <button type="button" class="btn btn-light px-4 fw-semibold border" (click)="onCancelar()">
                     Cancelar
                 </button>
                 <button type="submit" class="btn btn-primary px-4 fw-semibold text-white d-flex align-items-center gap-2"
-                    [disabled]="editForm.invalid && editForm.touched">
+                    [disabled]="editForm.invalid">
                     <i class="fa fa-save"></i> Guardar Cambios
                 </button>
             </div>
         </form>
     </div>
 </div>
+} @else {
+  <div class="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-light">
+    <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+      <span class="visually-hidden">Cargando datos del perfil...</span>
+    </div>
+    <h4 class="text-secondary fw-semibold">Cargando editor de perfil...</h4>
+  </div>
+}
