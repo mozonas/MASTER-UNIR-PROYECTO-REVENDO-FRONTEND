@@ -4,7 +4,7 @@ import { WelcomeComponent } from './pages/authentication/welcome-component/welco
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, WelcomeComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
