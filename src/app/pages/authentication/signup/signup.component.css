@@ -16,13 +16,13 @@
   border-radius: 16px;
   border: 1px solid #ddd;
   overflow: hidden;
-  width: 680px;
-  min-height: 460px;
+  width: 920px;
+  min-height: 520px;
   display: flex;
 }
 
 .logo-section {
-  width: 200px;
+  width: 300px;
   padding: 2rem;
   border-right: 1px solid #eee;
   display: flex;
