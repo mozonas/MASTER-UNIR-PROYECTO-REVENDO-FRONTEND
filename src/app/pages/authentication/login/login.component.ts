@@ -47,16 +47,16 @@ export class LoginComponent {
               // Redirección según rol
       switch (role) {
         //redireccionar al dashboard del administrador
-        case 'admin':
+        case 'ADMINISTRADOR':
           this.router.navigate(['/admin']);
           break;
         //redireccionar al dashboard de moderador
-        case 'moderador':
+        case 'MODERADOR':
           this.router.navigate(['/moderador']);
           break;
         //redireccionar a la página de usuario que se decida, yo lo redireccionaría al listado de productos a vender
         default:
-          this.router.navigate(['/usuario']);
+          this.router.navigate(['/user-info']);
           break;
       }
       },
