@@ -9,9 +9,16 @@ export class AuthService {
   //http://localhost:3000/api/login
   private apiUrl = 'http://localhost:3000/api'; // ajusta si hace falta
 
-  login(email: string, password: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/login`, { email, password });
-  }
+    //método para hacer login, recibe email y password, devuelve un Observable con la respuesta del backend
+    login(email: string, password: string): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/login`, { email, password });
+    }
+  
+    //método para hacer signup, recibe un objeto con los datos del usuario, devuelve un Observable con la respuesta del backend
+    signup(data: any): Observable<any> {
+     return this.http.post<any>(`${this.apiUrl}/signup`, data);
+    }
+
     // Método para decodificar el token JWT
     private decodeToken(token: string): any {
         try {

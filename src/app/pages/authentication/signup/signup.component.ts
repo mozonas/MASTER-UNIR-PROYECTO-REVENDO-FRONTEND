@@ -1,6 +1,11 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+//02062026
+import { AuthService } from '../../../services/auth.service';
+import { Router } from '@angular/router';
+import { inject } from '@angular/core';
+
 
 @Component({
   selector: 'app-signup',
@@ -10,14 +15,18 @@ import { CommonModule } from '@angular/common';
   styleUrl: './signup.component.css'
 })
 export class SignupComponent {
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   formData = {
     nombre: '',
     apellidos: '',
     email: '',
     usuario: '',
-    contrasena: '',
-    foto: null as File | null
+    password: '',
+    foto: null as File | null,
+    fecha_nacimiento: '',
+    direccion: ''
   };
 
   onFileChange(event: Event) {
@@ -28,6 +37,19 @@ export class SignupComponent {
   }
 
   onSubmit() {
-    console.log('Formulario enviado:', this.formData);
+   console.log('Enviando signup:', this.formData);
+
+    this.authService.signup(this.formData).subscribe({
+      next: (resp) => {
+        console.log('Signup OK:', resp);
+        alert('Usuario creado correctamente');
+        // Redirigir al login
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        console.error('Error en signup:', err);
+        alert('Error al crear usuario');
+      }
+    });
   }
 }
