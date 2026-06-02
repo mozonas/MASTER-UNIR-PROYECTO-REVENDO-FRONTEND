@@ -21,14 +21,12 @@ export interface Usuario {
 })
 export class UserService {
     private http = inject(HttpClient);
-    // URL raíz unificada en inglés tal cual la tiene Express
     private apiUrl = 'http://localhost:3000/api/users';
 
     /**
      * Obtiene el perfil de un usuario específico por su ID
      */
     getPerfilUsuario(id: number): Observable<Usuario> {
-        // 🔄 CORREGIDO: Eliminamos '/por-id/' porque tu ruta de Express es directamente '/:userId'
         return this.http.get<Usuario>(`${this.apiUrl}/${id}`);
     }
 
