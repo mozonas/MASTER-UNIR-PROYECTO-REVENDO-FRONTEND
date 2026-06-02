@@ -24,19 +24,22 @@ export class SignupComponent {
     email: '',
     usuario: '',
     password: '',
-    foto: null as File | null,
+    foto:  null as string | null, 
     fecha_nacimiento: '',
     direccion: ''
   };
-
+  // no entiendo cómo queréis mandar un blog a la bbdd , en la nndd la columna foto es string, no un blob, así que no sé si queréis mandar la foto como base64 o qué, pero de momento lo dejo así, como string, y luego ya se verá cómo se manda la foto al backend
+  // lo que hay que mandar es un string con la ruta de la foto, o un string con el nombre de la foto, o un string con el contenido de la foto en base64, o algo así, pero no un blob, porque en la bbdd la columna foto es string, no blob. De momento lo dejo como string, y luego ya se verá cómo se manda la foto al backend.
+ /*
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.formData.foto = input.files[0];
     }
   }
-
+*/
   onSubmit() {
+
    console.log('Enviando signup:', this.formData);
 
     this.authService.signup(this.formData).subscribe({
@@ -48,6 +51,11 @@ export class SignupComponent {
       },
       error: (err) => {
         console.error('Error en signup:', err);
+
+        console.log('➡️ err.error:', err.error);
+        console.log('➡️ err.error.errors:', err.error?.errors);
+        console.log('➡️ err.error.message:', err.error?.message);
+
         alert('Error al crear usuario');
       }
     });
