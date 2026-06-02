@@ -73,6 +73,7 @@ main {
  
 }
 
+/*SIDEBAR*/
 
 /* Fondo general */
 .sidebar,
@@ -138,10 +139,24 @@ main {
 
 /* Títulos del sidebar */
 .sidebar-heading {
-  color: #ffffff;
+  color: #ffff;
 }
 
-/* Botón cerrar (offcanvas) */
-.btn-close {
+.dropdown-arrow{
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  
+}
+.dropdown-arrow img {
   filter: brightness(0) invert(1);
+  height: 16px;
+  width: 16px;
+}
+
+
+.listado{
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
 }
