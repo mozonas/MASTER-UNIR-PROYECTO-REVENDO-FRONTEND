@@ -5,11 +5,6 @@ import { UserService, Usuario } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
-interface Stat {
-  count: string;
-  label: string;
-}
-
 @Component({
   selector: 'app-user-page-info',
   standalone: true,
@@ -17,6 +12,7 @@ interface Stat {
   templateUrl: './user-page-info.html',
   styleUrls: ['./user-page-info.css']
 })
+
 export class UserPageInfoComponent implements OnInit {
   private router = inject(Router);
   private userService = inject(UserService);
@@ -41,14 +37,12 @@ export class UserPageInfoComponent implements OnInit {
     descripcion: ''
   };
 
-  personalDetails: { label: string; value: string; lowercase?: boolean }[] = [];
+  // Nuevas propiedades para controlar las valoraciones
+  totalValoraciones: number = 48;
+  ratingMedia: number = 4.5; // Nota de 0 a 5 (admite decimales)
+  totalVendidos: number = 124;
 
-  stats: Stat[] = [
-    { count: '500+', label: 'Clientes felices' },
-    { count: '150', label: 'Proyectos completados' },
-    { count: '850', label: 'Fotos capturadas' },
-    { count: '190', label: 'Llamadas realizadas' },
-  ];
+  personalDetails: { label: string; value: string; lowercase?: boolean }[] = [];
 
   ngOnInit(): void {
     console.log('🔄 Iniciando carga del perfil del usuario...');
@@ -63,7 +57,7 @@ export class UserPageInfoComponent implements OnInit {
       return;
     }
 
-        console.log(`🔍 Cargando datos para el usuario ID: ${userIdParaCargar}`);
+    console.log(`🔍 Cargando datos para el usuario ID: ${userIdParaCargar}`);
 
     this.userService.getPerfilUsuario(userIdParaCargar).subscribe({
       next: (userData: any) => {
@@ -110,10 +104,10 @@ export class UserPageInfoComponent implements OnInit {
     if (!this.currentUser) return;
 
     this.personalDetails = [
-      {
-        label: 'Nombre',
-        value: `${this.currentUser.nombre || ''} ${this.currentUser.apellidos || ''}`.trim() || 'No especificado'
-      },
+      // {
+      //   label: 'Nombre',
+      //   value: `${this.currentUser.nombre || ''} ${this.currentUser.apellidos || ''}`.trim() || 'No especificado'
+      // },
       {
         label: 'Usuario',
         value: this.currentUser.usuario ? `@${this.currentUser.usuario}` : 'No especificado'
@@ -140,6 +134,26 @@ export class UserPageInfoComponent implements OnInit {
         value: this.currentUser.perfil || 'USUARIO'
       }
     ];
+  }
+
+  // 2. Helper rápido para generar el array de estrellas en el HTML
+  get estrellas() {
+    const estrellasArray = [];
+
+    for (let i = 1; i <= 5; i++) {
+      // Calculamos la diferencia entre la nota media y la estrella actual
+      const diferencia = this.ratingMedia - (i - 1);
+
+      if (diferencia >= 0.75) {
+        estrellasArray.push('fa-star');       // Casi llena o llena -> Estrella completa
+      } else if (diferencia >= 0.25) {
+        estrellasArray.push('fa-star-half'); // En torno a la mitad -> Media estrella
+      } else {
+        estrellasArray.push('fa-star-o');      // Casi vacía -> Estrella vacía
+      }
+    }
+
+    return estrellasArray;
   }
 
   irAEditar(): void {
