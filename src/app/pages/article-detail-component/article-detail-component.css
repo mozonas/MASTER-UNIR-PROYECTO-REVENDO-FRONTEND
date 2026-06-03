@@ -67,3 +67,13 @@
   height: 400px;        
   object-fit: cover;    
 }
+
+.modal.show {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-dialog {
+    margin: 0;
+}
