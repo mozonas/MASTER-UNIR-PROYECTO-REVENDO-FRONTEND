@@ -75,6 +75,24 @@
                         [class.is-invalid]="isInvalid('fecha_nacimiento')">
                     <div class="invalid-feedback">Por favor introduce una fecha válida.</div>
                 </div>
+
+                <div class="col-12">
+                    <label for="direccion" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Ubicación / Dirección</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light text-muted"><i class="fa fa-map-marker"></i></span>
+                        <input type="text" id="direccion" formControlName="direccion" class="form-control p-2.5"
+                            placeholder="Ej: Calle Gran Vía 45, Madrid, España" [class.is-invalid]="isInvalid('direccion')">
+                    </div>
+                    <div class="form-text text-muted fs-8 mt-1">Esta dirección se utilizará de forma automática para renderizar tu mapa de localización.</div>
+                </div>
+
+                <div class="col-12">
+                    <label for="descripcion" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Biografía / Descripción del Vendedor</label>
+                    <textarea id="descripcion" formControlName="descripcion" class="form-control p-2.5 rounded-3" rows="4"
+                        placeholder="Cuéntale a tus compradores un poco sobre ti o sobre los servicios de diseño y desarrollo web que ofreces..."
+                        [class.is-invalid]="isInvalid('descripcion')"></textarea>
+                    <div class="form-text text-muted fs-8 mt-1">Un perfil bien redactado genera mayor nivel de confianza con las valoraciones de los clientes.</div>
+                </div>
             </div>
 
             <div class="d-flex justify-content-end gap-3 border-top pt-4 mt-5">

@@ -25,8 +25,7 @@
             </div>
 
             <p class="text-secondary fs-6 mb-2 lh-base mx-auto bio-text">
-              Diseño y desarrollo servicios para clientes de todos los tamaños.
-              Especializado en crear sitios web modernos, elegantes y tiendas online de alto impacto.
+              {{ currentUser.descripcion || 'Este usuario aún no ha añadido una descripción a su perfil.' }}
             </p>
 
             <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
@@ -65,13 +64,17 @@
                 }
               </div>
 
+              @if (mapUrl) {
               <div class="map-container overflow-hidden rounded-3 border border-light shadow-sm mb-4">
-              <iframe width="100%" height="150" allowfullscreen="" loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"
-                src="https://maps.google.com/maps?q=Madrid&t=&z=13&ie=UTF8&iwloc=&output=embed"
-                title="Ubicación del vendedor">
-              </iframe>
+                <iframe width="100%" height="150" allowfullscreen="" loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade" [src]="mapUrl" title="Ubicación del vendedor">
+                </iframe>
               </div>
+              } @else {
+              <div class="alert alert-light text-center border rounded-3 p-3 mb-4 custom-fs-7 text-muted">
+                <i class="fa fa-map-marker me-1"></i> Ubicación no especificada por el vendedor
+              </div>
+              }
             </div>
 
             <div class="border-top pt-4 mt-auto d-flex justify-content-center">
@@ -96,7 +99,7 @@
     <main>
       <div class="mb-4">
         <h3 class="fw-bold fs-4 text-dark">
-          Productos en venta 
+          Productos en venta
           <!-- <span class="text-muted fw-normal fs-5">({{ products.length }})</span> -->
         </h3>
       </div>

@@ -38,8 +38,8 @@ export class UserPageEditComponent implements OnInit {
       foto: [null],
       perfil: ['USUARIO', [Validators.required]],
       fecha_nacimiento: [null],
-      direccion: [''],
-      descripcion: ['']
+      direccion: ['', [Validators.maxLength(200)]],
+      descripcion: ['', [Validators.maxLength(500)]]
     });
   }
 
@@ -66,7 +66,7 @@ export class UserPageEditComponent implements OnInit {
             fechaFormateada = new Date(this.currentUser.fecha_nacimiento).toISOString().split('T')[0];
           }
 
-          // Rellenamos el formulario reactivo con los valores extraídos de la BD
+          // Rellenamos correctamente con lo que venga de la BD
           this.editForm.patchValue({
             nombre: this.currentUser.nombre,
             apellidos: this.currentUser.apellidos,
@@ -75,7 +75,8 @@ export class UserPageEditComponent implements OnInit {
             foto: this.currentUser.foto,
             perfil: this.currentUser.perfil,
             fecha_nacimiento: fechaFormateada,
-            direccion: (this.currentUser as any).direccion || ''
+            direccion: this.currentUser.direccion || '',
+            descripcion: this.currentUser.descripcion || ''
           });
 
           this.isLoaded = true;
@@ -100,20 +101,17 @@ export class UserPageEditComponent implements OnInit {
       return;
     }
 
-    // 1. Extraemos los valores del formulario
     const formValues = this.editForm.value;
 
-    // 2. Construimos el objeto
     const usuarioActualizado = {
       nombre: formValues.nombre,
       apellidos: formValues.apellidos,
       usuario: formValues.usuario,
       email: formValues.email,
-      // Si la foto o la dirección no están en el formulario, enviamos la del usuario actual o null
       foto: formValues.foto !== undefined ? formValues.foto : (this.currentUser.foto || null),
-      direccion: formValues.direccion !== undefined ? formValues.direccion : ((this.currentUser as any).direccion || null),
+      direccion: formValues.direccion !== undefined ? formValues.direccion : (this.currentUser.direccion || null),
+      descripcion: formValues.descripcion !== undefined ? formValues.descripcion : (this.currentUser.descripcion || null),
       fecha_nacimiento: formValues.fecha_nacimiento || null,
-
       password: (this.currentUser as any).password || ''
     };
 
@@ -122,7 +120,6 @@ export class UserPageEditComponent implements OnInit {
     this.userService.updatePerfilUsuario(this.currentUser.id, usuarioActualizado).subscribe({
       next: (response) => {
         console.log('🎉 Backend dice:', response.message);
-        // Redirigimos con éxito a la pantalla de información
         this.router.navigate(['/user-info']);
       },
       error: (err) => {
