@@ -56,3 +56,24 @@
     max-width: 100%;
     object-fit: contain;
 }
+
+
+#carouselExampleControls {
+  max-height: 400px; 
+  overflow: hidden;
+}
+
+#carouselExampleControls .carousel-item img {
+  height: 400px;        
+  object-fit: cover;    
+}
+
+.modal.show {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-dialog {
+    margin: 0;
+}
