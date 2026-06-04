@@ -38,14 +38,26 @@
         <div class="mb-2">
           <label class="form-label">Contraseña*</label>
           <input type="password" class="form-control form-control-sm"
-                 name="contrasena" [(ngModel)]="formData.contrasena" required/>
+                 name="password" [(ngModel)]="formData.password" required/>
         </div>
 
         <div class="mb-2">
           <label class="form-label">Foto</label>
-          <input type="file" class="form-control form-control-sm"
-                 (change)="onFileChange($event)" accept="image/*"/>
+          <input type="file" class="form-control form-control-sm" />
         </div>
+
+        <div class="mb-2">
+          <label class="form-label">Fecha de nacimiento*</label>
+          <input type="date" class="form-control form-control-sm"
+                name="fecha_nacimiento" [(ngModel)]="formData.fecha_nacimiento" required/>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label">Dirección*</label>
+          <input type="text" class="form-control form-control-sm"
+                name="direccion" [(ngModel)]="formData.direccion" required/>
+        </div>
+
 
         <div class="text-end mt-3">
           <button type="submit" class="btn btn-crear"
