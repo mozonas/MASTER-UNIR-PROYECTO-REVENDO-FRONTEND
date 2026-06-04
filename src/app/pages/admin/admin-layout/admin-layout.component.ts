@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router, RouterLink } from "@angular/router";
+import { RouterLink } from "@angular/router";
 import { AdminDashboardComponent } from '../admin-dashboard/admin-dashboard.component';
 
 @Component({

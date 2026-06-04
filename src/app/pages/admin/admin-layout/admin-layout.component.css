@@ -2,16 +2,13 @@
     box-sizing: border-box;
     font-family: 'Geologica', sans-serif;
 }
-
 body{
     margin: 0;
 }
-
 .page-shell{
     padding-left: 30px;
     padding-right: 30px;
 }
-
 main {
   margin-left: 250px; 
   margin-top: 138px; /* misma altura que el header */
@@ -22,14 +19,12 @@ main {
 /*Logo + brand*/
 .page-header{
     width: 100vw;
-    margin-left: calc(50% - 50vw);
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 1000;
 }
-
 .logo-container {
   display: flex;
   align-items: center;
@@ -45,36 +40,29 @@ main {
   display: flex;
   align-items: center;
 }
-
 /*admin text*/
 .texto-admin{
     display: flex;
     flex-direction: column;
     align-items: end;
     gap: 0;
-
 }
-
 .texto-admin p:first-child {
   font-size: 1.5rem;
   font-weight: 600;
 }
-
 .texto-admin p:last-child {
   font-size: 0.9rem;
   color: #666;
 }
-
 /*avatar*/
 .dropdown:hover .dropdown-menu .dropdown-item:active {
   background-color: #8cd86a;
   display: block;
   margin-top: 0; 
- 
 }
 
 /*SIDEBAR*/
-
 /* Fondo general */
 .sidebar,
 #sidebarMenu,
@@ -82,7 +70,6 @@ main {
   background-color: #8cd86a;
   color: #ffffff;
 }
-
 .sidebar {
   border: none;
   position: fixed;
@@ -93,10 +80,7 @@ main {
   background-color: #8cd86a;
   color: #fff;
   border: none;
-
 }
-
-
 .sidebar,
 #sidebarMenu,
 .offcanvas-body {
@@ -141,22 +125,58 @@ main {
 .sidebar-heading {
   color: #ffff;
 }
-
 .dropdown-arrow{
   cursor: pointer;
   display: flex;
   align-items: center;
-  
 }
 .dropdown-arrow img {
   filter: brightness(0) invert(1);
   height: 16px;
   width: 16px;
 }
-
-
 .listado{
   list-style: none;
   padding-left: 0;
   margin-left: 0;
 }
+
+.component-view {
+  margin-top: 138px;      
+  margin-left: 250px;    
+  padding: 1rem;
+  width: calc(100% - 250px);
+  height: calc(100vh - 138px);
+  overflow-y: auto;
+
+}
+
+
+
+
+
+
+/*responsive*/
+
+@media(max-width: 1004px) {
+    .sidebar {
+   width: calc(40% - 10px);
+    }
+}
+
+
+@media(max-width: 600px) {
+    .sidebar {
+        width: calc(90% - 10px);
+    }
+    }
+
+
+
+@media screen and (min-width:600px) and (max-width:876px){
+
+    
+}
+ 
+
+
