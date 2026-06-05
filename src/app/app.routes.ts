@@ -8,6 +8,7 @@ import { UserPageSell } from './pages/user/user-page-sell/user-page-sell';
 import { ArticleDetailComponent } from './pages/article-detail-component/article-detail-component';
 import { AdminHeaderComponent } from './shared/headers/admin-header/admin-header.component';
 import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.component';
+import { ModerationDashboardComponent } from './pages/moderation/moderation-dashboard/moderation-dashboard';
 
 //import { roleGuard } from './guards/role.guard';
 
@@ -22,5 +23,6 @@ export const routes: Routes = [
   { path: 'user-sell', component: UserPageSell },
   { path: 'article-detail', component: ArticleDetailComponent },
   { path: 'header-menu', component: HeaderMenuComponent},
-  { path: 'admin-header', component: AdminHeaderComponent}
+  { path: 'admin-header', component: AdminHeaderComponent},
+  { path: 'moderation-dashboard', component: ModerationDashboardComponent }
 ];

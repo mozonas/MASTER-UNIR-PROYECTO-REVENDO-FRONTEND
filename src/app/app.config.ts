@@ -13,6 +13,7 @@ import { roleGuard } from './guards/role.guard';
 
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { ModerationDashboardComponent } from './pages/moderation/moderation-dashboard/moderation-dashboard';
 
 export const routes: Routes = [
   { path: "", pathMatch: 'full', redirectTo: "home" },
@@ -24,7 +25,8 @@ export const routes: Routes = [
   { path: "user-sell", component: UserPageSell, canActivate: [authGuard] },
   { path: "article-detail", component: ArticleDetailComponent },
   { path: "header-menu", component: HeaderMenuComponent },
-  { path: "admin-header", component: AdminHeaderComponent, canActivate: [roleGuard(['admin'])] }
+  { path: "admin-header", component: AdminHeaderComponent, canActivate: [roleGuard(['admin'])] },
+  { path: "moderation-dashboard", component: ModerationDashboardComponent }
 ];
 
 export const appConfig: ApplicationConfig = {
