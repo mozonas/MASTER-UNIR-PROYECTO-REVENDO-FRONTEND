@@ -21,8 +21,12 @@ export class UserPageEditComponent implements OnInit {
 
   isLoaded: boolean = false;
   editForm!: FormGroup;
-
   currentUser!: Usuario;
+
+  // Guardará el archivo binario seleccionado
+  fileSelected: File | null = null;
+  // Guardará la URL en base64 para previsualizar la foto al instante
+  fotoPreview: string | null = null;
 
   ngOnInit(): void {
     this.initForm();
@@ -35,7 +39,7 @@ export class UserPageEditComponent implements OnInit {
       apellidos: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
       usuario: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_.]+$/)]],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
-      foto: [null],
+      foto: [null], // Aquí se guardará el string que viene del backend
       perfil: ['USUARIO', [Validators.required]],
       fecha_nacimiento: [null],
       direccion: ['', [Validators.maxLength(200)]],
@@ -52,8 +56,6 @@ export class UserPageEditComponent implements OnInit {
       return;
     }
 
-    console.log(`🔄 Cargando datos del usuario ID: ${userIdParaEditar} para edición...`);
-
     this.userService.getPerfilUsuario(userIdParaEditar).subscribe({
       next: (userData: any) => {
         const userObj = Array.isArray(userData) ? userData[0] : userData;
@@ -66,7 +68,6 @@ export class UserPageEditComponent implements OnInit {
             fechaFormateada = new Date(this.currentUser.fecha_nacimiento).toISOString().split('T')[0];
           }
 
-          // Rellenamos correctamente con lo que venga de la BD
           this.editForm.patchValue({
             nombre: this.currentUser.nombre,
             apellidos: this.currentUser.apellidos,
@@ -81,13 +82,26 @@ export class UserPageEditComponent implements OnInit {
 
           this.isLoaded = true;
           this.cdr.detectChanges();
-          console.log('✅ Formulario de edición inicializado con éxito.');
-        } else {
-          console.warn('⚠️ El backend no devolvió datos para este ID de usuario.');
         }
       },
       error: (err) => console.error('❌ Error al recuperar los datos del usuario:', err)
     });
+  }
+
+  // 📸 Captura el archivo binario y genera la previsualización en pantalla
+  onFileChange(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.fileSelected = file;
+
+      // FileReader nos ayuda a renderizar la imagen antes de subirla al backend
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.fotoPreview = reader.result as string;
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   isInvalid(controlName: string): boolean {
@@ -103,28 +117,37 @@ export class UserPageEditComponent implements OnInit {
 
     const formValues = this.editForm.value;
 
-    const usuarioActualizado = {
-      nombre: formValues.nombre,
-      apellidos: formValues.apellidos,
-      usuario: formValues.usuario,
-      email: formValues.email,
-      foto: formValues.foto !== undefined ? formValues.foto : (this.currentUser.foto || null),
-      direccion: formValues.direccion !== undefined ? formValues.direccion : (this.currentUser.direccion || null),
-      descripcion: formValues.descripcion !== undefined ? formValues.descripcion : (this.currentUser.descripcion || null),
-      fecha_nacimiento: formValues.fecha_nacimiento || null,
-      password: (this.currentUser as any).password || ''
-    };
+    // 📦 Importante: Usamos FormData para empaquetar archivos binarios y textos juntos
+    const formData = new FormData();
+    formData.append('nombre', formValues.nombre);
+    formData.append('apellidos', formValues.apellidos);
+    formData.append('usuario', formValues.usuario);
+    formData.append('email', formValues.email);
+    formData.append('perfil', formValues.perfil);
 
-    console.log('🚀 Enviando actualización limpia al backend...', usuarioActualizado);
+    if (formValues.fecha_nacimiento) {
+      formData.append('fecha_nacimiento', formValues.fecha_nacimiento);
+    }
+    formData.append('direccion', formValues.direccion || '');
+    formData.append('descripcion', formValues.descripcion || '');
+    formData.append('password', (this.currentUser as any).password || '');
 
-    this.userService.updatePerfilUsuario(this.currentUser.id, usuarioActualizado).subscribe({
+    // Si seleccionó una foto nueva, adjuntamos el archivo binario real
+    if (this.fileSelected) {
+      formData.append('foto', this.fileSelected, this.fileSelected.name);
+    }
+
+    console.log('🚀 Enviando FormData con archivo Multer al backend...');
+
+    // Cast FormData to any/Partial<Usuario> to satisfy the service typing when sending multipart data
+    this.userService.updatePerfilUsuario(this.currentUser.id, formData as unknown as Partial<Usuario>).subscribe({
       next: (response) => {
         console.log('🎉 Backend dice:', response.message);
         this.router.navigate(['/user-info']);
       },
       error: (err) => {
         console.error('❌ Error al guardar los cambios en el servidor:', err);
-        alert('Hubo un error al intentar guardar los cambios del perfil en la base de datos.');
+        alert('Hubo un error al intentar guardar los cambios del perfil.');
       }
     });
   }
