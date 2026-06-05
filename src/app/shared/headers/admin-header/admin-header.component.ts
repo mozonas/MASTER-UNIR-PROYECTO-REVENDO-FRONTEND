@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component,inject } from '@angular/core';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-admin-header',
@@ -7,15 +8,15 @@ import { Component, inject } from '@angular/core';
   styleUrl: './admin-header.component.css',
 })
 export class AdminHeaderComponent {
+    
+  private authService = inject (AuthService);
 
-  role:string | null;
-  name:string | null;
-  
-  inject authService:AuthService
+  role:string | null = null;
+  username:string | null = null;
 
   ngOnInit(){
     this.role = this.authService.getUserRole();
-    this.name = this.authService.getUserName();
+    this.username = this.authService.getUserName();
   }
 
 }

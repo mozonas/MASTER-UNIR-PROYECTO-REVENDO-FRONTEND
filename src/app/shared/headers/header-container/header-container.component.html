@@ -1,1 +1,10 @@
-<p>header-container works!</p>
+@if (role === 'user'){
+    <app-header-menu></app-header-menu>
+}
+@if (role === 'admin'){
+    <app-admin-header></app-admin-header>
+}
+
+@if (role === 'admin' || role === 'moderador'){
+    <app-aside></app-aside>
+}
