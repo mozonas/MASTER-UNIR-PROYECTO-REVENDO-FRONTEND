@@ -2,7 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// Definimos la interfaz idéntica al modelo real de tu base de datos
 export interface Usuario {
     id: number;
     nombre: string;
@@ -13,6 +12,8 @@ export interface Usuario {
     perfil: 'USUARIO' | 'MODERADOR' | 'ADMIN';
     fecha_nacimiento: string | null;
     created_at: string;
+    direccion: string;
+    descripcion: string;
 }
 
 @Injectable({
@@ -20,14 +21,13 @@ export interface Usuario {
 })
 export class UserService {
     private http = inject(HttpClient);
-    // Reemplaza esta URL por la de tu servidor Node.js (ej: Express)
-    private apiUrl = 'http://localhost:3000/api/usuarios';
+    private apiUrl = 'http://localhost:3000/api/users';
 
     /**
      * Obtiene el perfil de un usuario específico por su ID
      */
     getPerfilUsuario(id: number): Observable<Usuario> {
-        return this.http.get<Usuario>(`${this.apiUrl}/por-id/${id}`);
+        return this.http.get<Usuario>(`${this.apiUrl}/${id}`);
     }
 
     updatePerfilUsuario(id: number, datos: Partial<Usuario>): Observable<{ message: string }> {

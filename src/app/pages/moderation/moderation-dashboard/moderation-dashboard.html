@@ -1,0 +1,105 @@
+<div class="container-fluid g-0">
+  <div class="row g-0">
+    
+    <!-- Barra lateral Sidebar -->
+    <nav class="col-md-3 col-lg-2 custom-sidebar p-3 shadow-sm text-dark min-vh-100">
+      <div class="d-flex align-items-center mb-4 pb-2 border-bottom border-dark border-opacity-10">
+        <i class="bi bi-shield-check me-2 fs-4"></i>
+        <span class="h5 mb-0 fw-bold">Moderador</span>
+      </div>
+      
+      <div class="nav flex-column nav-pills">
+        @for (option of menuOptions; track option.id) {
+          <a class="nav-link mb-2 d-flex align-items-center cursor-pointer" 
+             [class.active-custom]="currentTab === option.id" 
+             [class.text-dark-50]="currentTab !== option.id" 
+             (click)="changeTab(option.id)">
+            <i class="bi {{ option.icon }} me-2 fs-5"></i>
+            {{ option.name }}
+          </a>
+        }
+      </div>
+    </nav>
+
+    <!-- Pantalla principal -->
+    <main class="col-md-9 col-lg-10 bg-light p-4">
+      
+      <!-- Vista Panel principal -->
+      @if (currentTab === 'panel') {
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+          <h1 class="h3 mb-0 text-secondary fw-normal">Panel principal</h1>
+        </div>
+        
+        <section class="row g-4 mt-2">
+          
+          <!-- Tarjeta Gestión de Artículos -->
+          <div class="col-md-6">
+            <div class="card shadow-sm border-0 rounded overflow-hidden bg-white h-100">
+              <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h2 class="h6 mb-0 fw-bold text-uppercase">👗 Gestión de Artículos</h2>
+                <button class="badge rounded-pill px-2.5 py-1.5 fw-bold font-badge border-0 transition-all"
+                        [ngClass]="pendingArticlesCount > 0 ? 'badge-incidencias animate-pulse' : 'badge-limpio'"
+                        (click)="changeTab('articulos')"
+                        [disabled]="pendingArticlesCount === 0">
+                  <i class="bi me-1" [ngClass]="pendingArticlesCount > 0 ? 'bi-exclamation-circle-fill' : 'bi-check-circle-fill'"></i>
+                  {{ pendingArticlesCount > 0 ? pendingArticlesCount + ' Pendientes' : 'Sin incidencias' }}
+                </button>
+              </div>
+              <div class="card-body p-4 d-flex flex-column">
+                <p class="text-muted small mb-4">
+                  Supervisión del catálogo. Validación del ciclo de vida de productos reportados, anuncios puestos "En revisión" por los usuarios y acceso al historial de acciones de moderación realizadas.
+                </p>
+                <button class="btn-acceso" (click)="changeTab('articulos')">🔎</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarjeta Gestión de Chat -->
+          <div class="col-md-6">
+            <div class="card shadow-sm border-0 rounded overflow-hidden bg-white h-100">
+              <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h2 class="h6 mb-0 fw-bold text-uppercase">💬 Gestión de Chat</h2>
+                <button class="badge rounded-pill px-2.5 py-1.5 fw-bold font-badge border-0 transition-all"
+                        [ngClass]="pendingChatsCount > 0 ? 'badge-incidencias animate-pulse' : 'badge-limpio'"
+                        (click)="changeTab('chat')"
+                        [disabled]="pendingChatsCount === 0">
+                  <i class="bi me-1" [ngClass]="pendingChatsCount > 0 ? 'bi-exclamation-circle-fill' : 'bi-check-circle-fill'"></i>
+                  {{ pendingChatsCount > 0 ? pendingChatsCount + ' Pendientes' : 'Sin incidencias' }}
+                </button>
+              </div>
+              <div class="card-body p-4 d-flex flex-column">
+                <p class="text-muted small mb-4">
+                  Resolución de incidencias derivadas de la mensajería interna entre compradores y vendedores para evitar fraudes, junto con el acceso al registro e historial de chats moderados.
+                </p>
+                <button class="btn-acceso" (click)="changeTab('chat')">🔎</button>
+              </div>
+            </div>
+          </div>
+
+        </section>
+      }
+
+      <!-- Pantalla provisional de Chat hasta que genere el componente -->
+      @if (currentTab === 'chat') {
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+          <h1 class="h3 mb-0 text-secondary fw-normal">Gestión de Chat</h1>
+          <button class="btn-volver" (click)="changeTab('panel')">◀</button>
+        </div>
+      }
+
+      <!-- Pantalla provisional de Artículos hasta que genere el componente -->
+      @if (currentTab === 'articulos') {
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+          <h1 class="h3 mb-0 text-secondary fw-normal">Gestión de Artículos</h1>
+          <button class="btn-volver" (click)="changeTab('panel')">◀</button>
+        </div>
+      }
+
+    </main>
+  </div>
+</div>
+
+
+
+
+
