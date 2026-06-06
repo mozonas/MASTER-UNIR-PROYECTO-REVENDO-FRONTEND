@@ -1,7 +1,7 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ProductService } from '../../../services/product.service';
+import { ArticleService } from '../../../services/article.service';
 import { Product } from '../../../interfaces/product.interface';
 import { FooterComponent } from '../../../shared/footer/footer.component';
 
@@ -12,33 +12,33 @@ import { FooterComponent } from '../../../shared/footer/footer.component';
   styleUrls: ['./user-page-sell.css'],
 })
 export class UserPageSell {
-  private productService = inject(ProductService);
+  private articleService = inject(ArticleService);
   private router = inject(Router);
 
-  products = this.productService.products;
+  articles = this.articleService.articles;
 
   selectedFilter = signal<'all' | 'available' | 'sold' | 'reported'>('all');
   currentPage = signal(1);
   pageSize = 6;
 
-  filteredProducts = computed(() => {
+  filteredarticles = computed(() => {
     const filter = this.selectedFilter();
-    const allProducts = this.products();
-    if (filter === 'all') return allProducts;
-    return allProducts.filter(p => p.status === filter);
+    const allarticles = this.articles();
+    if (filter === 'all') return allarticles;
+    return allarticles.filter(p => p.status === filter);
   });
 
   pageCount = computed(() => {
-    return Math.max(1, Math.ceil(this.filteredProducts().length / this.pageSize));
+    return Math.max(1, Math.ceil(this.filteredarticles().length / this.pageSize));
   });
 
   pageNumbers = computed(() => {
     return Array.from({ length: this.pageCount() }, (_, index) => index + 1);
   });
 
-  currentPageProducts = computed(() => {
+  currentPagearticles = computed(() => {
     const start = (this.currentPage() - 1) * this.pageSize;
-    return this.filteredProducts().slice(start, start + this.pageSize);
+    return this.filteredarticles().slice(start, start + this.pageSize);
   });
 
   setFilter(filter: 'all' | 'available' | 'sold' | 'reported') {
@@ -69,7 +69,7 @@ export class UserPageSell {
     const confirmed = confirm(`¿Está seguro de que desea eliminar "${product.title}"? Esta acción no se puede deshacer.`);
     
     if (confirmed) {
-      this.productService.deleteProduct(product.id);
+      this.articleService.deleteProduct(product.id);
       this.currentPage.set(Math.min(this.currentPage(), this.pageCount()));
       console.log('Producto eliminado:', product.title);
     }
@@ -91,7 +91,7 @@ export class UserPageSell {
   }
 
   getFilterCount(filter: 'all' | 'available' | 'sold' | 'reported'): number {
-    if (filter === 'all') return this.products().length;
-    return this.products().filter(p => p.status === filter).length;
+    if (filter === 'all') return this.articles().length;
+    return this.articles().filter(p => p.status === filter).length;
   }
 }
