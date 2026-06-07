@@ -9,7 +9,8 @@ import { UserPageSell } from './pages/user/user-page-sell/user-page-sell';
 import { ArticleDetailComponent } from './pages/article-detail-component/article-detail-component';
 import { AdminHeaderComponent } from './shared/headers/admin-header/admin-header.component';
 import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.component';
-import { ModerationDashboardComponent } from './pages/moderation/moderation-dashboard/moderation-dashboard';
+import { ModerationComponent } from './pages/moderation/moderation.component';
+
 
 import { roleGuard } from './guards/role.guard';
 
@@ -20,9 +21,10 @@ export const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'user-info', component: UserPageInfoComponent, canActivate: [authGuard] },
   { path: 'user-edit', component: UserPageEditComponent, canActivate: [authGuard] },
-  { path: 'user-sell', component: UserPageSell, canActivate: [authGuard] },
+  { path: 'user-sell', component: UserPageSell },
   { path: 'article-detail', component: ArticleDetailComponent },
   { path: 'header-menu', component: HeaderMenuComponent},
   { path: 'admin-header', component: AdminHeaderComponent, canActivate: [roleGuard(['admin'])] },
-  { path: 'moderation-dashboard', component: ModerationDashboardComponent }
+  { path: 'moderation', component: ModerationComponent },
+
 ];
