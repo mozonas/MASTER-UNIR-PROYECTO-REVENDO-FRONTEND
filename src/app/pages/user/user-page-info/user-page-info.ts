@@ -1,9 +1,10 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { UserService, Usuario } from '../../../services/user.service';
+import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Usuario } from '../../../interfaces/user.interface';
 
 @Component({
   selector: 'app-user-page-info',
@@ -37,10 +38,9 @@ export class UserPageInfoComponent implements OnInit {
     descripcion: ''
   };
 
-  // Nuevas propiedades para controlar las valoraciones
-  totalValoraciones: number = 48;
-  ratingMedia: number = 4.5; // Nota de 0 a 5 (admite decimales)
-  totalVendidos: number = 124;
+  totalValoraciones: number = 0;
+  ratingMedia: number = 0;
+  totalVendidos: number = 0;
 
   personalDetails: { label: string; value: string; lowercase?: boolean }[] = [];
 
@@ -59,11 +59,11 @@ export class UserPageInfoComponent implements OnInit {
 
     console.log(`🔍 Cargando datos para el usuario ID: ${userIdParaCargar}`);
 
+    // Recuperamos los datos del perfil del usuario
     this.userService.getPerfilUsuario(userIdParaCargar).subscribe({
       next: (userData: any) => {
-        console.log('✅ Datos recibidos tras recargar:', userData);
+        console.log('✅ Datos de usuario recibidos:', userData);
 
-        // Si viene null o undefined, mostramos una alerta en consola para saberlo
         if (!userData) {
           console.warn('⚠️ El backend respondió con éxito pero el usuario no existe.');
           return;
@@ -73,16 +73,40 @@ export class UserPageInfoComponent implements OnInit {
         if (userObj) {
           this.currentUser = userObj;
           this.generarDetallesPersonales();
-
-          // Generar la URL del mapa una vez tengamos al usuario
           this.generarUrlMapa();
 
-          this.isLoaded = true;
-          this.cdr.detectChanges();
+          // Traemos de forma síncrona/paralela las estadísticas del backend
+          this.cargarEstadisticasReales(userIdParaCargar);
         }
       },
       error: (err) => {
         console.error('❌ Error en la petición HTTP al recargar:', err);
+        this.isLoaded = true; // Permitimos renderizar la página aunque falle la carga del perfil, para mostrar mensajes de error o estados vacíos
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  // Método encargado de mapear de forma segura el JSON devuelto por tu backend
+  private cargarEstadisticasReales(userId: number): void {
+    this.userService.getEstadisticasUsuario(userId).subscribe({
+      next: (stats) => {
+        console.log('✅ Estadísticas reales recibidas de la BD:', stats);
+        if (stats) {
+          this.totalVendidos = stats.total_vendidos;
+          this.totalValoraciones = stats.total_valoraciones;
+          this.ratingMedia = Number(stats.rating_media) || 0;
+        }
+
+        // Una vez tenemos perfil y estadísticas mapeadas, renderizamos la vista completa
+        this.isLoaded = true;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('❌ Error al obtener estadísticas agregadas:', err);
+        // Permitimos renderizar la página igualmente si fallan solo los contadores
+        this.isLoaded = true;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -103,11 +127,8 @@ export class UserPageInfoComponent implements OnInit {
   private generarDetallesPersonales(): void {
     if (!this.currentUser) return;
 
+    // 1. Inicializamos los datos comunes a TODOS los usuarios
     this.personalDetails = [
-      // {
-      //   label: 'Nombre',
-      //   value: `${this.currentUser.nombre || ''} ${this.currentUser.apellidos || ''}`.trim() || 'No especificado'
-      // },
       {
         label: 'Usuario',
         value: this.currentUser.usuario ? `@${this.currentUser.usuario}` : 'No especificado'
@@ -128,15 +149,19 @@ export class UserPageInfoComponent implements OnInit {
         value: this.currentUser.created_at && this.currentUser.created_at !== ''
           ? new Date(this.currentUser.created_at).toLocaleDateString('es-ES')
           : 'No especificado'
-      },
-      {
-        label: 'Rol de Cuenta',
-        value: this.currentUser.perfil || 'USUARIO'
       }
     ];
+
+    // 2. Condicional: Solo si el rol es MODERADOR o ADMIN, añadimos el bloque del Rol
+    if (this.currentUser.perfil === 'MODERADOR' || this.currentUser.perfil === 'ADMIN') {
+      this.personalDetails.push({
+        label: 'Rol de Cuenta',
+        value: this.currentUser.perfil
+      });
+    }
   }
 
-  // 2. Helper rápido para generar el array de estrellas en el HTML
+  // Helper rápido para generar el array de estrellas en el HTML
   get estrellas() {
     const estrellasArray = [];
 
@@ -145,11 +170,11 @@ export class UserPageInfoComponent implements OnInit {
       const diferencia = this.ratingMedia - (i - 1);
 
       if (diferencia >= 0.75) {
-        estrellasArray.push('fa-star');       // Casi llena o llena -> Estrella completa
+        estrellasArray.push('fa-star');        // Estrella completa
       } else if (diferencia >= 0.25) {
-        estrellasArray.push('fa-star-half'); // En torno a la mitad -> Media estrella
+        estrellasArray.push('fa-star-half');   // Media estrella
       } else {
-        estrellasArray.push('fa-star-o');      // Casi vacía -> Estrella vacía
+        estrellasArray.push('fa-star-o');      // Estrella vacía
       }
     }
 

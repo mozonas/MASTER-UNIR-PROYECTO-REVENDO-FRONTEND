@@ -2,8 +2,9 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserService, Usuario } from '../../../services/user.service';
+import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
+import { Usuario } from '../../../interfaces/user.interface';
 
 @Component({
   selector: 'app-user-page-edit',
