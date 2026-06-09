@@ -85,7 +85,8 @@
 }
 
 .info-vendedor-title {
-  font-size: 0.75rem;
+  text-align: center;
+  font-size: 1rem;
   letter-spacing: 0.05em;
 }
 
@@ -98,4 +99,69 @@
     font-size: 0.75rem !important;
     /* Reduce ligeramente el texto secundario en pantallas mini */
   }
+}
+
+@media (max-width: 381px) {
+  .info-vendedor-title {
+    font-size: 0.75rem;
+  }
+}
+
+/* Estilos para el Menú Dinámico de Pestañas (Tabs) */
+.custom-tab-btn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #6c757d;
+  padding: 0.75rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border-bottom: 3px solid transparent;
+  outline: none;
+}
+
+.custom-tab-btn:hover {
+  color: #4e8a2f;
+}
+
+.custom-tab-btn.active {
+  color: #6ab03b;
+  border-bottom-color: #6ab03b;
+}
+
+/* Animaciones suaves al cambiar de pestaña */
+.animate-fade-in {
+  animation: tabFadeIn 0.35s ease-in-out forwards;
+}
+
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tarjetas de Valoración de Compradores */
+.review-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.04) !important;
+}
+
+.review-avatar {
+  width: 42px;
+  height: 42px;
+}
+
+.shadow-2xs {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }

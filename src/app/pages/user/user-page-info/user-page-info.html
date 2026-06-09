@@ -1,3 +1,4 @@
+<app-header-menu></app-header-menu>
 @if (isLoaded) {
 <div class="bg-light py-5 min-vh-100">
   <div class="container container-max-width">
@@ -10,7 +11,7 @@
           <div class="d-flex justify-content-center w-100">
             <div class="position-relative avatar-container">
               <img
-                [src]="currentUser.foto ? 'http://localhost:3000/uploads/' + currentUser.foto : 'https://cdn-icons-png.flaticon.com/512/6596/6596121.png'"
+                [src]="currentUser.foto ? 'http://localhost:3000/uploads/' + currentUser.foto : 'images/profile-avatar.svg'"
                 alt="Avatar de usuario"
                 class="w-100 h-100 rounded-circle object-fit-cover border border-3 border-white shadow-sm"
                 loading="eager">
@@ -114,12 +115,71 @@
       </div>
     </header>
 
-    <main>
-      <div class="mb-4">
-        <h3 class="fw-bold fs-4 text-dark">
-          Productos en venta
-        </h3>
+    <nav class="d-flex gap-2 border-bottom border-secondary border-opacity-10 mb-4">
+      <button (click)="changeTab('productos')" class="custom-tab-btn" [class.active]="activeTab === 'productos'">
+        <i class="fa fa-th-large me-2"></i>Productos en venta
+      </button>
+      <button (click)="changeTab('valoraciones')" class="custom-tab-btn" [class.active]="activeTab === 'valoraciones'">
+        <i class="fa fa-comments me-2"></i>Opiniones ({{ totalValoraciones }})
+      </button>
+    </nav>
+
+    <main class="animate-fade-in">
+
+      @if (activeTab === 'productos') {
+      <div>
+        <app-user-page-sell></app-user-page-sell>
       </div>
+      }
+
+      @if (activeTab === 'valoraciones') {
+      <div>
+        <div class="mb-4">
+          <h3 class="fw-bold fs-4 text-dark">Opiniones de compradores</h3>
+        </div>
+
+        @if (listaValoraciones.length === 0) {
+        <div class="text-center py-5 bg-white rounded-4 border border-dark border-opacity-5 shadow-2xs">
+          <i class="fa fa-star-o text-muted fs-1 mb-3"></i>
+          <p class="text-secondary fw-medium m-0">Este usuario aún no ha recibido valoraciones.</p>
+        </div>
+        } @else {
+        <div class="d-flex flex-column gap-3">
+          @for (rev of listaValoraciones; track rev.valoracion_id) {
+          <div class="card border-0 rounded-4 p-4 bg-white shadow-2xs review-card border border-dark border-opacity-5">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+              <div class="d-flex align-items-center gap-3">
+                <img
+                  [src]="currentUser.foto ? 'http://localhost:3000/uploads/' + currentUser.foto : 'images/profile-avatar.svg'"
+                  alt="Comprador" class="review-avatar rounded-circle object-fit-cover border">
+                <div>
+                  <h5 class="fw-bold text-dark m-0 fs-6">@{{ rev.comprador_username }}</h5>
+                  <small class="text-muted custom-fs-8">{{ rev.fecha_valoracion | date:'dd/MM/yyyy' }}</small>
+                </div>
+              </div>
+
+              <div class="text-warning">
+                @for (star of [1,2,3,4,5]; track $index) {
+                <i class="fa mr-1" [ngClass]="$index < rev.puntuacion ? 'fa-star' : 'fa-star-o'"></i>
+                }
+              </div>
+            </div>
+
+            <p class="text-secondary mb-2 fst-italic">"{{ rev.comentario }}"</p>
+
+            <div
+              class="mt-2 pt-2 border-top border-secondary border-opacity-10 d-flex align-items-center gap-2 custom-fs-7 fw-medium">
+              <i class="fa fa-shopping-bag"></i>
+              <span style="color: green;">Producto comprado: <strong class="text-dark">{{ rev.articulo_titulo
+                  }}</strong></span>
+            </div>
+          </div>
+          }
+        </div>
+        }
+      </div>
+      }
+
     </main>
 
   </div>
@@ -133,3 +193,5 @@
   <p class="text-muted small">Recuperando datos desde la base de datos local</p>
 </div>
 }
+
+<app-footer></app-footer>

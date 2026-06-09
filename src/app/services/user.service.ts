@@ -31,4 +31,11 @@ export class UserService {
     getEstadisticasUsuario(id: number): Observable<EstadisticasUsuario> {
         return this.http.get<EstadisticasUsuario>(`${this.apiUrl}/${id}/estadisticas`);
     }
+
+    /**
+     * Obtiene las valoraciones reales de un usuario específico desde la base de datos
+     */
+    getValoracionesUsuario(userId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${userId}/valoraciones`);
+    }
 }
