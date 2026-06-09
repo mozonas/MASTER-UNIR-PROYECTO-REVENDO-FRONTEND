@@ -27,7 +27,6 @@ export const routes: Routes = [
   { path: 'header-menu', component: HeaderMenuComponent},
   { path: 'admin', component: AdminLayoutComponent, //canActivate: [roleGuard(['admin'])] 
     children: [
-      { path: '', component: AdminDashboardComponent},
       { path: 'dashboard', component: AdminDashboardComponent}
     ]
   },
