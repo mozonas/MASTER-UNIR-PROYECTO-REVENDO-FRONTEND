@@ -47,37 +47,45 @@ export class ArticleService {
   }
 
   private mapRawArticleToIArticle(item: any): iArticle | null {
-    if (!item || typeof item !== 'object') {
-      return null;
-    }
-
-    const estadoRaw = (item.estadoVenta || item.status || item.estado || '').toString().toLowerCase();
-    let estadoVenta: iArticle['estadoVenta'] = 'DISPONIBLE';
-    if (estadoRaw.includes('vend')) {
-      estadoVenta = 'VENDIDO';
-    } else if (estadoRaw.includes('report') || estadoRaw.includes('reserv')) {
-      estadoVenta = 'RESERVADO';
-    }
-
-    const createdAtValue = item.created_at || item.createdAt || item.fecha || item.date;
-    const createdAt = createdAtValue ? new Date(createdAtValue) : new Date();
-
-    return {
-      id: String(item.id ?? item._id ?? ''),
-      titulo: item.titulo || item.title || item.name || '',
-      descripcion: item.descripcion || item.description || item.desc || '',
-      precio: Number(item.precio ?? item.price ?? 0),
-      image: item.image || item.imagen || item.img || '',
-      estadoVenta,
-      tipoEntrega: item.tipoEntrega || item.deliveryType || 'Envío',
-      tipoPago: item.tipoPago || item.paymentType || 'Efectivo',
-      created_at: createdAt,
-      usuarios_id: item.usuarios_id || item.userId || item.user_id || '',
-      categorias_id: item.categorias_id || item.categoryId || item.categoria_id || ''
-    };
+  if (!item || typeof item !== 'object') {
+    return null;
   }
 
-  //Mock data for development removed — start with empty Articles so DB response populates it
+  const estadoRaw = (item.estadoVenta || item.status || item.estado || '').toString().toLowerCase();
+  let estadoVenta: iArticle['estadoVenta'] = 'DISPONIBLE';
+  
+  if (estadoRaw.includes('vend')) {
+    estadoVenta = 'VENDIDO';
+  } else if (estadoRaw.includes('report') || estadoRaw.includes('reserv') || item.estado_reporte) {
+   
+    estadoVenta = 'RESERVADO';
+  }
+
+  const createdAtValue = item.created_at || item.createdAt || item.fecha || item.date;
+  const createdAt = createdAtValue ? new Date(createdAtValue) : new Date();
+
+  return {
+    id: String(item.id ?? item._id ?? ''),
+    titulo: item.titulo || item.title || item.name || '',
+    descripcion: item.descripcion || item.description || item.desc || '',
+    precio: Number(item.precio ?? item.price ?? 0),
+    
+    image: item.foto || item.image || item.imagen || item.img || '', 
+    
+    estadoVenta,
+    
+    estadoProducto: item.estadoProducto || 'Nuevo', 
+    
+    tipoEntrega: item.tipoEntrega || item.deliveryType || 'Envío',
+    tipoPago: item.tipoPago || item.paymentType || 'Efectivo',
+    created_at: createdAt,
+    usuarios_id: item.usuarios_id || item.userId || item.user_id || '',
+    categorias_id: item.categorias_id || item.categoryId || item.categoria_id || '',
+    
+    estado_reporte: item.estado_reporte || null 
+  };
+}
+
   Articles = signal<iArticle[]>([]);
 
   getArticleById(id: string): iArticle | undefined {

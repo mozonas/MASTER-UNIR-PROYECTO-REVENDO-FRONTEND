@@ -4,14 +4,19 @@ import { Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { iArticle } from '../../../interfaces/article.interface';
 import { FooterComponent } from '../../../shared/footer/footer.component';
+import { HeaderMenuComponent } from '../../../shared/headers/header-menu/header-menu.component';
+
 @Component({
   selector: 'app-user-page-sell',
-  imports: [CommonModule, FooterComponent],
+  imports: [CommonModule, HeaderMenuComponent, FooterComponent],
   templateUrl: './user-page-sell.html',
   styleUrls: ['./user-page-sell.css'],
 })
+
 export class UserPageSell implements OnInit {
+
   // 1. INYECTORES DE DEPENDENCIAS
+
   private articleService = inject(ArticleService);
   private router = inject(Router);
   // 2. PROPIEDADES Y SIGNALS ESTÁNDAR
@@ -19,7 +24,9 @@ export class UserPageSell implements OnInit {
   selectedFilter = signal<'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'>('all');
   currentPage = signal(1);
   pageSize = 6;
+
   // 3. PROPIEDADES COMPUTADAS (COMPUTED SIGNALS)
+
   filteredarticles = computed(() => {
     const filter = this.selectedFilter();
     const allarticles = this.articles();
@@ -39,10 +46,13 @@ export class UserPageSell implements OnInit {
     const filteredArray = Array.isArray(filtered) ? filtered : [];
     return filteredArray.slice(start, start + this.pageSize);
   });
+
   // 4. CICLO DE VIDA (LIFECYCLE HOOKS)
+
   ngOnInit(): void {
     this.loadArticles();
   }
+
   // 5. PETICIONES A LA API Y SERVICIOS
   private loadArticles(): void {
     this.articleService.getAllUserArticles().subscribe({
@@ -71,6 +81,7 @@ export class UserPageSell implements OnInit {
   }
  
   // 6. ACCIONES DE LA INTERFAZ / EVENTOS DE USUARIO
+
   setFilter(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO') {
     this.selectedFilter.set(filter);
     this.currentPage.set(1);
@@ -90,6 +101,7 @@ export class UserPageSell implements OnInit {
     alert('Crear nuevo artículo\n(Placeholder - Vista de creación aún no implementada)');
   }
   // 7. MÉTODOS FORMATO Y PLANTILLA (TEMPLATE UTILS)
+  
   getStatusBadgeClass(estado: string): string {
     switch (estado) {
       case 'VENDIDO':
@@ -110,6 +122,7 @@ export class UserPageSell implements OnInit {
         return 'Disponible';
     }
   }
+
   getFilterCount(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'): number {
     const allarticles = this.articles();
     const articlesArray = Array.isArray(allarticles) ? allarticles : [];

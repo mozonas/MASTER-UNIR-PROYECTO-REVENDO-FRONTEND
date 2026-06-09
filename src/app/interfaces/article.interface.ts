@@ -1,13 +1,17 @@
+import { StreamingResourceOptions } from "@angular/core";
+
 export interface iArticle {
   id: string;
   titulo: string;
   descripcion: string;
   precio: number;
-  image?: string;
-  estadoVenta: 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO';
-  tipoEntrega: 'Envío' | 'En mano';
-  tipoPago: 'Efectivo' | 'Tarjeta' | 'Bizum';
+  estadoVenta: string;
+  estadoProducto?: string;
+  tipoEntrega: string;
+  tipoPago: string;
   created_at: Date;
-  usuarios_id: string;
-  categorias_id: string;
+  usuarios_id: number;
+  categorias_id: number;
+  image: string | null;
+  estado_reporte?: number | null;
 }
