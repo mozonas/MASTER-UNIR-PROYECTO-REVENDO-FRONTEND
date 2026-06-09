@@ -11,9 +11,9 @@ import { map, tap } from 'rxjs/operators';
 export class ArticleService {
 
  private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/api';
+ private apiUrl = 'http://localhost:3000/api';
 
-    // Traer articulos del usuario de la BBDD
+    
     getAllUserArticles(): Observable<iArticle[]> {
         return this.http.get<iArticle[] | { articles?: iArticle[] }>(
             `${this.apiUrl}/userarticles`
@@ -21,85 +21,66 @@ export class ArticleService {
           tap(raw => console.log('RAW userarticles response:', raw)),
           map(response => this.normalizeArticlesResponse(response)),
           tap(respuesta => {
-            // update the shared Articles signal so components render DB data
             this.Articles.set(respuesta);
             console.log('Datos recibidos de articulos:', respuesta);
           })
         );
       }
 
-  private normalizeArticlesResponse(response: iArticle[] | { articles?: any[] } | { userarticles?: any[] } | { data?: any[] } | any): iArticle[] {
-    let rawArticles: any[] = [];
-
-    if (Array.isArray(response)) {
-      rawArticles = response;
-    } else if (response && Array.isArray(response.articles)) {
-      rawArticles = response.articles;
-    } else if (response && Array.isArray(response.userarticles)) {
-      rawArticles = response.userarticles;
-    } else if (response && Array.isArray(response.data)) {
-      rawArticles = response.data;
-    }
+  private normalizeArticlesResponse(response: any): iArticle[] {
+    const rawArticles: any[] = Array.isArray(response?.data)
+      ? response.data
+      : Array.isArray(response)
+      ? response
+      : [];
 
     return rawArticles
-      .map(item => this.mapRawArticleToIArticle(item))
+      .map(articulo => this.mapRawArticleToIArticle(articulo))
       .filter((article): article is iArticle => !!article);
   }
 
-  private mapRawArticleToIArticle(item: any): iArticle | null {
-  if (!item || typeof item !== 'object') {
+  private mapRawArticleToIArticle(articulo: any): iArticle | null {
+  if (!articulo || typeof articulo !== 'object') {
     return null;
   }
 
-  const estadoRaw = (item.estadoVenta || item.status || item.estado || '').toString().toLowerCase();
+  const estadoRaw = (articulo.estadoVenta || '').toString().toLowerCase();
   let estadoVenta: iArticle['estadoVenta'] = 'DISPONIBLE';
-  
-  if (estadoRaw.includes('vend')) {
-    estadoVenta = 'VENDIDO';
-  } else if (estadoRaw.includes('report') || estadoRaw.includes('reserv') || item.estado_reporte) {
    
-    estadoVenta = 'RESERVADO';
-  }
-
-  const createdAtValue = item.created_at || item.createdAt || item.fecha || item.date;
+  const createdAtValue = articulo.createdAt;
   const createdAt = createdAtValue ? new Date(createdAtValue) : new Date();
 
   return {
-    id: String(item.id ?? item._id ?? ''),
-    titulo: item.titulo || item.title || item.name || '',
-    descripcion: item.descripcion || item.description || item.desc || '',
-    precio: Number(item.precio ?? item.price ?? 0),
-    
-    image: item.foto || item.image || item.imagen || item.img || '', 
-    
+    id: String(articulo.id ?? ''),
+    titulo: String(articulo.titulo ?? ''),
+    descripcion: String(articulo.descripcion ?? ''),
+    precio: Number(articulo.precio ?? 0),
     estadoVenta,
-    
-    estadoProducto: item.estadoProducto || 'Nuevo', 
-    
-    tipoEntrega: item.tipoEntrega || item.deliveryType || 'Envío',
-    tipoPago: item.tipoPago || item.paymentType || 'Efectivo',
+    estadoProducto: articulo.estadoProducto ? String(articulo.estadoProducto) : undefined,
+    tipoEntrega: String(articulo.tipoEntrega ?? ''),
+    tipoPago: String(articulo.tipoPago ?? ''),
     created_at: createdAt,
-    usuarios_id: item.usuarios_id || item.userId || item.user_id || '',
-    categorias_id: item.categorias_id || item.categoryId || item.categoria_id || '',
-    
-    estado_reporte: item.estado_reporte || null 
+    usuarios_id: Number(articulo.usuarios_id ?? 0),
+    categorias_id: Number(articulo.categorias_id ?? 0),
+    image: articulo.foto ?? null,
+    estado_reporte: articulo.estado_reporte != null ? Number(articulo.estado_reporte) : null
   };
 }
 
   Articles = signal<iArticle[]>([]);
 
   getArticleById(id: string): iArticle | undefined {
-    return this.Articles().find(p => p.id === id);
+    return this.Articles().find(a => a.id === id);
   }
 
   deleteArticle(id: string): void {
-    const updatedArticles = this.Articles().filter(p => p.id !== id);
+    const updatedArticles = this.Articles().filter(a => a.id !== id);
     this.Articles.set(updatedArticles);
   }
 
   updateArticle(id: string, updatedArticle: Partial<iArticle>): void {
     const articles = [...this.Articles()];
-    const index = articles.findIndex(p => p.id === id);
+    const index = articles.findIndex(a => a.id === id);
     if (index !== -1) {
       articles[index] = { ...articles[index], ...updatedArticle };
       this.Articles.set(articles);

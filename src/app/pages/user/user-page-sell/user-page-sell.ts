@@ -100,6 +100,7 @@ export class UserPageSell implements OnInit {
     console.log('Agregar nuevo articleo');
     alert('Crear nuevo artículo\n(Placeholder - Vista de creación aún no implementada)');
   }
+ 
   // 7. MÉTODOS FORMATO Y PLANTILLA (TEMPLATE UTILS)
   
   getStatusBadgeClass(estado: string): string {
