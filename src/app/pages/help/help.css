@@ -1,0 +1,36 @@
+/* Efecto hover interactivo para las FAQs */
+.faq-card-hover {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
+}
+
+.faq-card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Estilos específicos de la marca no cubiertos por Bootstrap por defecto */
+.small-badge {
+    font-size: 0.725rem;
+    letter-spacing: 0.05em;
+}
+
+.support-footer-gradient {
+    background-color: rgba(122, 168, 76, 0.88);
+
+}
+
+.btn-revendo {
+    background-color: white;
+    color: #000000;
+    transition: transform 0.1s ease, background-color 0.2s ease;
+}
+
+.btn-revendo:hover {
+    background-color: #000000;
+    color: #ffffff;
+    transform: scale(1.02);
+}
+
+.btn-revendo:active {
+    transform: scale(0.98);
+}

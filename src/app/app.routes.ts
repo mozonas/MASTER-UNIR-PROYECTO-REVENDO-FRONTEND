@@ -10,21 +10,32 @@ import { ArticleDetailComponent } from './pages/article-detail-component/article
 import { AdminHeaderComponent } from './shared/headers/admin-header/admin-header.component';
 import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.component';
 import { ModerationComponent } from './pages/moderation/moderation.component';
-
+import { HelpComponent } from './pages/help/help';
+import { TermsComponent } from './pages/terms/terms';
+import { PrivacyComponent } from './pages/privacy/privacy';
 
 import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
   { path: "", pathMatch: 'full', redirectTo: "home" },
   { path: "home", component: WelcomeComponent },
+
   { path: "login", component: LoginComponent },
   { path: 'signup', component: SignupComponent },
+
   { path: 'user-info', component: UserPageInfoComponent, canActivate: [authGuard] },
   { path: 'user-edit', component: UserPageEditComponent, canActivate: [authGuard] },
   { path: 'user-sell', component: UserPageSell },
+
   { path: 'article-detail', component: ArticleDetailComponent },
-  { path: 'header-menu', component: HeaderMenuComponent},
+
+  { path: 'header-menu', component: HeaderMenuComponent },
   { path: 'admin-header', component: AdminHeaderComponent, canActivate: [roleGuard(['admin'])] },
+
   { path: 'moderation', component: ModerationComponent },
 
+  // --- Páginas Legales del Footer ---
+  { path: 'ayuda', component: HelpComponent },
+  { path: 'privacidad', component: PrivacyComponent },
+  { path: 'terminos', component: TermsComponent }
 ];

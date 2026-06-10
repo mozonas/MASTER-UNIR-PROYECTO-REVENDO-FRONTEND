@@ -1,0 +1,21 @@
+/* Color de fondo personalizado para el ecosistema ReVendo */
+.bg-page-terms {
+    background-color: #f8fafc;
+}
+
+/* Espaciados micro-tipográficos */
+.tracking-tight {
+    letter-spacing: -0.02em;
+}
+
+.tracking-wider {
+    letter-spacing: 0.05em;
+}
+
+.small-badge {
+    font-size: 0.75rem;
+}
+
+p {
+    font-size: 0.975rem;
+}

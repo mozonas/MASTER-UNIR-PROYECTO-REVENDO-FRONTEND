@@ -1,0 +1,58 @@
+<app-header-menu></app-header-menu>
+
+<div class="container my-5" style="max-width: 1060px;">
+
+    <!-- Cabecera -->
+    <header class="text-center mb-5">
+        <span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill px-3 py-2 mb-3 fw-semibold">
+            Centro de Ayuda
+        </span>
+        <h1 class="display-5 fw-bold tracking-tight mb-2">Preguntas Frecuentes</h1>
+        <p class="lead text-muted mx-auto" style="max-width: 580px;">
+            Todo lo que necesitas saber para comprar y vender con total confianza en ReVendo.
+        </p>
+    </header>
+
+    <!-- Rejilla de FAQs -->
+    <main class="mb-5">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @for (faq of faqs(); track faq.question) {
+            <div class="col">
+                <article class="card h-100 border-light-subtle rounded-4 p-4 shadow-sm faq-card-hover text-center">
+                    <div class="card-body p-0 d-flex flex-column h-100">
+
+                        <div class="d-flex align-items-center justify-content-center mb-3">
+                            <span
+                                class="badge bg-light text-secondary text-uppercase px-2 py-1 fw-bold tracking-wider small-badge">
+                                {{ faq.category }}
+                            </span>
+                        </div>
+
+                        <h3 class="h5 fw-bold text-dark mb-3">{{ faq.question }}</h3>
+                        <p class="card-text text-secondary small lh-base mt-auto">{{ faq.answer }}</p>
+
+                    </div>
+                </article>
+            </div>
+            }
+        </div>
+    </main>
+
+    <!-- Bloque de Soporte Directo -->
+    <section
+        class="support-footer-gradient text-white rounded-4 p-4 p-md-5 d-flex flex-column flex-md-row align-items-center justify-content-between gap-4">
+        <div class="text-center text-md-start">
+            <h2 class="h4 fw-bold mb-2">¿Aún tienes dudas?</h2>
+            <p class="text-white-80 mb-0" style="max-width: 600px;">
+                Nuestro equipo de soporte técnico y moderación está disponible para guiarte de forma personalizada.
+            </p>
+        </div>
+        <button class="btn btn-revendo btn-lg px-4 py-3 fw-semibold text-nowrap rounded-3 shadow-sm"
+            (click)="onContactSupport()">
+            Contactar con Soporte
+        </button>
+    </section>
+
+</div>
+
+<app-footer></app-footer>

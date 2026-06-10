@@ -1,0 +1,20 @@
+.tracking-tight {
+    letter-spacing: -0.03em;
+}
+
+.tracking-wider {
+    letter-spacing: 0.05em;
+}
+
+.small-number {
+    font-size: 0.9rem;
+    min-width: 24px;
+}
+
+@media (min-width: 768px) {
+    aside {
+        position: sticky;
+        top: 2rem;
+        height: max-content;
+    }
+}
