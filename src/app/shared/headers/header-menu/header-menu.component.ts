@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, Signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 
@@ -15,7 +15,7 @@ export class HeaderMenuComponent {
   role = signal(this.authService.getUserRole() ?? 'USUARIO');
   username = signal(this.authService.getUserName() ?? '');
 
-  isAdmin = computed(() =>
+  isStaff = computed(() =>
   this.role() === 'ADMIN' || this.role() === 'MODERADOR'
 );
 

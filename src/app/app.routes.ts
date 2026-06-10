@@ -7,12 +7,11 @@ import { UserPageEditComponent } from './pages/user/user-page-edit/user-page-edi
 import { authGuard } from './guards/auth.guard';
 import { UserPageSell } from './pages/user/user-page-sell/user-page-sell';
 import { ArticleDetailComponent } from './pages/article-detail-component/article-detail-component';
-import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.component';
 import { AdminLayoutComponent } from './pages/admin/admin-layout/admin-layout.component';
 import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 
 
-import { roleGuard } from './guards/role.guard';
+//import { roleGuard } from './guards/role.guard';
 
 
 export const routes: Routes = [
@@ -24,8 +23,7 @@ export const routes: Routes = [
   { path: 'user-edit', component: UserPageEditComponent, canActivate: [authGuard] },
   { path: 'user-sell', component: UserPageSell, canActivate: [authGuard] },
   { path: 'article-detail', component: ArticleDetailComponent },
-  { path: 'header-menu', component: HeaderMenuComponent},
-  { path: 'admin', component: AdminLayoutComponent, //canActivate: [roleGuard(['admin'])] 
+  { path: 'admin', component: AdminLayoutComponent, //canActivate: [roleGuard(['admin'])], 
     children: [
       { path: 'dashboard', component: AdminDashboardComponent}
     ]

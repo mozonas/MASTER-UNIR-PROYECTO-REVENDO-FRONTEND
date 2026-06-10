@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import  Chart  from 'chart.js/auto';
-import { TransactionsServices } from '../../../../services/transactions.service';
+import { TransactionsServices } from '../../../services/transactions.service';
 import {  firstValueFrom } from 'rxjs';
 
 @Component({
@@ -43,7 +43,7 @@ async generarGraficaVentas (){
 // método pintado de gráfica
 pintarGrafica ( ventasActual: number [], ventasAnterior: number [],thisYear: number, lastYear:number){
 
-const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'];
+const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun','Jul'];
 
   new Chart('ventasAnualesChart', {
         type: 'line',

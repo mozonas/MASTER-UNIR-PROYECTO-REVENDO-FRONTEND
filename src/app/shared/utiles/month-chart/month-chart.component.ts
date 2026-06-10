@@ -49,7 +49,7 @@ export class MonthChartComponent {
           maintainAspectRatio: false,
            layout: {
              padding: {
-             bottom: 20   // evita que los labels sobresalgan
+             bottom: 20   
           }
     },
           scales: {
