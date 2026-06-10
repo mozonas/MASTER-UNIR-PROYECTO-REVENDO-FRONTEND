@@ -12,7 +12,7 @@ export class ModerationService {
     // Traer contadores de artículos y chats pendientes al panel principal
     getBadgesCounters(): Observable<BadgesResponse> {
         return this.http.get<BadgesResponse>(
-            `${this.apiUrl}/moderation/badges-counters`
+            `${this.apiUrl}/reports/badges-counters`
         );
     }
 }

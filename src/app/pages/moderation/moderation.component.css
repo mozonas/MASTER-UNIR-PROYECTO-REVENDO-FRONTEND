@@ -1,35 +1,8 @@
-/* Barra lateral Sidebar */
-.custom-sidebar {
-  background-color: #8cd86a;
-}
+/* ===================================================
+   TARJETAS CENTRALES DE GESTIÓN Y PANEL DE MODERACIÓN
+   =================================================== */
 
-.custom-sidebar .bi-shield-check,
-.custom-sidebar .h5 {
-  color: #ffffff !important;
-}
-
-.nav-pills .active-custom {
-  background-color: #ffffff;
-  color: #8cd86a;
-  font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.nav-link.text-dark-50 {
-  color: #ffffff;
-  transition: all 0.2s ease;
-}
-
-.nav-link.text-dark-50:hover {
-  background-color: #ffffff;
-  color: #8cd86a;
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
-/* Tarjeta modulos de gestion */
+/* Cabecera de las tarjetas modulos de gestion */
 .card-header {
   background-color: #8cd86a !important;
   border-bottom: none !important;
@@ -39,16 +12,14 @@
   color: #ffffff !important;
 }
 
-/* Icono flotante (badge) de las tarjeta modulos de gestion */
-
-/* Con reportes pendientes*/
+/* Iconos flotantes (badges) con reportes pendientes */
 .badge-incidencias {
   background-color: #dc3545 !important;
   color: #ffffff !important;
   cursor: pointer;
 }
 
-/* Sin reportes pendientes */
+/* Iconos flotantes (badges) sin reportes pendientes */
 .badge-limpio {
   background-color: #ffffff !important;
   color: #8cd86a !important;
@@ -56,7 +27,7 @@
   cursor: default;
 }
 
-/* Botones acceso a otras pantallas */
+/* Botones de acceso a otras pantallas (Lupas) */
 button.btn-acceso {
   background-color: #ffffff;
   border: 2px solid #8cd86a;
@@ -81,6 +52,7 @@ button.btn-acceso:active {
   color: #ffffff;
 }
 
+/* Botón general para volver al panel */
 .btn-volver {
   background-color: white;
   color: #8cd86a;
@@ -95,7 +67,7 @@ button.btn-acceso:active {
   color: white;
 }
 
-/* Estilo para el texto de los badges */
+/* Estilo para el texto interno de los badges de las tarjetas */
 .font-badge {
   font-size: 11px;
   letter-spacing: 0.5px;
@@ -105,6 +77,7 @@ button.btn-acceso:active {
   transition: all 0.3s ease;
 }
 
+/* Animación de latido reactivo para las Signals */
 .animate-pulse {
   animation: pulse 2s infinite;
 }
@@ -114,6 +87,7 @@ button.btn-acceso:active {
   50% { transform: scale(1.04); opacity: 0.9; }
   100% { transform: scale(1); }
 }
+
 
 
 
