@@ -15,13 +15,13 @@
             <p class="texto-marca">ReVendo</p>
          </div>
          <!--menu admin-moderador-->
-         @if (role === 'ADMIN' || role === 'MODERADOR'){
+         @if (isAdmin()){
          <!-- TExt + AVATAR -->
          <div class="d-flex align-items-center gap-5 ms-auto">
             <!-- text -->
             <div class="texto-admin">
-               <p>Bienvenido, {{username}} !</p>
-               <p>{{role}}</p>
+               <p>Bienvenido, {{username()}} !</p>
+               <p>{{role()}}</p>
             </div>
             <div>
                <a href="#">

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, signal, Signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 
@@ -10,18 +10,14 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class HeaderMenuComponent {
  
+  private authService = inject (AuthService); 
 
+  role = signal(this.authService.getUserRole() ?? 'USUARIO');
+  username = signal(this.authService.getUserName() ?? '');
 
-  private authService = inject (AuthService);
-
-  role:string | null = null;
-  username:string | null = null;
-
-  ngOnInit(){
-    this.role = this.authService.getUserRole();
-    this.username = this.authService.getUserName();
-    console.log('ROL REAL:', this.role);
-  }
+  isAdmin = computed(() =>
+  this.role() === 'ADMIN' || this.role() === 'MODERADOR'
+);
 
   
 }
