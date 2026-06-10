@@ -1,0 +1,28 @@
+/* Fondo verde corporativo del contenedor */
+.custom-sidebar {
+  background-color: #8cd86a;
+}
+
+/* Opciones de estilo para los botones de navegación */
+.nav-pills .active-custom {
+  background-color: #ffffff !important;
+  color: #8cd86a !important;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Opciones no activas */
+.nav-link.text-dark-50 {
+  color: #ffffff !important;
+  transition: all 0.2s ease;
+}
+
+/* Hover en opciones no activas */
+.nav-link.text-dark-50:hover {
+  background-color: #ffffff !important;
+  color: #8cd86a !important;
+}
+
+
+
+
