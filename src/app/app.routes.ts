@@ -12,7 +12,6 @@ import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-das
 
 
 //import { roleGuard } from './guards/role.guard';
-import { AdminHeaderComponent } from './shared/headers/admin-header/admin-header.component';
 import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.component';
 import { ModerationComponent } from './pages/moderation/moderation.component';
 
@@ -52,5 +51,5 @@ export const routes: Routes = [
   { path: 'header-menu', component: HeaderMenuComponent},
   { path: 'admin-header', component: AdminHeaderComponent, canActivate: [roleGuard(['admin'])] },
   { path: 'moderation', component: ModerationComponent },
-
+*/
 ];
