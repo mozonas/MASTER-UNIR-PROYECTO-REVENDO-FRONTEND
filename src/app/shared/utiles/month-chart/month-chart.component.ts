@@ -8,13 +8,15 @@ import  Chart  from 'chart.js/auto';
   styleUrl: './month-chart.component.css',
 })
 export class MonthChartComponent {
-  // llamada servicio ventas mes
-  
+  // llamada servicio transacciones traer movimientos por mes
+
+  //Cargar grafica
   ngOnInit (){
-    this.generarGraficaVentasMes()
+    this.pintarGraficaMensuales()
   }
 
-  generarGraficaVentasMes() {
+  // pintar la grafica
+  pintarGraficaMensuales() {
       // Últimos 30 días
       const dias = [];
         for (let i = 0; i < 30; i++) {
