@@ -1,0 +1,46 @@
+
+  <p>Aquí metemos el componente de gestión de usuarios</p>
+
+<h2>Gestión de Usuarios</h2>
+
+<ul class="user-list">
+
+  <li class="header">
+    <span>id</span>
+    <span>nombre</span>
+    <span>apellidos</span>
+    <span>email</span>
+    <span>usuario</span>
+    <span>fecha_nacimiento</span>
+    <span>direccion</span>
+    <span>perfil</span>
+    <span>Editar</span>
+    <span>Eliminar</span>
+    <span>Bloquear</span>
+  </li>
+
+  @for (u of users; track u.id) {
+    <li class="row">
+      <span>{{ u.id }}</span>
+      <span>{{ u.nombre }}</span>
+      <span>{{ u.apellidos }}</span>
+      <span>{{ u.email }}</span>
+      <span>{{ u.usuario }}</span>
+      <span>{{ u.fecha_nacimiento }}</span>
+      <span>{{ u.direccion }}</span>
+      <span>{{ u.perfil }}</span>
+      <span>Editar</span>
+      <span>Eliminar</span>
+      <span>Bloquear</span>
+    </li>
+  }
+
+</ul>
+
+<div class="pagination">
+  <button (click)="prevPage()" [disabled]="page === 1">Anterior</button>
+
+  <span>Página {{ page }} de {{ totalPages }}</span>
+
+  <button (click)="nextPage()" [disabled]="page === totalPages">Siguiente</button>
+</div>
