@@ -1,0 +1,13 @@
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr; /* izquierda metric cards / derecha gráfica */
+  gap: 20px;
+  align-items: start;
+}
+
+
+
+
+
+
