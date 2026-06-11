@@ -5,10 +5,11 @@ import { inject } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import {signal} from '@angular/core';
 import { Router } from '@angular/router';
+import { HeaderMenuComponent } from "../../../shared/headers/header-menu/header-menu.component";
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, HeaderMenuComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })

@@ -1,13 +1,9 @@
-<div class="signin-wrapper d-flex justify-content-center align-items-center vh-100">
+<app-header-menu [mostrarMenu]="false"></app-header-menu>
+<div class="signin-wrapper d-flex">
   <div class="signin-card d-flex">
 
-    <div class="logo-section d-flex flex-column justify-content-center align-items-center">
-      <img src="images/logo_revendo.png" alt="reVendo logo" class="logo-img"/>
-      <span class="brand-name">reVendo</span>
-    </div>
-
     <div class="form-section">
-      <h2 class="text-center mb-4">SIGNUP</h2>
+      <h2 class="text-center mb-4">REGISTRO</h2>
 
       <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
 
