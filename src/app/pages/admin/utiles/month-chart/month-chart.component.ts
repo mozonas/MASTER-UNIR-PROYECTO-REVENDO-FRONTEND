@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import  Chart  from 'chart.js/auto';
+import { TransactionsServices } from '../../../../services/transactions.service';
 
 @Component({
   selector: 'app-month-chart',
@@ -9,25 +10,27 @@ import  Chart  from 'chart.js/auto';
 })
 export class MonthChartComponent {
   // llamada servicio ventas mes
-  
+  private transaction = inject (TransactionsServices)
+
+  // cargo con el mes actual
   ngOnInit (){
-    this.generarGraficaVentasMes()
+    const mesActual = new Date().getMonth() +1;
+    this.generarGraficaVentasMes(mesActual);
   }
 
-  generarGraficaVentasMes() {
-      // Últimos 30 días
+  generarGraficaVentasMes(month:number) {
+    // array de ventas diarias 30 dias
+      this.transaction.getVentasMensuales(month).subscribe (data =>{
+      this.pintarGrafica (data.ventas);
+    })
+  }
+    
+  pintarGrafica (ventas:number[]){
+    // Últimos 30 días
       const dias = [];
         for (let i = 0; i < 30; i++) {
          dias.push(`Día ${i + 1}`);
         }
-  
-  
-      // Datos de ejemplo 
-      const ventasMes = [
-        3, 5, 2, 7, 4, 6, 8, 5, 9, 4,
-        6, 7, 3, 8, 10, 6, 5, 7, 9, 4,
-        6, 8, 5, 7, 9, 11, 8, 6, 7, 10
-      ];
   
       new Chart('ventasMesChart', {
         type: 'bar',
@@ -36,7 +39,7 @@ export class MonthChartComponent {
           datasets: [
             {
               label: 'Artículos vendidos',
-              data: ventasMes,
+              data: ventas,
               backgroundColor: 'rgba(33, 150, 243, 0.5)',
               borderColor: '#2196F3',
               borderWidth: 2,
@@ -60,6 +63,7 @@ export class MonthChartComponent {
       });
     }
   }
+
   
 
 

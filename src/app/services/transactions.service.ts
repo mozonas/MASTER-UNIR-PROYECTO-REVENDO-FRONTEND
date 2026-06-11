@@ -12,11 +12,12 @@ export class TransactionsServices {
 
   // Obtener ventas al mes anuales
 
-  getVentasAnuales(year:number): Observable<any> {
-    return this.http.get <any>(`${this.apiUrl}/anual`,{params: { year }
-    });
-   
+  getVentasAnuales(year:number){
+    return this.http.get <{ ventas: number[] }>(`${this.apiUrl}/anual/${year}`);
   }
 
+  getVentasMensuales (month:number){
+    return this.http.get <{ ventas: number[] }>( `${this.apiUrl}/mensual/${month}`,);
+  }
 
 }
