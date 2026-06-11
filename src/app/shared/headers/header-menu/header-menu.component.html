@@ -1,17 +1,12 @@
- <!-- cabezera -->
+<!-- cabezera -->
 <div class="page-shell">
   <header class="p-4 mb-3 border-bottom page-header">
-    <div class="container-fluid d-grid g-4 align-items-center"
-      style="grid-template-columns: 1fr 2fr">
+    <div class="container-fluid d-grid g-4 align-items-center" style="grid-template-columns: 1fr 2fr">
 
       <!-- LOGO -->
       <div class="logo-container">
         <a href="#">
-          <img
-            src="/images/logo_revendo.png"
-            alt="Revendo logo"
-            width="80"
-            height="60"/>
+          <img src="/images/logo_revendo.png" alt="Revendo logo" width="80" height="60" />
         </a>
         <p class="texto-marca">ReVendo</p>
       </div>
@@ -26,29 +21,24 @@
               <img src="/images/lupa.png" width="24" height="24" alt="Buscar">
             </span>
           </div>
-          <input type="text" class="form-control" placeholder="Buscar articulos"
-            aria-label="Buscar">
+          <input type="text" class="form-control" placeholder="Buscar articulos" aria-label="Buscar">
         </div>
 
         <!-- AVATAR-->
         <div class="flex-shrink-0 dropdown avatar-dropdown">
-          <a
-            href="#"
-            class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
-            data-bs-toggle="dropdown" aria-expanded="false">
-            <img
-              src="/images/profile-avatar.svg"
-              alt="Avatar de perfil"
-              width="38"
-              height="38"
-              class="rounded-circle"/>
+          <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <img src="/images/profile-avatar.svg" alt="Avatar de perfil" width="38" height="38"
+              class="rounded-circle" />
           </a>
           <ul class="dropdown-menu dropdown-menu-end text-small shadow">
             <li><a class="dropdown-item">Nuevo artículo</a></li>
             <li><a class="dropdown-item" [routerLink]="['/user-info']">Ver perfil</a></li>
             <li><a class="dropdown-item">Favoritos</a></li>
-            <li><hr class="dropdown-divider" /></li>
-            <li><a class="dropdown-item" href="#">Salir</a></li>
+            <li>
+              <hr class="dropdown-divider" />
+            </li>
+            <li><a class="dropdown-item" (click)="logout()" style="cursor: pointer;">Salir</a></li>
           </ul>
         </div>
       </div>
@@ -62,18 +52,14 @@
 
         <!-- Todas las categorías -->
         <li class="nav-item dropdown flex-fill text-center">
-          <a
-            class="nav-link link-body-emphasis px-3"
-            href="#" data-bs-toggle="dropdown">
+          <a class="nav-link link-body-emphasis px-3" href="#" data-bs-toggle="dropdown">
             Todas las categorías
           </a>
         </li>
 
         <!-- Categoría 1 -->
         <li class="nav-item dropdown flex-fill text-center">
-          <a
-            class="nav-link dropdown-toggle link-body-emphasis px-2"
-            href="#" data-bs-toggle="dropdown">
+          <a class="nav-link dropdown-toggle link-body-emphasis px-2" href="#" data-bs-toggle="dropdown">
             Moda y accesorios
           </a>
           <ul class="dropdown-menu w-100 text-center">
@@ -85,9 +71,7 @@
 
         <!-- Categoría 2 -->
         <li class="nav-item dropdown flex-fill text-center">
-          <a
-            class="nav-link dropdown-toggle link-body-emphasis px-2"
-            href="#" data-bs-toggle="dropdown">
+          <a class="nav-link dropdown-toggle link-body-emphasis px-2" href="#" data-bs-toggle="dropdown">
             Electrónica
           </a>
           <ul class="dropdown-menu w-100 text-center">
@@ -99,9 +83,7 @@
 
         <!-- Categoría 3 -->
         <li class="nav-item dropdown flex-fill text-center">
-          <a
-            class="nav-link dropdown-toggle link-body-emphasis px-2"
-            href="#"data-bs-toggle="dropdown">
+          <a class="nav-link dropdown-toggle link-body-emphasis px-2" href="#" data-bs-toggle="dropdown">
             Hogar y muebles
           </a>
           <ul class="dropdown-menu w-100 text-center">
@@ -113,9 +95,7 @@
 
         <!-- Categoría 4 -->
         <li class="nav-item dropdown flex-fill text-center">
-          <a
-            class="nav-link dropdown-toggle link-body-emphasis px-2"
-            href="#"data-bs-toggle="dropdown">
+          <a class="nav-link dropdown-toggle link-body-emphasis px-2" href="#" data-bs-toggle="dropdown">
             Ocio y deportes
           </a>
           <ul class="dropdown-menu w-100 text-center">

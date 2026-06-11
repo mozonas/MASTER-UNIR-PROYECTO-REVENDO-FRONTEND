@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-header-menu',
-  imports: [RouterLink],
-  templateUrl: './header-menu.component.html',
-  styleUrl: './header-menu.component.css',
+  selector: 'app-admin-header',
+  imports: [],
+  templateUrl: './admin-header.component.html',
+  styleUrl: './admin-header.component.css',
 })
-export class HeaderMenuComponent {
+export class AdminHeaderComponent {
   // Inyectamos el Router para la redirección post-logout
   private router = inject(Router);
 
