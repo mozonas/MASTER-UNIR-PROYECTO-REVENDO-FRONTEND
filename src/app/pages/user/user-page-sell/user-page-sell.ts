@@ -7,7 +7,8 @@ import { FooterComponent } from '../../../shared/footer/footer.component';
 
 @Component({
   selector: 'app-user-page-sell',
-  imports: [CommonModule, FooterComponent],
+  // imports: [CommonModule, FooterComponent],
+  imports: [CommonModule],
   templateUrl: './user-page-sell.html',
   styleUrls: ['./user-page-sell.css'],
 })

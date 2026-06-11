@@ -38,6 +38,14 @@
   gap: 8px;
 }
 
+.metric-card.red {
+  background-color: #ff4d4d;
+}
+
+.metric-card.green {
+  background-color: #4CAF50;
+}
+
 /* Flechas */
 .arrow {
   width: 28px;

@@ -1,0 +1,93 @@
+/* ===================================================
+   TARJETAS CENTRALES DE GESTIÓN Y PANEL DE MODERACIÓN
+   =================================================== */
+
+/* Cabecera de las tarjetas modulos de gestion */
+.card-header {
+  background-color: #8cd86a !important;
+  border-bottom: none !important;
+}
+
+.card-header h2 {
+  color: #ffffff !important;
+}
+
+/* Iconos flotantes (badges) con reportes pendientes */
+.badge-incidencias {
+  background-color: #dc3545 !important;
+  color: #ffffff !important;
+  cursor: pointer;
+}
+
+/* Iconos flotantes (badges) sin reportes pendientes */
+.badge-limpio {
+  background-color: #ffffff !important;
+  color: #8cd86a !important;
+  border: 1px solid #ffffff !important; /* Destaca sobre el fondo verde */
+  cursor: default;
+}
+
+/* Botones de acceso a otras pantallas (Lupas) */
+button.btn-acceso {
+  background-color: #ffffff;
+  border: 2px solid #8cd86a;
+  color: #8cd86a;
+  width: 42px;
+  height: 42px;
+  padding: 0;                  
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-top: auto;
+  margin-left: auto;
+  transition: all 0.25s ease;  
+  cursor: pointer;
+}
+
+button.btn-acceso:hover,
+button.btn-acceso:active {
+  background-color: #8cd86a;
+  color: #ffffff;
+}
+
+/* Botón general para volver al panel */
+.btn-volver {
+  background-color: white;
+  color: #8cd86a;
+  border: 1px solid #8cd86a;
+  padding: 5px 12px;
+  border-radius: 5px;
+  transition: all 0.2s ease;
+}
+
+.btn-volver:hover {
+  background-color: #8cd86a;
+  color: white;
+}
+
+/* Estilo para el texto interno de los badges de las tarjetas */
+.font-badge {
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.transition-all {
+  transition: all 0.3s ease;
+}
+
+/* Animación de latido reactivo para las Signals */
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.04); opacity: 0.9; }
+  100% { transform: scale(1); }
+}
+
+
+
+

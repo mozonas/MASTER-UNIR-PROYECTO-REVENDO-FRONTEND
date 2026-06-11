@@ -7,13 +7,17 @@ import { UserPageEditComponent } from './pages/user/user-page-edit/user-page-edi
 import { authGuard } from './guards/auth.guard';
 import { UserPageSell } from './pages/user/user-page-sell/user-page-sell';
 import { ArticleDetailComponent } from './pages/article-detail-component/article-detail-component';
-import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.component';
 import { AdminLayoutComponent } from './pages/admin/admin-layout/admin-layout.component';
 import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 
 
-import { roleGuard } from './guards/role.guard';
+//import { roleGuard } from './guards/role.guard';
 
+import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.component';
+import { ModerationComponent } from './pages/moderation/moderation.component';
+
+
+import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
   { path: "", pathMatch: 'full', redirectTo: "home" },
@@ -22,15 +26,14 @@ export const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'user-info', component: UserPageInfoComponent, canActivate: [authGuard] },
   { path: 'user-edit', component: UserPageEditComponent, canActivate: [authGuard] },
-  { path: 'user-sell', component: UserPageSell, canActivate: [authGuard] },
+  { path: 'user-sell', component: UserPageSell },
   { path: 'article-detail', component: ArticleDetailComponent },
-  { path: 'header-menu', component: HeaderMenuComponent},
-  { path: 'admin', component: AdminLayoutComponent, //canActivate: [roleGuard(['admin'])] 
+  { path: 'admin', component: AdminLayoutComponent, canActivate: [roleGuard(['admin'])], 
     children: [
       { path: 'dashboard', component: AdminDashboardComponent}
     ]
   },
-  
+  ]
 
  
   
@@ -46,11 +49,8 @@ export const routes: Routes = [
     canActivate: [roleGuard(['admin'])],
     loadComponent: () => import('./pages/admin/admin.component')
   }
+  { path: 'header-menu', component: HeaderMenuComponent},
+  { path: 'admin-header', component: AdminHeaderComponent, canActivate: [roleGuard(['admin'])] },
+  { path: 'moderation', component: ModerationComponent },*/
 
-  {
-    path: 'moderador',
-    canActivate: [roleGuard(['moderador'])],
-    loadComponent: () => import('./pages/moderador/moderador.component')
-  }
-  */
-];
+
