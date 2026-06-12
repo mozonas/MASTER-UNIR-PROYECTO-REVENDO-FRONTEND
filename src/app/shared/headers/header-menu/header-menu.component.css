@@ -14,8 +14,10 @@ body{
     padding-right: 30px;
 }
 .page-header{
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
+    width: 100%;
+    top: 0;
+    left: 0;
+    position: fixed;
 }
 
 .logo-container {
@@ -59,3 +61,26 @@ body{
  
 }
 
+/*admin text*/
+.texto-admin{
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 0;
+}
+.texto-admin p:first-child {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.texto-admin p:last-child {
+  font-size: 0.9rem;
+  color: #666;
+}
+/*avatar*/
+.dropdown:hover .dropdown-menu .dropdown-item:active {
+  background-color: #8cd86a;
+  display: block;
+  margin-top: 0; 
+  right: 0;
+  left: 0;
+}

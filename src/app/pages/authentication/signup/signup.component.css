@@ -4,11 +4,12 @@
 }
 
 .signin-wrapper {
-  background-color: #f0f0f0;
-  min-height: 100vh;
+  /*  background-color: #f0f0f0; */
+  /*   min-height: 100vh; */
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 5%;
 }
 
 .signin-card {
@@ -19,6 +20,8 @@
   width: 680px;
   min-height: 460px;
   display: flex;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .logo-section {

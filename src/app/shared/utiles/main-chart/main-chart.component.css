@@ -1,0 +1,8 @@
+/*chart*/
+.chart-container {
+  height: 450px; 
+  position: relative;
+}
+.chart-wrapper-sm {
+  max-width: 400px; 
+}
