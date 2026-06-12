@@ -1,5 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { AdminUserService } from '../../../services/admin/admin-user.service';
+import { UserPageEditComponent } from '../../user/user-page-edit/user-page-edit';
 
 @Component({
   selector: 'app-admin-user-management',
@@ -15,7 +17,8 @@ export class AdminUserManagementComponent implements OnInit {
 
   constructor(
     private adminUserService: AdminUserService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router   // ← AÑADIDO
   ) {}
 
   ngOnInit(): void {
@@ -28,13 +31,7 @@ export class AdminUserManagementComponent implements OnInit {
         this.users = res.users;
         this.totalPages = res.totalPages;
 
-        // 🔥 Esto es lo que hace que Angular ACTUALICE la vista
         this.cdr.detectChanges();
-        console.log('RES COMPLETO:', res);
-        console.log('USERS:', res.users);
-        console.log('ES ARRAY?', Array.isArray(res.users));
-        console.log('LENGTH:', res.users?.length);
-
       },
       error: (err) => console.error('Error cargando usuarios:', err)
     });
@@ -57,4 +54,37 @@ export class AdminUserManagementComponent implements OnInit {
   trackByUserId(index: number, user: any): number {
     return user.id;
   }
+
+  // -------------------------
+  // ACCIONES DE LOS ICONOS
+  // -------------------------
+
+  onEdit(id: number) {
+    this.router.navigate(['/admin/users/editar', id]);
+  }
+
+
+  onDelete(id: number) {
+    if (!confirm('¿Seguro que quieres eliminar este usuario?')) return;
+
+    this.adminUserService.deleteUser(id).subscribe({
+      next: () => {
+        this.loadUsers();
+      },
+      error: (err) => console.error(err)
+    });
+  }
+
+  onToggleBlock(user: any) {
+    const newState = user.isBlocked ? 0 : 1;
+
+    this.adminUserService.toggleBlockUser(user.id, newState).subscribe({
+      next: () => {
+        user.isBlocked = newState; // actualizar en la tabla sin recargar
+      },
+      error: (err) => console.error(err)
+    });
+  }
+
+
 }

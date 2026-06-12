@@ -18,4 +18,14 @@ export class AdminUserService {
 
     return this.http.get<any>(this.apiUrl, { params });
   }
+  // Método para bloquear o desbloquear un usuario
+  toggleBlockUser(id: number, isBlocked: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, { isBlocked });
+  }
+  // Método para eliminar un usuario
+  deleteUser(id: number): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/${id}`);
+}
+
+
 }

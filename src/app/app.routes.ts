@@ -16,7 +16,6 @@ import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.co
 import { ModerationComponent } from './pages/moderation/moderation.component';
 //11062026 MOG IMPORTACION COMPOENTES ADMIN
 //import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
-import { AdminLayout } from './pages/admin/admin-layout/admin-layout';
 import { AdminUserManagementComponent } from './pages/admin/admin-user-management/admin-user-management.component';
 import { AdminArticleManagementComponent} from './pages/admin/admin-article-management/admin-article-management.component';
 import { AdminCategoryManagementComponent } from './pages/admin/admin-category-management/admin-category-management.component';
@@ -34,9 +33,24 @@ export const routes: Routes = [
   { path: 'user-edit', component: UserPageEditComponent, canActivate: [authGuard] },
   { path: 'user-sell', component: UserPageSell },
   { path: 'article-detail', component: ArticleDetailComponent },
-  { path: 'admin', component: AdminLayoutComponent, canActivate: [roleGuard(['admin'])], 
+  { path: 'admin', 
+    component: AdminLayoutComponent, 
+    canActivate: [roleGuard(['ADMIN'])], 
     children: [
-      { path: 'dashboard', component: AdminDashboardComponent}
+      { path: 'dashboard', component: AdminDashboardComponent},
+      { path: 'users', component: AdminUserManagementComponent },
+      { path: 'articles', component: AdminArticleManagementComponent },
+      { path: 'categories', component: AdminCategoryManagementComponent },
+      { path: 'reports', component: AdminReportManagementComponent },
+
+      // 👇 ESTA LÍNEA HACE QUE USERS SE CARGUE POR DEFECTO
+      { path: '', redirectTo: 'users', pathMatch: 'full' },
+      // prueba para editar usuario desde admin
+      { 
+        path: 'users/editar/:id', 
+        component: UserPageEditComponent 
+      },
+
     ]
   },
   

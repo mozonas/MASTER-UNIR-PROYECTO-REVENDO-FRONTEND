@@ -13,18 +13,14 @@
 .user-list .row {
   display: grid;
   grid-template-columns:
-    minmax(48px, 52px)
-    minmax(120px, 1fr)
-    minmax(160px, 1.3fr)
-    minmax(220px, 1.8fr)
-    minmax(120px, 1fr)
-    minmax(120px, 1fr)
-    minmax(140px, 1.2fr)
-    minmax(100px, 1fr)
-    88px
-    88px
-    88px;
-  width: 100%;
+    60px          /* id */
+    1fr           /* nombre */
+    1.2fr         /* apellidos */
+    1.6fr         /* email */
+    1fr           /* usuario */
+    1fr           /* perfil */
+    220px;        /* acciones */
+  align-items: center;
 }
 
 .user-list .header {
@@ -41,24 +37,56 @@
   background: #fafafa;
 }
 
-.user-list .header > span,
-.user-list .row > span {
-  min-width: 0;
-  box-sizing: border-box;
+.user-list span {
   padding: 10px 8px;
-  border-right: 1px solid #ececec;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  border-right: 1px solid #ececec;
 }
 
-.user-list .header > span:last-child,
-.user-list .row > span:last-child {
+.user-list span:last-child {
   border-right: none;
 }
 
-.user-list .header > span:nth-child(n+9),
-.user-list .row > span:nth-child(n+9) {
-  text-align: center;
-  white-space: nowrap;
+/* Primera columna (id) */
+.user-list .header > span:first-child,
+.user-list .row > span:first-child {
+  padding-left: 16px;
+}
+
+/* Última columna (acciones) */
+.user-list .header > span:last-child,
+.user-list .row > span:last-child {
+  padding-right: 16px;
+}
+/*imagenes iconos*/
+.icon-btn img {
+  width: 1rem;   /* ~12px */
+  height: 1rem;
+}
+
+
+/* Acciones */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.actions button {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.actions .edit { background: #e6f4ff; }
+.actions .delete { background: #ffe6e6; }
+.actions .block { background: #fff3cd; }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
