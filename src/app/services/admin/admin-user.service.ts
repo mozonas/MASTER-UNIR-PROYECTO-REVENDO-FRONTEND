@@ -24,8 +24,22 @@ export class AdminUserService {
   }
   // Método para eliminar un usuario
   deleteUser(id: number): Observable<any> {
-  return this.http.delete(`${this.apiUrl}/${id}`);
-}
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  // filtros de búsqueda
+
+  searchById(id: string) {
+    return this.http.get<any>(`/api/admin/users/search/id/${id}`);
+  }
+
+  searchByUsername(username: string) {
+    return this.http.get<any>(`/api/admin/users/search/username/${username}`);
+  }
+
+  searchByEmail(email: string) {
+    return this.http.get<any>(`/api/admin/users/search/email/${email}`);
+  }
 
 
 }

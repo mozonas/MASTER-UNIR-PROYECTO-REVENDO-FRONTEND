@@ -2,11 +2,13 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminUserService } from '../../../services/admin/admin-user.service';
 import { UserPageEditComponent } from '../../user/user-page-edit/user-page-edit';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-admin-user-management',
   templateUrl: './admin-user-management.component.html',
   styleUrls: ['./admin-user-management.component.css'],
+  imports: [FormsModule]
 })
 export class AdminUserManagementComponent implements OnInit {
 
@@ -14,6 +16,9 @@ export class AdminUserManagementComponent implements OnInit {
   page = 1;
   limit = 20;
   totalPages = 1;
+  searchId: string = '';
+  searchUsername: string = '';
+  searchEmail: string = '';
 
   constructor(
     private adminUserService: AdminUserService,
@@ -80,11 +85,61 @@ export class AdminUserManagementComponent implements OnInit {
 
     this.adminUserService.toggleBlockUser(user.id, newState).subscribe({
       next: () => {
-        user.isBlocked = newState; // actualizar en la tabla sin recargar
+       this.loadUsers();
       },
       error: (err) => console.error(err)
     });
   }
+
+  //filtros
+    searchById() {
+    if (!this.searchId.trim()) {
+      this.loadUsers(); // si está vacío, carga todo
+      return;
+    }
+
+    this.adminUserService.searchById(this.searchId).subscribe({
+      next: (res) => {
+        this.users = res.users;
+        this.totalPages = 1;
+        this.page = 1;
+        this.cdr.detectChanges();
+      }
+    });
+    }
+
+    searchByUsername() {
+    if (!this.searchUsername.trim()) {
+      this.loadUsers();
+      return;
+    }
+
+    this.adminUserService.searchByUsername(this.searchUsername).subscribe({
+      next: (res) => {
+        this.users = res.users;
+        this.totalPages = 1;
+        this.page = 1;
+        this.cdr.detectChanges();
+      }
+    });
+    }
+
+    searchByEmail() {
+    if (!this.searchEmail.trim()) {
+      this.loadUsers();
+      return;
+    }
+
+    this.adminUserService.searchByEmail(this.searchEmail).subscribe({
+    next: (res) => {
+      this.users = res.users;
+      this.totalPages = 1;
+      this.page = 1;
+      this.cdr.detectChanges();
+    }
+    });
+    }
+
 
 
 }

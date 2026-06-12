@@ -1,3 +1,47 @@
+<div class="filters">
+
+  <!-- Buscar por ID -->
+  <div class="filter-item">
+    <input
+      type="text"
+      placeholder="Buscar ID"
+      [(ngModel)]="searchId"
+    />
+    <button (click)="searchById()">
+      <img src="/images/lupa.png" alt="Buscar ID" />
+    </button>
+  </div>
+
+  <!-- Buscar por usuario -->
+  <div class="filter-item">
+    <input
+      type="text"
+      placeholder="Buscar usuario"
+      [(ngModel)]="searchUsername"
+    />
+    <button (click)="searchByUsername()">
+      <img src="/images/lupa.png" alt="Buscar usuario" />
+    </button>
+  </div>
+
+  <!-- Buscar por email -->
+  <div class="filter-item">
+    <input
+      type="text"
+      placeholder="Buscar email"
+      [(ngModel)]="searchEmail"
+    />
+    <button (click)="searchByEmail()">
+      <img src="/images/lupa.png" alt="Buscar email" />
+    </button>
+  </div>
+
+</div>
+
+
+
+
+
 <ul class="user-list">
 
   <li class="header">
@@ -29,8 +73,12 @@
         </button>
 
         <button class="icon-btn block" (click)="onToggleBlock(u)">
-          <img src="/images/ico-bloquear.svg" alt="Bloquear" />
-        </button>
+        <img 
+          [src]="u.isBlocked ? '/images/ico-bloquear.svg' : '/images/ico-desbloquear.svg'" 
+          [alt]="u.isBlocked ? 'Bloqueado' : 'Desbloqueado'"
+        />
+      </button>
+
       </span>
 
 
