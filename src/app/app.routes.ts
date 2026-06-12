@@ -28,7 +28,7 @@ export const routes: Routes = [
   { path: 'user-edit', component: UserPageEditComponent, canActivate: [authGuard] },
   { path: 'user-sell', component: UserPageSell },
   { path: 'article-detail', component: ArticleDetailComponent },
-  { path: 'admin', component: AdminLayoutComponent, canActivate: [roleGuard(['admin'])], 
+  { path: 'admin', component: AdminLayoutComponent, //canActivate: [roleGuard(['admin'])], 
     children: [
       { path: 'dashboard', component: AdminDashboardComponent}
     ]

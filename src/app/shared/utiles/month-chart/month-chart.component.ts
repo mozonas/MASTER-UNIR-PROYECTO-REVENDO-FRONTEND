@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import  Chart  from 'chart.js/auto';
-import { TransactionsServices } from '../../../../services/transactions.service';
+import { TransactionsServices } from '../../../services/transactions.service';
+
 
 @Component({
   selector: 'app-month-chart',
@@ -8,30 +9,46 @@ import { TransactionsServices } from '../../../../services/transactions.service'
   templateUrl: './month-chart.component.html',
   styleUrl: './month-chart.component.css',
 })
+
 export class MonthChartComponent {
   // llamada servicio ventas mes
   private transaction = inject (TransactionsServices)
+  mes ='';
 
-  // cargo con el mes actual
-  ngOnInit (){
-    const mesActual = new Date().getMonth() +1;
-    this.generarGraficaVentasMes(mesActual);
+
+ ngOnInit(){
+      const mesActual = new Date().getMonth() + 1;
+      this.cargarVentas(mesActual);
   }
 
-  generarGraficaVentasMes(month:number) {
-    // array de ventas diarias 30 dias
-      this.transaction.getVentasMensuales(month).subscribe (data =>{
-      this.pintarGrafica (data.ventas);
+  cargarVentas(month:number) {
+    // recoger año actual y obtener el mes y los datos
+      const year = new Date().getFullYear();
+      this.mes = new Date(year, month - 1).toLocaleString('es-ES', { month: 'long' })
+      this.transaction.getVentasMensuales(month,year).subscribe (data =>{
+        //dias al mes segun el año
+        const totalDias = new Date (year,month, 0).getDate();
+
+        // agrupo en un array el total de dias del mes con sus posiciones
+        const ventas = Array (totalDias).fill (0);
+
+        // recoger ventas totales al dia
+        data.forEach (item =>{
+          ventas[item.dia -1] = item.total;
+        });
+
+        // recorrer y pinta el array de dias
+        const dias: string[] = [];
+        for (let i = 1; i <= totalDias; i++) {
+        dias.push(`Día ${i}`);
+        }
+        
+        this.pintarGrafica (dias, ventas);
     })
   }
     
-  pintarGrafica (ventas:number[]){
-    // Últimos 30 días
-      const dias = [];
-        for (let i = 0; i < 30; i++) {
-         dias.push(`Día ${i + 1}`);
-        }
-  
+  pintarGrafica (dias: string [], ventas:number[]){
+   
       new Chart('ventasMesChart', {
         type: 'bar',
         data: {
@@ -51,17 +68,24 @@ export class MonthChartComponent {
           responsive: true,
           maintainAspectRatio: false,
            layout: {
-             padding: {
-             bottom: 20   
-          }
-    },
-          scales: {
-            
-            y: { beginAtZero: true }
+             padding: {bottom: 20 }
+           },
+           scales: {
+            x:{
+              ticks: {
+                autoSkip: false
+              }
+            },
+            y: { 
+              beginAtZero: true,
+              suggestedMax: Math.max(...ventas) + 1,
+              ticks: {stepSize: 1, precision: 0}
+            }
           }
         }
-      });
-    }
+      }
+    )};
+    
   }
 
   

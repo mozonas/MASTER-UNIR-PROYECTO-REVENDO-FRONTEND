@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import  Chart  from 'chart.js/auto';
 import { TransactionsServices } from '../../../services/transactions.service';
-import {  firstValueFrom } from 'rxjs';
+import {  forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-main-chart',
@@ -12,38 +12,41 @@ import {  firstValueFrom } from 'rxjs';
 
 export class MainChartComponent {
   
-  // del servicio: articulos vendidos por año
-  private transaction = inject (TransactionsServices)
-  
+// del servicio: articulos vendidos por año
+private transaction = inject (TransactionsServices)
 
-  ngOnInit() {
-    this.generarGraficaVentas();
-  }
-
-
-async generarGraficaVentas (){
-
-  //Obtener años
-  const thisYear = new Date().getFullYear()
-  const lastYear = thisYear -1;
-  
-  // Obtengo datos de los dos años
-  try{
-    const dataActual = await firstValueFrom (this.transaction.getVentasAnuales(thisYear));
-    const dataAnterior = await firstValueFrom(this.transaction.getVentasAnuales(lastYear));
-  
-    // a partir de los datos obtenidos extraigo las ventas mensuales para pintarlas en la gráfica segun año correspondiente
-    this.pintarGrafica (dataActual.ventas, dataAnterior.ventas, thisYear, lastYear);
-  
-  }catch (err){
-    console.error (err);
-  }
-
+ngOnInit(){
+  this.comparativaYears()
 }
-// método pintado de gráfica
-pintarGrafica ( ventasActual: number [], ventasAnterior: number [],thisYear: number, lastYear:number){
 
-const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun','Jul'];
+comparativaYears (){
+  const year = new Date().getFullYear();
+  const lastYear = year -1;
+  const mesActual = new Date().getMonth()+1;
+
+  forkJoin({
+    actual: this.transaction.getVentasAnuales(year),
+    anterior: this.transaction.getVentasAnuales(lastYear) }).subscribe(({ actual, anterior }) => {
+
+    const ventasActual = Array(12).fill(0);
+    const ventasAnterior = Array(12).fill(0);
+
+    actual.forEach(item => ventasActual[item.mes - 1] = item.total);
+    anterior.forEach(item => ventasAnterior[item.mes - 1] = item.total);
+
+    ventasActual.length = mesActual;
+    ventasAnterior.length = mesActual;
+
+    this.pintarGrafica(ventasActual, ventasAnterior, year, lastYear, mesActual);
+  })
+}
+
+ 
+// método pintado de gráfica
+pintarGrafica ( ventasActual: number [], ventasAnterior: number [], thisYear: number, lastYear:number, mesActual:any){
+
+  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
+    .slice(0, mesActual);
 
   new Chart('ventasAnualesChart', {
         type: 'line',

@@ -1,7 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 
+
+export interface VentasDia {
+  dia: number;
+  total: number;
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -13,11 +17,13 @@ export class TransactionsServices {
   // Obtener ventas al mes anuales
 
   getVentasAnuales(year:number){
-    return this.http.get <{ ventas: number[] }>(`${this.apiUrl}/anual/${year}`);
+    return this.http.get <{mes:number;total: number}[]>(`${this.apiUrl}/anual/${year}`);
   }
 
-  getVentasMensuales (month:number){
-    return this.http.get <{ ventas: number[] }>( `${this.apiUrl}/mensual/${month}`,);
+    // Ventas diarias de un mes
+  getVentasMensuales(month: number, year: number) {
+    return this.http.get<VentasDia[]>(
+      `${this.apiUrl}/mensual/${month}?year=${year}`
+    );
   }
-
 }
