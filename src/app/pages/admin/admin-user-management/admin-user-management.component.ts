@@ -92,53 +92,69 @@ export class AdminUserManagementComponent implements OnInit {
   }
 
   //filtros
-    searchById() {
-    if (!this.searchId.trim()) {
-      this.loadUsers(); // si está vacío, carga todo
-      return;
-    }
+    // =========================
+//   BUSCAR POR ID (único)
+// =========================
+searchById() {
+  if (!this.searchId.trim()) {
+    this.loadUsers();   // si está vacío → carga todo
+    return;
+  }
+  // limpiar otros filtros
+  this.searchUsername = '';
+  this.searchEmail = '';
 
-    this.adminUserService.searchById(this.searchId).subscribe({
-      next: (res) => {
-        this.users = res.users;
-        this.totalPages = 1;
-        this.page = 1;
-        this.cdr.detectChanges();
-      }
-    });
-    }
-
-    searchByUsername() {
-    if (!this.searchUsername.trim()) {
-      this.loadUsers();
-      return;
-    }
-
-    this.adminUserService.searchByUsername(this.searchUsername).subscribe({
-      next: (res) => {
-        this.users = res.users;
-        this.totalPages = 1;
-        this.page = 1;
-        this.cdr.detectChanges();
-      }
-    });
-    }
-
-    searchByEmail() {
-    if (!this.searchEmail.trim()) {
-      this.loadUsers();
-      return;
-    }
-
-    this.adminUserService.searchByEmail(this.searchEmail).subscribe({
+  this.adminUserService.searchById(this.searchId).subscribe({
     next: (res) => {
-      this.users = res.users;
-      this.totalPages = 1;
-      this.page = 1;
-      this.cdr.detectChanges();
-    }
-    });
-    }
+      // el backend devuelve un único usuario
+      this.users = res.user ? [res.user] : [];
+    },
+    error: (err) => console.error(err)
+  });
+}
+
+
+// =============================
+//   BUSCAR POR USERNAME (único)
+// =============================
+searchByUsername() {
+  if (!this.searchUsername.trim()) {
+    this.loadUsers();
+    return;
+  }
+  // limpiar otros filtros
+  this.searchId = '';
+  this.searchEmail = '';
+
+  this.adminUserService.searchByUsername(this.searchUsername).subscribe({
+    next: (res) => {
+      this.users = res.user ? [res.user] : [];
+    },
+    error: (err) => console.error(err)
+  });
+}
+
+
+// =========================
+//   BUSCAR POR EMAIL (único)
+// =========================
+searchByEmail() {
+  if (!this.searchEmail.trim()) {
+    this.loadUsers();
+    return;
+  }
+  // limpiar otros filtros
+  this.searchId = '';
+  this.searchUsername = '';
+
+  this.adminUserService.searchByEmail(this.searchEmail).subscribe({
+    next: (res) => {
+      this.users = res.user ? [res.user] : [];
+    },
+    error: (err) => console.error(err)
+  });
+}
+
 
 
 

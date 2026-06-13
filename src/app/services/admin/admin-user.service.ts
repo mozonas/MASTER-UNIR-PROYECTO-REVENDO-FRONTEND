@@ -30,16 +30,18 @@ export class AdminUserService {
   // filtros de búsqueda
 
   searchById(id: string) {
-    return this.http.get<any>(`/api/admin/users/search/id/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/search/id/${id}`);
   }
 
   searchByUsername(username: string) {
-    return this.http.get<any>(`/api/admin/users/search/username/${username}`);
+    return this.http.get<any>(`${this.apiUrl}/search/username/${username}`);
   }
 
   searchByEmail(email: string) {
-    return this.http.get<any>(`/api/admin/users/search/email/${email}`);
+    return this.http.get<any>(`${this.apiUrl}/search/email/${email}`);
+  }
+
   }
 
 
-}
+

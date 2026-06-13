@@ -2,11 +2,10 @@
 
   <!-- Buscar por ID -->
   <div class="filter-item">
-    <input
-      type="text"
-      placeholder="Buscar ID"
-      [(ngModel)]="searchId"
-    />
+    <input type="text" 
+    placeholder="Buscar por id usuario"
+    [(ngModel)]="searchId" 
+    (keyup.enter)="searchById()">
     <button (click)="searchById()">
       <img src="/images/lupa.png" alt="Buscar ID" />
     </button>
@@ -18,6 +17,7 @@
       type="text"
       placeholder="Buscar usuario"
       [(ngModel)]="searchUsername"
+      (keyup.enter)="searchByUsername()"
     />
     <button (click)="searchByUsername()">
       <img src="/images/lupa.png" alt="Buscar usuario" />
@@ -30,6 +30,7 @@
       type="text"
       placeholder="Buscar email"
       [(ngModel)]="searchEmail"
+      (keyup.enter)="searchByEmail()"
     />
     <button (click)="searchByEmail()">
       <img src="/images/lupa.png" alt="Buscar email" />
