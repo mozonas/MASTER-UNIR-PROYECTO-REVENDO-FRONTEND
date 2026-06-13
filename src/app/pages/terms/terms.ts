@@ -1,15 +1,26 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderMenuComponent } from "../../shared/headers/header-menu/header-menu.component";
-import { FooterComponent } from "../../shared/footer/footer.component";
 
 @Component({
   selector: 'app-terms',
   standalone: true,
-  imports: [CommonModule, HeaderMenuComponent, FooterComponent],
+  imports: [CommonModule],
   templateUrl: './terms.html',
-  styleUrls: ['./terms.css']
+  styleUrl: './terms.css'
 })
 export class TermsComponent {
-  currentDate = new Date().toLocaleDateString();
+  // Formateo premium (Ej: "11 de junio de 2026") en lugar del formato numérico simple
+  currentDate: string = new Date().toLocaleDateString('es-ES', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  /**
+   * Dispara la acción de impresión nativa del navegador.
+   * Ideal para que el usuario pueda guardar los términos en PDF.
+   */
+  printDocument(): void {
+    window.print();
+  }
 }

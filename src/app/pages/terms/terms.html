@@ -1,58 +1,88 @@
-<app-header-menu></app-header-menu>
+<div class="container py-5 px-3">
+    <div class="card revendo-legal-card border-0 rounded-4 shadow-sm mx-auto overflow-hidden" style="max-width: 1000px;">
 
-<div class="min-vh-100 bg-page-terms py-5 px-3">
-    <div class="card border-light-subtle rounded-4 shadow-sm p-4 p-md-5 mx-auto" style="max-width: 760px;">
-        <div class="card-body p-0">
+        <!-- Barra de acento de marca -->
+        <div class="revendo-accent-bar"></div>
 
-            <header>
-                <span
-                    class="badge bg-secondary-subtle text-secondary-emphasis text-uppercase tracking-wider px-3 py-2 mb-3 fw-bold small-badge">
-                    Contrato de Uso
-                </span>
-                <h1 class="h2 fw-bold text-dark tracking-tight mb-1">Términos y Condiciones</h1>
-                <p class="text-muted small mb-0">Última revisión: {{ currentDate }}</p>
+        <div class="card-body p-4 p-md-5">
+            <!-- Encabezado del Documento -->
+            <header class="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-3 mb-4">
+                <div>
+                    <h1 class="display-4 fw-black tracking-tighter text-dark lh-sm mb-3">Términos y Condiciones</h1>
+                    <p class="text-muted small mb-0 d-flex align-items-center gap-2">
+                        <i class="fas fa-calendar-alt"></i>
+                        Última revisión: <span class="fw-medium text-secondary">{{ currentDate }}</span>
+                    </p>
+                </div>
+
+                <!-- Acciones rápidas (Estéticas) -->
+                <div class="d-flex gap-2 ctrl-actions pt-1">
+                    <button (click)="printDocument()" class="btn btn-link p-2 text-secondary rounded-circle"
+                        title="Imprimir Contrato">
+                        <i class="fas fa-print"></i>
+                    </button>
+                    <div class="vr my-2 text-secondary opacity-25"></div>
+                    <span class="badge text-body-secondary bg-light border d-flex align-items-center gap-1 px-2.5 py-2">
+                        <i class="fas fa-clock"></i>
+                        3 min lectura
+                    </span>
+                </div>
             </header>
 
-            <hr class="text-secondary opacity-25 my-4">
+            <hr class="border-secondary-subtle my-4">
 
-            <article>
+            <!-- Cuerpo legal -->
+            <article class="revendo-legal-content">
 
-                <section class="mb-4">
-                    <h2 class="h5 fw-bold text-dark mb-2">1. Aceptación del Acuerdo</h2>
-                    <p class="text-body-secondary lh-base">
-                        Al acceder, descargar o interactuar con la plataforma <strong
-                            class="text-dark">ReVendo</strong>, confirmas de manera inequívoca que aceptas estos
-                        Términos y Condiciones. Si no estás de acuerdo con alguna de las cláusulas aquí descritas,
-                        deberás suspender el uso de nuestros servicios inmediatamente.
-                    </p>
+                <section class="legal-section">
+                    <div class="section-number color-brand">01</div>
+                    <div class="section-body">
+                        <h2 class="h5 fw-bold text-dark-emphasis mb-2">Aceptación del Acuerdo</h2>
+                        <p class="text-secondary-emphasis lh-relaxed">
+                            Al acceder, descargar o interactuar con la plataforma <strong
+                                class="text-dark">ReVendo</strong>, confirmas de manera inequívoca que aceptas estos
+                            Términos y Condiciones. Si no estás de acuerdo con alguna de las cláusulas aquí descritas,
+                            deberás suspender el uso de nuestros servicios inmediatamente.
+                        </p>
+                    </div>
                 </section>
 
-                <section class="mb-4">
-                    <h2 class="h5 fw-bold text-dark mb-2">2. Elegibilidad del Usuario</h2>
-                    <p class="text-body-secondary lh-base">
-                        Para poder publicar artículos o realizar ofertas de compra en ReVendo debes ostentar la mayoría
-                        de edad (18 años) o, en su defecto, operar bajo la estricta tutela e implicación de un padre o
-                        tutor legal que asume la responsabilidad financiera.
-                    </p>
+                <section class="legal-section">
+                    <div class="section-number color-brand">02</div>
+                    <div class="section-body">
+                        <h2 class="h5 fw-bold text-dark-emphasis mb-2">Elegibilidad del Usuario</h2>
+                        <p class="text-secondary-emphasis lh-relaxed">
+                            Para poder publicar artículos o realizar ofertas de compra en ReVendo debes ostentar la
+                            mayoría de edad (18 años) o, en su defecto, operar bajo la estricta tutela e implicación de
+                            un padre o tutor legal que asume la responsabilidad financiera del perfil.
+                        </p>
+                    </div>
                 </section>
 
-                <section class="mb-4">
-                    <h2 class="h5 fw-bold text-dark mb-2">3. Política de Moderación y Contenido</h2>
-                    <p class="text-body-secondary lh-base">
-                        Está prohibida la publicación de réplicas, productos falsificados, armas, software ilegal o
-                        cualquier objeto que vulnere los derechos de propiedad intelectual. Nuestro equipo técnico
-                        ejerce una rigurosa moderación y tiene potestad para eliminar contenido o banear perfiles de
-                        forma inmediata.
-                    </p>
+                <section class="legal-section">
+                    <div class="section-number color-brand">03</div>
+                    <div class="section-body">
+                        <h2 class="h5 fw-bold text-dark-emphasis mb-2">Política de Moderación y Contenido</h2>
+                        <p class="text-secondary-emphasis lh-relaxed">
+                            Está prohibida la publicación de réplicas, productos falsificados, armas, software ilegal o
+                            cualquier objeto que vulnere los derechos de propiedad intelectual. Nuestro equipo técnico
+                            ejerce una rigurosa moderación y tiene potestad para eliminar contenido o suspender perfiles
+                            de forma inmediata.
+                        </p>
+                    </div>
                 </section>
 
-                <section class="mb-0">
-                    <h2 class="h5 fw-bold text-dark mb-2">4. Tarifas y Pasarela de Pago</h2>
-                    <p class="text-body-secondary lh-base">
-                        Registrarse y subir productos en ReVendo es completamente gratuito. No obstante, para garantizar
-                        envíos seguros y soporte ante fraudes, aplicamos una pequeña tasa de gestión del servicio al
-                        comprador en cada operación, detallada con transparencia antes de confirmar el pago.
-                    </p>
+                <section class="legal-section border-0 pb-0 mb-0">
+                    <div class="section-number color-brand">04</div>
+                    <div class="section-body">
+                        <h2 class="h5 fw-bold text-dark-emphasis mb-2">Tarifas y Pasarela de Pago</h2>
+                        <p class="text-secondary-emphasis lh-relaxed">
+                            Registrarse y subir productos en ReVendo es completamente gratuito. No obstante, para
+                            garantizar envíos seguros y soporte ante fraudes, aplicamos una pequeña tasa de gestión del
+                            servicio al comprador en cada operación, detallada con transparencia antes de confirmar el
+                            pago.
+                        </p>
+                    </div>
                 </section>
 
             </article>
@@ -60,5 +90,3 @@
         </div>
     </div>
 </div>
-
-<app-footer></app-footer>

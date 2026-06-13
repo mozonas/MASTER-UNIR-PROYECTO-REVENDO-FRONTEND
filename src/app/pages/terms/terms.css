@@ -1,21 +1,90 @@
-/* Color de fondo personalizado para el ecosistema ReVendo */
-.bg-page-terms {
-    background-color: #f8fafc;
+/* Contenedor principal de la tarjeta */
+.revendo-legal-card {
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    position: relative;
+    background-color: paper;
 }
 
-/* Espaciados micro-tipográficos */
+/* Barra superior de acento */
+.revendo-accent-bar {
+    height: 5px;
+    width: 100%;
+    background: linear-gradient(90deg, var(--revendo-primary), #34d399);
+}
+
+/* Tipografía y Espaciados Finos */
 .tracking-tight {
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
 }
 
-.tracking-wider {
-    letter-spacing: 0.05em;
+/* Layout estructurado por secciones */
+.legal-section {
+    display: flex;
+    gap: 1.25rem;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.75rem;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
 }
 
-.small-badge {
-    font-size: 0.75rem;
+/* Indicadores numéricos minimalistas */
+.section-number {
+    font-family: monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--revendo-primary);
+    background-color: var(--revendo-bg-badge);
+    height: 32px;
+    width: 32px;
+    min-width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
 }
 
-p {
-    font-size: 0.975rem;
+.section-body h2 {
+    font-size: 1.05rem;
+}
+
+.section-body p {
+    font-size: 0.95rem;
+    color: #4b5563;
+    /* Gris neutro de alta legibilidad web */
+    text-align: justify;
+}
+
+/* Botones de acción rápidos */
+.ctrl-actions .btn-link {
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ctrl-actions .btn-link:hover {
+    background-color: #f3f4f6;
+}
+
+/* Responsividad menor */
+@media (max-width: 576px) {
+    .legal-section {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .section-body p {
+        text-align: left;
+    }
+}
+
+.tracking-tighter {
+    letter-spacing: -0.04em;
+}
+
+.fw-black {
+    font-weight: 900;
+}
+
+.color-brand {
+    color: rgba(122, 168, 76, 0.88);
 }

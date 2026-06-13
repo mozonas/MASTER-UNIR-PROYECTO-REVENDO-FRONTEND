@@ -1,6 +1,4 @@
-import { Component, signal } from '@angular/core';
-import { HeaderMenuComponent } from "../../shared/headers/header-menu/header-menu.component";
-import { FooterComponent } from "../../shared/footer/footer.component";
+import { Component, signal, computed } from '@angular/core';
 
 interface FAQ {
   category: string;
@@ -11,12 +9,14 @@ interface FAQ {
 @Component({
   selector: 'app-help',
   standalone: true,
-  imports: [HeaderMenuComponent, FooterComponent],
   templateUrl: './help.html',
   styleUrl: './help.css'
 })
 export class HelpComponent {
-  // Base de datos de FAQs
+  // Categoría seleccionada por el usuario (por defecto 'Todas')
+  selectedCategory = signal<string>('Todas');
+
+  // Base de datos original de FAQs
   faqs = signal<FAQ[]>([
     {
       category: 'Ventas',
@@ -50,8 +50,22 @@ export class HelpComponent {
     }
   ]);
 
+  // Extrae automáticamente las categorías únicas + la opción global
+  categories = computed(() => {
+    const rawCategories = this.faqs().map(f => f.category);
+    return ['Todas', ...new Set(rawCategories)];
+  });
+
+  // Filtra las FAQs reactivamente según la pestaña activa
+  filteredFaqs = computed(() => {
+    const activeCategory = this.selectedCategory();
+    if (activeCategory === 'Todas') {
+      return this.faqs();
+    }
+    return this.faqs().filter(f => f.category === activeCategory);
+  });
+
   onContactSupport(): void {
-    // Aquí puedes añadir la lógica real, ej: inyectar un servicio de Router o abrir un chat
     console.log('Redirigiendo al canal de soporte técnico de ReVendo...');
   }
 }

@@ -6,13 +6,11 @@ import { AuthService } from '../../../services/auth.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Usuario } from '../../../interfaces/user.interface';
 import { UserPageSell } from '../user-page-sell/user-page-sell';
-import { FooterComponent } from "../../../shared/footer/footer.component";
-import { HeaderMenuComponent } from "../../../shared/headers/header-menu/header-menu.component";
 
 @Component({
   selector: 'app-user-page-info',
   standalone: true,
-  imports: [CommonModule, UserPageSell, FooterComponent, HeaderMenuComponent],
+  imports: [CommonModule, UserPageSell ],
   templateUrl: './user-page-info.html',
   styleUrls: ['./user-page-info.css']
 })

@@ -20,7 +20,7 @@
 }
 
 .btn-revendo {
-    background-color: white;
+    background-color: #ffffff;
     color: #000000;
     transition: transform 0.1s ease, background-color 0.2s ease;
 }
@@ -33,4 +33,12 @@
 
 .btn-revendo:active {
     transform: scale(0.98);
+}
+
+.tracking-tighter {
+    letter-spacing: -0.04em;
+}
+
+.fw-black {
+    font-weight: 900;
 }
