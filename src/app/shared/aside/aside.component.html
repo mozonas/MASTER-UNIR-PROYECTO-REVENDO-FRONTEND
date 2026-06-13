@@ -50,89 +50,101 @@
       </symbol>
    </svg>
    <div class="sidebar col-md-3 col-lg-2 p-0">
-      <ul class="nav flex-column">
-         <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" [routerLink]="['/admin/dashboard']">
-               <svg class="bi">
-                  <use xlink:href="#house-fill"></use>
-               </svg>
-               Dashboard
-            </a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
-               <svg class="bi">
-                  <use xlink:href="#file-earmark"></use>
-               </svg>
-               Categorias
-            </a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
-               <svg class="bi">
-                  <use xlink:href="#cart"></use>
-               </svg>
-               Artículos
-            </a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
-               <svg class="bi">
-                  <use xlink:href="#people"></use>
-               </svg>
-               Gestión de usuarios
-            </a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
-               <svg class="bi">
-                  <use xlink:href="#graph-up"></use>
-               </svg>
-               Estadísticas
-            </a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
-               <svg class="bi">
-                  <use xlink:href="#puzzle"></use>
-               </svg>
-               Reportes
-            </a>
-         </li>
-      </ul>
-      <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-uppercase">
-         <span>Actividad reciente</span>
-         <a (click)="desplegarMenu()" class="d-flex align-items-center dropdown-arrow">
-         <img class="dropdown-arrow" src="/images/flecha_abajo.svg" alt="flecha_abajo">
-         </a>
-      </h6>
-      @if (actividadOpen) {
+
+    <ul class="nav flex-column">
+
+      <!-- DASHBOARD -->
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center gap-2"
+           routerLink="/admin/dashboard"
+           routerLinkActive="active">
+          <svg class="bi"><use xlink:href="#house-fill"></use></svg>
+          Dashboard
+        </a>
+      </li>
+
+      <!-- CATEGORÍAS -->
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center gap-2"
+           routerLink="/admin/categories"
+           routerLinkActive="active">
+          <svg class="bi"><use xlink:href="#file-earmark"></use></svg>
+          Categorías
+        </a>
+      </li>
+
+      <!-- ARTÍCULOS -->
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center gap-2"
+           routerLink="/admin/articles"
+           routerLinkActive="active">
+          <svg class="bi"><use xlink:href="#cart"></use></svg>
+          Artículos
+        </a>
+      </li>
+
+      <!-- USUARIOS -->
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center gap-2"
+           routerLink="/admin/users"
+           routerLinkActive="active">
+          <svg class="bi"><use xlink:href="#people"></use></svg>
+          Gestión de usuarios
+        </a>
+      </li>
+
+      <!-- ESTADÍSTICAS -->
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center gap-2"
+           routerLink="/admin/stats"
+           routerLinkActive="active">
+          <svg class="bi"><use xlink:href="#graph-up"></use></svg>
+          Estadísticas
+        </a>
+      </li>
+
+      <!-- REPORTES -->
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center gap-2"
+           routerLink="/admin/reports"
+           routerLinkActive="active">
+          <svg class="bi"><use xlink:href="#puzzle"></use></svg>
+          Reportes
+        </a>
+      </li>
+
+    </ul>
+
+    <!-- ACTIVIDAD RECIENTE -->
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-uppercase">
+      <span>Actividad reciente</span>
+      <a (click)="desplegarMenu()" class="d-flex align-items-center dropdown-arrow">
+        <img class="dropdown-arrow" src="/images/flecha_abajo.svg" alt="flecha_abajo">
+      </a>
+    </h6>
+
+    @if (actividadOpen) {
       <ul id="actividad-menu" class="listado">
-         <li>
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
-               <svg class="bi">
-                  <use xlink:href="#file-earmark-text"></use>
-               </svg>
-               Diaria
-            </a>
-         </li>
-         <li>
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
-               <svg class="bi">
-                  <use xlink:href="#file-earmark-text"></use>
-               </svg>
-               Último mes
-            </a>
-         </li>
-         <li>
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
-               <svg class="bi">
-                  <use xlink:href="#file-earmark-text"></use>
-               </svg>
-               Último trimestre
-            </a>
-         </li>
+        <li>
+          <a class="nav-link d-flex align-items-center gap-2">
+            <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg>
+            Diaria
+          </a>
+        </li>
+        <li>
+          <a class="nav-link d-flex align-items-center gap-2">
+            <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg>
+            Último mes
+          </a>
+        </li>
+        <li>
+          <a class="nav-link d-flex align-items-center gap-2">
+            <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg>
+            Último trimestre
+          </a>
+        </li>
       </ul>
-      }
-   </div>
+    }
+
+  </div>
 </div>
