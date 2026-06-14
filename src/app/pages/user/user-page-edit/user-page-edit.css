@@ -1,0 +1,44 @@
+/* Forzar mayúsculas en subetiquetas de inputs */
+.tracking-wider {
+    letter-spacing: 0.05em;
+}
+
+.fs-7 {
+    font-size: 0.85rem !important;
+}
+
+.fs-8 {
+    font-size: 0.75rem !important;
+}
+
+.btn-primary {
+    background-color: #6ab03b !important;
+    border-color: #6ab03b !important;
+}
+
+.btn-primary:hover {
+    background-color: #4e8a2f !important;
+    border-color: #4e8a2f !important;
+}
+
+.form-control:focus {
+    border-color: #6ab03b;
+    box-shadow: 0 0 0 0.25rem rgba(106, 176, 59, 0.15);
+}
+
+/* Evita que el usuario estire el textarea de la biografía hacia los lados 
+   rompiendo el diseño de la tarjeta */
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Ajuste estético para el input-group de la ubicación (icono del mapa) */
+.input-group .input-group-text {
+    border-end-start-radius: 0.5rem;
+    border-start-start-radius: 0.5rem;
+}
+
+.input-group .form-control#ubicacion {
+    border-left: none;
+}

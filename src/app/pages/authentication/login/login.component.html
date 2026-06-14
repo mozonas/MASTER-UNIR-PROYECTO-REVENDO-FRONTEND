@@ -1,31 +1,37 @@
+<app-header-menu [mostrarMenu]="false"></app-header-menu>
+
 <div class="login-wrapper">
-  <div class="login-container">
-    <div class="logo">
-      <img src="images/logo_revendo.png" alt="logo">
-    </div>
-    
-    <div class="login-form">
-      <h2>INICIAR SESIÓN</h2>
-      
-      <form>
-        <div class="form-group">
-          <input 
-            type="email" 
-            placeholder="Email" 
-            class="input-field"
-            required>
-        </div>
-        
-        <div class="form-group">
-          <input 
-            type="password" 
-            placeholder="Contraseña" 
-            class="input-field"
-            required>
-        </div>
-        
-        <button type="submit" class="btn-login">LOGIN</button>
-      </form>
-    </div>
+
+
+  <div class="login-form">
+    <h2>INICIAR SESIÓN</h2>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+      <div class="form-group">
+        <input type="email" placeholder="Email" class="input-field" formControlName="email" />
+
+        @if (form.get('email')?.invalid && form.get('email')?.touched) {
+        <small class="error">El email es obligatorio y debe ser válido</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <input type="password" placeholder="Contraseña" class="input-field" formControlName="password" />
+
+        @if (form.get('password')?.invalid && form.get('password')?.touched) {
+        <small class="error">La contraseña es obligatoria</small>
+        }
+      </div>
+
+      <button type="submit" class="btn-login" [disabled]="loading()">
+        {{ loading() ? 'Cargando...' : 'LOGIN' }}
+      </button>
+
+      @if (errorMessage()) {
+      <p class="error">{{ errorMessage() }}</p>
+      }
+
+    </form>
   </div>
 </div>
