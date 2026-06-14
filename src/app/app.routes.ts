@@ -17,9 +17,7 @@ import { ModerationComponent } from './pages/moderation/moderation.component';
 //11062026 MOG IMPORTACION COMPOENTES ADMIN
 //import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 import { AdminUserManagementComponent } from './pages/admin/admin-user-management/admin-user-management.component';
-import { AdminArticleManagementComponent} from './pages/admin/admin-article-management/admin-article-management.component';
 import { AdminCategoryManagementComponent } from './pages/admin/admin-category-management/admin-category-management.component';
-import { AdminReportManagementComponent} from './pages/admin/admin-report-management/admin-report-management.component';
 
 
 import { roleGuard } from './guards/role.guard';
@@ -39,9 +37,7 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: AdminDashboardComponent},
       { path: 'users', component: AdminUserManagementComponent },
-      { path: 'articles', component: AdminArticleManagementComponent },
       { path: 'categories', component: AdminCategoryManagementComponent },
-      { path: 'reports', component: AdminReportManagementComponent },
 
       // 👇 ESTA LÍNEA HACE QUE USERS SE CARGUE POR DEFECTO
       { path: '', redirectTo: 'users', pathMatch: 'full' },

@@ -5,6 +5,9 @@ import { Router } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
 import { Usuario } from '../../../interfaces/user.interface';
+// mog 140620226 -> edición usuario como admin
+import { ActivatedRoute } from '@angular/router';
+
 
 @Component({
   selector: 'app-user-page-edit',
@@ -29,10 +32,12 @@ export class UserPageEditComponent implements OnInit {
   // Guardará la URL en base64 para previsualizar la foto al instante
   fotoPreview: string | null = null;
 
-  ngOnInit(): void {
-    this.initForm();
-    this.cargarDatosUsuario();
-  }
+ ngOnInit(): void {
+  this.initForm();
+  this.resolverUserId();   // ✔ primero obtenemos el ID correcto
+  this.cargarDatosUsuario(); // ✔ ahora sí podemos cargar datos
+}
+
 
   private initForm(): void {
     this.editForm = this.fb.group({
@@ -49,8 +54,10 @@ export class UserPageEditComponent implements OnInit {
   }
 
   private cargarDatosUsuario(): void {
-    const userIdParaEditar = this.authService.getUserId();
+    //const userIdParaEditar = this.authService.getUserId();
+    //this.userService.getPerfilUsuario(this.userIdParaEditar)
 
+    const userIdParaEditar = this.userIdParaEditar;
     if (!userIdParaEditar) {
       console.error('❌ No se encontró un ID de usuario válido en la sesión actual.');
       this.router.navigate(['/login']);
@@ -143,8 +150,11 @@ export class UserPageEditComponent implements OnInit {
     // Cast FormData to any/Partial<Usuario> to satisfy the service typing when sending multipart data
     this.userService.updatePerfilUsuario(this.currentUser.id, formData as unknown as Partial<Usuario>).subscribe({
       next: (response) => {
-        console.log('🎉 Backend dice:', response.message);
-        this.router.navigate(['/user-info']);
+        if (this.route.snapshot.paramMap.get('id')) {
+        this.router.navigate(['/admin/users']);   // ← admin vuelve al listado
+        } else {
+          this.router.navigate(['/user-info']);      // ← usuario normal vuelve a su perfil
+        }
       },
       error: (err) => {
         console.error('❌ Error al guardar los cambios en el servidor:', err);
@@ -153,7 +163,29 @@ export class UserPageEditComponent implements OnInit {
     });
   }
 
-  onCancelar(): void {
-    this.router.navigate(['/user-info']);
+  // mog 14062026 -> cambiado para que si editas como admin, vuelva al listado de usuarios, y si editas como usuario normal, vuelva a tu perfil
+onCancelar(): void {
+  if (this.route.snapshot.paramMap.get('id')) {
+    this.router.navigate(['/admin/users']);   // ← volver al listado admin
+  } else {
+    this.router.navigate(['/user-info']);      // ← volver al perfil normal
   }
+}
+
+
+  //mog 14062026 -< gestion de usuario como admin
+  private route = inject(ActivatedRoute);
+
+  userIdParaEditar: number | null = null;
+
+  private resolverUserId(): void {
+  const idRuta = this.route.snapshot.paramMap.get('id');
+
+  if (idRuta) {
+    this.userIdParaEditar = Number(idRuta);   // ← modo admin
+  } else {
+    this.userIdParaEditar = this.authService.getUserId();  // ← modo usuario normal
+  }
+  }
+
 }
