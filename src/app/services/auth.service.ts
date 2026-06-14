@@ -42,10 +42,10 @@ export class AuthService {
     getPayload(): any | null {
         const token = this.getToken();
         if (!token) return null;
-
+        
         return this.decodeToken(token);
     }
-
+    
     // Método para obtener el rol del usuario desde el payload del token
     getUserRole(): string | null {
         const payload = this.getPayload();
@@ -57,6 +57,12 @@ export class AuthService {
     getUserId(): number | null {
         const payload = this.getPayload();
         return payload?.userId || null;
+    }
+
+    //Método para obtener el username desde el payload del token
+    getUserName(): string |null{
+        const payload = this.getPayload();
+        return payload?.username || null;
     }
 
     // Método para verificar si el usuario está autenticado (tiene un token válido)

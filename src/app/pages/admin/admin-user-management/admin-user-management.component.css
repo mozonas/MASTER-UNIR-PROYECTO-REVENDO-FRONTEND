@@ -1,0 +1,127 @@
+.user-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0;
+  width: 100%;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.user-list .header,
+.user-list .row {
+  display: grid;
+  grid-template-columns:
+    60px          /* id */
+    1fr           /* nombre */
+    1.2fr         /* apellidos */
+    1.6fr         /* email */
+    1fr           /* usuario */
+    1fr           /* perfil */
+    220px;        /* acciones */
+  align-items: center;
+}
+
+.user-list .header {
+  background: #f5f5f5;
+  font-weight: 700;
+  border-bottom: 1px solid #d9d9d9;
+}
+
+.user-list .row {
+  border-bottom: 1px solid #ececec;
+}
+
+.user-list .row:hover {
+  background: #fafafa;
+}
+
+.user-list span {
+  padding: 10px 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-right: 1px solid #ececec;
+}
+
+.user-list span:last-child {
+  border-right: none;
+}
+
+/* Primera columna (id) */
+.user-list .header > span:first-child,
+.user-list .row > span:first-child {
+  padding-left: 16px;
+}
+
+/* Última columna (acciones) */
+.user-list .header > span:last-child,
+.user-list .row > span:last-child {
+  padding-right: 16px;
+}
+/*imagenes iconos*/
+.icon-btn img {
+  width: 1.5rem;   /* ~20px */
+  height: 1.5rem;
+}
+
+
+/* Acciones */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.actions button {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.actions .edit { background: #e6f4ff; }
+.actions .delete { background: #ffe6e6; }
+.actions .block { background: #fff3cd; }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* filtros */
+.filters {
+  display: flex;
+  gap: 20px;          /* separación entre filtros */
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;           /* separación entre input y botón */
+}
+
+.filter-item input {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.filter-item button {
+  background: #007bff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.filter-item button img {
+  width: 18px;
+  height: 18px;
+  filter: invert(1); /* icono blanco */
+}

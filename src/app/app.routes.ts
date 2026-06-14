@@ -8,11 +8,19 @@ import { UserPageInfoComponent } from './pages/user/user-page-info/user-page-inf
 import { UserPageEditComponent } from './pages/user/user-page-edit/user-page-edit';
 import { UserPageSell } from './pages/user/user-page-sell/user-page-sell';
 import { ArticleDetailComponent } from './pages/article-detail-component/article-detail-component';
+import { AdminLayoutComponent } from './pages/admin/admin-layout/admin-layout.component';
+import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 
+
+//import { roleGuard } from './guards/role.guard';
 import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.component';
-import { AdminHeaderComponent } from './shared/headers/admin-header/admin-header.component';
-
 import { ModerationComponent } from './pages/moderation/moderation.component';
+//11062026 MOG IMPORTACION COMPOENTES ADMIN
+//import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
+import { AdminUserManagementComponent } from './pages/admin/admin-user-management/admin-user-management.component';
+import { AdminArticleManagementComponent} from './pages/admin/admin-article-management/admin-article-management.component';
+import { AdminCategoryManagementComponent } from './pages/admin/admin-category-management/admin-category-management.component';
+import { AdminReportManagementComponent} from './pages/admin/admin-report-management/admin-report-management.component';
 
 import { AboutComponent } from './pages/about/about';
 import { HelpComponent } from './pages/help/help';
@@ -34,15 +42,68 @@ export const routes: Routes = [
   { path: 'user-sell', component: UserPageSell },
 
   { path: 'article-detail', component: ArticleDetailComponent },
+  { path: 'admin', 
+    component: AdminLayoutComponent, 
+    canActivate: [roleGuard(['ADMIN'])], 
+    children: [
+      { path: 'dashboard', component: AdminDashboardComponent},
+      { path: 'users', component: AdminUserManagementComponent },
+      { path: 'articles', component: AdminArticleManagementComponent },
+      { path: 'categories', component: AdminCategoryManagementComponent },
+      { path: 'reports', component: AdminReportManagementComponent },
 
-  { path: 'header-menu', component: HeaderMenuComponent },
-  { path: 'admin-header', component: AdminHeaderComponent, canActivate: [roleGuard(['admin'])] },
+      // 👇 ESTA LÍNEA HACE QUE USERS SE CARGUE POR DEFECTO
+      { path: '', redirectTo: 'users', pathMatch: 'full' },
+      // prueba para editar usuario desde admin
+      { 
+        path: 'users/editar/:id', 
+        component: UserPageEditComponent 
+      },
 
+    ]
+  },
+  
+
+ 
+  
+
+  // A medida que se vayan creando los componentes de cada página, se irán añadiendo aquí con su correspondiente path y guard si es necesario
+  //Habrá incluso rutas para cada rol, por ejemplo, /admin, /moderador, /usuario, etc. y se protegerán con el guard correspondiente para cada rol
+  //Usaremos la línea comentada roleGuard
+
+  /*
+  Cómo usarlo:
+  {
+    path: 'admin',
+    canActivate: [roleGuard(['admin'])],
+    loadComponent: () => import('./pages/admin/admin.component')
+  }
+  { path: 'header-menu', component: HeaderMenuComponent},
+  { path: 'admin-header', component: AdminHeaderComponent, canActivate: [roleGuard(['ADMIN'])] },
   { path: 'moderation', component: ModerationComponent },
+  {
+  path: 'admin',
+  canActivate: [roleGuard(['ADMIN'])],
+  component: AdminLayout,
+  children: [
+    { path: 'users', component: AdminUserManagementComponent },
+    { path: 'articles', component: AdminArticleManagementComponent },
+    { path: 'categories', component: AdminCategoryManagementComponent },
+    { path: 'reports', component: AdminReportManagementComponent },
 
+    // 👇 ESTA LÍNEA HACE QUE USERS SE CARGUE POR DEFECTO
+    { path: '', redirectTo: 'users', pathMatch: 'full' }
+  ]
+}
+
+
+*/
   // --- Páginas Legales del Footer ---
   { path: 'about', component: AboutComponent },
   { path: 'help', component: HelpComponent },
   { path: 'privacy', component: PrivacyComponent },
   { path: 'terms', component: TermsComponent }
 ];
+
+
+
