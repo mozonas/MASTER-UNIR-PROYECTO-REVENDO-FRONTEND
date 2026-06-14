@@ -24,17 +24,17 @@
 
         @if (!editMode) {
           <button class="btn btn-primary" (click)="createCategory()">
-            Crear
+            <img src="/images/ico-add.svg" alt="Crear" />
           </button>
         }
 
         @if (editMode) {
           <button class="btn btn-success" (click)="updateCategory()">
-            Guardar
+            <img src="/images/ico-comprobado-48.svg" alt="Guardar" />
           </button>
 
           <button class="btn btn-secondary" (click)="cancelEdit()">
-            Cancelar
+            <img src="/images/ico-cancelar.svg" alt="Cancelar" />
           </button>
         }
       </div>
@@ -70,11 +70,11 @@
 
               <td class="text-end">
                 <button class="btn btn-sm btn-warning me-2" (click)="startEdit(category)">
-                  Editar
+                  <img src="/images/ico-editar.svg" alt="Editar" />
                 </button>
 
                 <button class="btn btn-sm btn-danger" (click)="deleteCategory(category.id)">
-                  Eliminar
+                  <img src="/images/ico-eliminar.svg" alt="Eliminar" />
                 </button>
               </td>
             </tr>
