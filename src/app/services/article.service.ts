@@ -14,22 +14,25 @@ export class ArticleService {
  private apiUrl = 'http://localhost:3000/api';
 
     
-    getAllUserArticles(): Observable<iArticle[]> {
-        return this.http.get<iArticle[] | { articles?: iArticle[] }>(
-            `${this.apiUrl}/userarticles`
-        ).pipe(
-          tap(raw => console.log('RAW userarticles response:', raw)),
-          map(response => this.normalizeArticlesResponse(response)),
-          tap(respuesta => {
-            this.Articles.set(respuesta);
-            console.log('Datos recibidos de articulos:', respuesta);
-          })
-        );
-      }
+    getAllUserArticles(userId?: number | null): Observable<iArticle[]> {
+      const baseUrl = `${this.apiUrl}/user-sell`;
+      const url = userId ? `${baseUrl}/${userId}` : baseUrl;
+
+      return this.http.get<iArticle[] | { data?: any[]; articles?: any[] }>(url).pipe(
+        tap(raw => console.log('RAW userarticles response:', raw)),
+        map(response => this.normalizeArticlesResponse(response)),
+        tap(respuesta => {
+          this.Articles.set(respuesta);
+          console.log('Datos recibidos de articulos:', respuesta);
+        })
+      );
+    }
 
   private normalizeArticlesResponse(response: any): iArticle[] {
     const rawArticles: any[] = Array.isArray(response?.data)
       ? response.data
+      : Array.isArray(response?.articles)
+      ? response.articles
       : Array.isArray(response)
       ? response
       : [];
@@ -46,6 +49,11 @@ export class ArticleService {
 
   const estadoRaw = (articulo.estadoVenta || '').toString().toLowerCase();
   let estadoVenta: iArticle['estadoVenta'] = 'DISPONIBLE';
+  if (estadoRaw === 'vendido') {
+    estadoVenta = 'VENDIDO';
+  } else if (estadoRaw === 'reservado') {
+    estadoVenta = 'RESERVADO';
+  }
    
   const createdAtValue = articulo.createdAt;
   const createdAt = createdAtValue ? new Date(createdAtValue) : new Date();

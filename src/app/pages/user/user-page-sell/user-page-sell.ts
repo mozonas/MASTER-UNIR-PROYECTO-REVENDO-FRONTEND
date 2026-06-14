@@ -1,7 +1,8 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
+import { AuthService } from '../../../services/auth.service';
 import { iArticle } from '../../../interfaces/article.interface';
 import { FooterComponent } from '../../../shared/footer/footer.component';
 import { HeaderMenuComponent } from '../../../shared/headers/header-menu/header-menu.component';
@@ -18,6 +19,8 @@ export class UserPageSell implements OnInit {
   // 1. INYECTORES DE DEPENDENCIAS
 
   private articleService = inject(ArticleService);
+  private authService = inject(AuthService);
+  private route = inject(ActivatedRoute);
   private router = inject(Router);
   // 2. PROPIEDADES Y SIGNALS ESTÁNDAR
   articles = this.articleService.Articles;
@@ -54,8 +57,17 @@ export class UserPageSell implements OnInit {
   }
 
   // 5. PETICIONES A LA API Y SERVICIOS
+
   private loadArticles(): void {
-    this.articleService.getAllUserArticles().subscribe({
+    const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
+    const userId = routeUserId ?? this.authService.getUserId();
+
+    if (!userId) {
+      console.error('No se pudo obtener el ID de usuario para cargar los artículos.');
+      return;
+    }
+
+    this.articleService.getAllUserArticles(userId).subscribe({
       next: (articles) => {
         // Asignamos los datos reales del backend a la Signal global del servicio
         this.articleService.Articles.set(articles);
@@ -64,7 +76,7 @@ export class UserPageSell implements OnInit {
         console.log('--- PRUEBA DE LOG EN FRONTEND ---');
         console.log('Datos directos recibidos desde Express:', articles);
         console.log('Contenido de la Signal local actualizada:', this.articles());
-        console.table(articles); 
+        console.table(articles);
       },
       error: (error) => {
         console.error('Error al cargar artículos:', error);
