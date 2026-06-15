@@ -48,7 +48,7 @@ export class LoginComponent {
               // Redirección según rol
       switch (role) {
         //redireccionar al dashboard del administrador
-        case 'ADMINISTRADOR':
+        case 'ADMIN':
           this.router.navigate(['/admin']);
           break;
         //redireccionar al dashboard de moderador
