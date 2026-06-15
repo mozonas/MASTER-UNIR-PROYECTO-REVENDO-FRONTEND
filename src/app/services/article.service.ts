@@ -13,7 +13,17 @@ export class ArticleService {
  private http = inject(HttpClient);
  private apiUrl = 'http://localhost:3000/api';
 
-    
+  /**
+   * Obtiene un producto específico por su ID
+   * @param id 
+   * @returns 
+   */
+  getArticleById(id: string): Observable<iArticle | undefined> {
+    return this.http.get<any>(`${this.apiUrl}/article/${id}`).pipe(
+      map(response => response.data)
+    );
+  }
+
     getAllUserArticles(userId?: number | null): Observable<iArticle[]> {
       const baseUrl = `${this.apiUrl}/user-sell`;
       const url = userId ? `${baseUrl}/${userId}` : baseUrl;
@@ -77,11 +87,7 @@ export class ArticleService {
 
   Articles = signal<iArticle[]>([]);
 
-  getArticleById(id: string): iArticle | undefined {
-    return this.Articles().find(a => a.id === id);
-  }
-
-  deleteArticle(id: string): void {
+   deleteArticle(id: string): void {
     const updatedArticles = this.Articles().filter(a => a.id !== id);
     this.Articles.set(updatedArticles);
   }

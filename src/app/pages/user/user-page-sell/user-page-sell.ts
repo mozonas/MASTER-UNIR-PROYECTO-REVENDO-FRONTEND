@@ -6,7 +6,6 @@ import { AuthService } from '../../../services/auth.service';
 import { iArticle } from '../../../interfaces/article.interface';
 import { FooterComponent } from '../../../shared/footer/footer.component';
 import { HeaderMenuComponent } from '../../../shared/headers/header-menu/header-menu.component';
-import { Article } from '../../../shared/models/article.model';
 
 @Component({
   selector: 'app-user-page-sell',
@@ -144,7 +143,7 @@ export class UserPageSell implements OnInit {
     return articlesArray.filter(p => p.estadoVenta === filter).length;
   }
 
-  viewArticle(article: Article) {
+  viewArticle(article: any) {
     console.log('Ver artículo:', article.id);
     this.router.navigate(['/article-detail', article.id]);
   }
