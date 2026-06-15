@@ -1,4 +1,4 @@
-<div class="container-fluid p-3">
+<!-- <div class="container-fluid"> -->
 
     <app-header-menu></app-header-menu>
     <!-- Artículo -->
@@ -8,7 +8,7 @@
 
             <!-- Estado -->
             <span class="badge estado-articulo mb-3">
-                DISPONIBLE
+                {{product()?.estadoProducto}}
             </span>
 
             <!-- Carrusel -->
@@ -45,27 +45,27 @@
                 <div class="col-lg-5">
 
                     <h3 class="fw-bold">
-                        Guitarra acústica Yamaha
+                        {{product()?.titulo}}
                     </h3>
 
                     <p class="text-muted">
-                        Perfecta para empezar, cuerdas nuevas.
+                        {{product()?.descripcion}}
                     </p>
 
                     <p class="mb-1">
-                        <strong>Estado:</strong> En buen estado
+                        <strong>Estado:</strong> {{product()?.estadoProducto}}
                     </p>
 
                     <p class="mb-1">
-                        <strong>Tipo envío:</strong> En mano
+                        <strong>Tipo envío:</strong> {{product()?.tipoEntrega}}
                     </p>
 
                     <p>
-                        <strong>Pago:</strong> Efectivo
+                        <strong>Pago:</strong> {{product()?.tipoPago}}
                     </p>
 
                     <span class="badge categoria-badge">
-                        Instrumentos
+                        {{product()?.categoria}}
                     </span>
 
                 </div>
@@ -73,7 +73,7 @@
                 <!-- Precio -->
                 <div class="col-lg-2 d-flex justify-content-center align-items-start">
                     <h1 class="fw-bold">
-                        110€
+                        {{product()?.precio}}€
                     </h1>
                 </div>
 
@@ -92,7 +92,7 @@
                                     </small>
 
                                     <p class="mb-0">
-                                        Marta Pérez
+                                        {{product()?.nombre_vendedor}} {{product()?.apellidos_vendedor}}
                                     </p>
                                 </div>
 
@@ -145,4 +145,4 @@
         </div>
     </div>
 
-</div>
+<app-footer></app-footer>

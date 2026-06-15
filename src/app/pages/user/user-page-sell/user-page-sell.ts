@@ -6,6 +6,7 @@ import { AuthService } from '../../../services/auth.service';
 import { iArticle } from '../../../interfaces/article.interface';
 import { FooterComponent } from '../../../shared/footer/footer.component';
 import { HeaderMenuComponent } from '../../../shared/headers/header-menu/header-menu.component';
+import { Article } from '../../../shared/models/article.model';
 
 @Component({
   selector: 'app-user-page-sell',
@@ -141,5 +142,10 @@ export class UserPageSell implements OnInit {
     const articlesArray = Array.isArray(allarticles) ? allarticles : [];
     if (filter === 'all') return articlesArray.length;
     return articlesArray.filter(p => p.estadoVenta === filter).length;
+  }
+
+  viewArticle(article: Article) {
+    console.log('Ver artículo:', article.id);
+    this.router.navigate(['/article-detail', article.id]);
   }
 }

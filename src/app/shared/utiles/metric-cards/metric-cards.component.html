@@ -1,0 +1,71 @@
+<!-- Articulos publicados-->
+<div class="metrics-grid">
+<div class="metric-card">
+   <div class="metric-title">Artículos publicados </div>
+   <div class="metric-value">{{ newArticles }}</div>
+   <div class="metric-sub">
+      @if (articlesDiff > 0) {
+      <svg class="arrow up" viewBox="0 0 24 24">
+         <path d="M12 4l-8 8h5v8h6v-8h5z"/>
+      </svg>
+      }
+      @if (articlesDiff < 0) {
+      <svg class="arrow down" viewBox="0 0 24 24">
+         <path d="M12 20l8-8h-5V4h-6v8H4z"/>
+      </svg>
+      }
+      <span>{{ articlesDiff }}% respecto al mes anterior</span>
+   </div>
+</div>
+<!-- Usuarios nuevos -->
+<div class="metric-card">
+   <div class="metric-title">Usuarios registrados</div>
+   <div class="metric-value">{{ newUsers }}</div>
+   <div class="metric-sub">
+      @if (usersDiff > 0) {
+      <svg class="arrow up" viewBox="0 0 24 24">
+         <path d="M12 4l-8 8h5v8h6v-8h5z"/>
+      </svg>
+      }
+      @if (usersDiff < 0) {
+      <svg class="arrow down" viewBox="0 0 24 24">
+         <path d="M12 20l8-8h-5V4h-6v8H4z"/>
+      </svg>
+      }
+      <span>{{ usersDiff }}% crecimiento mensual</span>
+   </div>
+</div>
+<div class="metric-card active-users">
+   <!-- Usuarios activos-->
+   <div class="metric-title">Usuarios activos</div>
+   <div class="metric-value">{{ activeUsers }}</div>
+   <div class="metric-sub">
+      @if (activeUsersDiff > 0) {
+      <svg class="arrow up" viewBox="0 0 24 24">
+         <path d="M12 4l-8 8h5v8h6v-8h5z"/>
+      </svg>
+      }
+      @if (activeUsersDiff < 0) {
+      <svg class="arrow down" viewBox="0 0 24 24">
+         <path d="M12 20l8-8h-5V4h-6v8H4z"/>
+      </svg>
+      }
+      <span>{{ activeUsersDiff }}% respecto al mes anterior</span>
+   </div>
+</div>
+<!-- Artículos reportados -->
+<div class="metric-card"  [class.red] = "reportedArticles > 0 " [class.green] = "reportedArticles === 0">
+   <div class="metric-title">Artículos reportados</div>
+   <div class="metric-value">{{ reportedArticles }}</div>
+   <div class="metric-sub">
+      @if (reportedArticles > 0){
+         <svg class="warning" viewBox="0 0 24 24">
+            <path d="M1 21h22L12 2 1 21zm12-3h-2v2h2v-2zm0-6h-2v5h2v-5z"/>
+         </svg>
+         <span>Pendientes de revisión</span>
+      }@else{
+         <span>Sin reportes</span>
+      }
+      
+   </div>
+</div>
