@@ -57,7 +57,7 @@ export class LoginComponent {
           break;
         //redireccionar a la página de usuario que se decida, yo lo redireccionaría al listado de productos a vender
         default:
-          this.router.navigate(['/user-info']);
+          this.router.navigate(['/home']);
           break;
       }
       },

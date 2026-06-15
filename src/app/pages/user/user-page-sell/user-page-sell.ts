@@ -68,7 +68,7 @@ export class UserPageSell {
 
   deleteProduct(product: Product) {
     const confirmed = confirm(`¿Está seguro de que desea eliminar "${product.title}"? Esta acción no se puede deshacer.`);
-    
+
     if (confirmed) {
       this.productService.deleteProduct(product.id);
       this.currentPage.set(Math.min(this.currentPage(), this.pageCount()));
@@ -94,5 +94,10 @@ export class UserPageSell {
   getFilterCount(filter: 'all' | 'available' | 'sold' | 'reported'): number {
     if (filter === 'all') return this.products().length;
     return this.products().filter(p => p.status === filter).length;
+  }
+
+  viewArticle(product: Product) {
+    console.log('Ver artículo:', product.id);
+    this.router.navigate(['/article-detail', product.id]);
   }
 }

@@ -1,14 +1,31 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Product } from '../interfaces/product.interface';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
+  private http = inject(HttpClient);
+  private apiUrl = 'http://localhost:3000/api/article';
+
+  /**
+   * Obtiene un producto específico por su ID
+   * @param id 
+   * @returns 
+   */
+  getProductById(id: string): Observable<Product | undefined> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+      map(response => response.data)
+    );
+  }
+
   // Mock data para desarrollo
   private mockProducts: Product[] = [
     {
-      id: '1',
+      id: '24',
       title: 'iPhone 14 Pro',
       description: 'iPhone 14 Pro en excelente estado, con accesorios originales',
       price: 899,
@@ -119,10 +136,10 @@ export class ProductService {
 
   products = signal<Product[]>(this.mockProducts);
 
-  getProductById(id: string): Product | undefined {
+  /* getProductById(id: string): Product | undefined {
     return this.products().find(p => p.id === id);
   }
-
+  */
   deleteProduct(id: string): void {
     const updatedProducts = this.products().filter(p => p.id !== id);
     this.products.set(updatedProducts);
