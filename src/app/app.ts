@@ -5,16 +5,15 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AuthService } from './services/auth.service';
 
-import { AdminHeaderComponent } from "./shared/headers/admin-header/admin-header.component";
-import { HeaderMenuComponent } from "./shared/headers/header-menu/header-menu.component";
-
 import { FooterComponent } from "./shared/footer/footer.component";
+import { HeaderMenuComponent } from "./shared/headers/header-menu/header-menu.component";
+import { AdminNavMenu } from "./shared/admin-nav-menu/admin-nav-menu";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrls: ['./app.css'],
-  imports: [AdminHeaderComponent, RouterOutlet, FooterComponent, HeaderMenuComponent]
+  imports: [RouterOutlet, FooterComponent, HeaderMenuComponent, AdminNavMenu]
 })
 export class App implements OnInit {
   protected readonly title = signal('MASTER-UNIR-PROYECTO-REVENDO-FRONTEND');

@@ -1,6 +1,6 @@
 @if (authService.isLogged()) {
     @if (authService.getUserRole() === 'ADMIN') {
-        <app-admin-header></app-admin-header>
+        <app-admin-nav-menu></app-admin-nav-menu>
     } @else {
         <app-header-menu></app-header-menu>
     }

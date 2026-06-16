@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { Article } from '../../shared/models/article.model';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
-import { HeaderMenuComponent } from '../../shared/headers/header-menu/header-menu.component';
 
 @Component({
   selector: 'app-home',
-  imports: [ProductCardComponent, HeaderMenuComponent],
+  imports: [ProductCardComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })

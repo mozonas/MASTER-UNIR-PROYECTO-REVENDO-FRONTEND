@@ -13,8 +13,6 @@ import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-das
 
 
 //import { roleGuard } from './guards/role.guard';
-import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.component';
-import { ModerationComponent } from './pages/moderation/moderation.component';
 //11062026 MOG IMPORTACION COMPOENTES ADMIN
 //import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 import { AdminUserManagementComponent } from './pages/admin/admin-user-management/admin-user-management.component';
