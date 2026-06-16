@@ -31,7 +31,7 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [authGuard] },
   { path: 'user-info', component: UserPageInfoComponent, canActivate: [authGuard] },
   { path: 'user-edit', component: UserPageEditComponent, canActivate: [authGuard] },
-  { path: 'user-sell/:id', component: UserPageSell, canActivate: [authGuard] },
+  { path: 'user-sell/:id', component: UserPageSell, /* canActivate: [authGuard]  */},
   { path: 'article-detail/:id', component: ArticleDetailComponent },
   { path: 'admin', 
     component: AdminLayoutComponent, 

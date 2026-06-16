@@ -2,7 +2,7 @@ import { Component, effect, inject, input, signal } from '@angular/core';
 import { HeaderMenuComponent } from "../../shared/headers/header-menu/header-menu.component";
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ProductService } from '../../services/product.service';
+import { ArticleService } from '../../services/article.service';
 import { FooterComponent } from '../../shared/footer/footer.component';
 
 @Component({
@@ -17,7 +17,7 @@ export class ArticleDetailComponent {
   productId = input<string>()
   product = signal<any | null>(null);
   private route = inject(ActivatedRoute);
-  private productsService = inject(ProductService);
+  private articlesService = inject(ArticleService);
 
   constructor() {
     effect(() => {
@@ -35,7 +35,7 @@ export class ArticleDetailComponent {
 
     try {
 
-      const response = await this.productsService.getProductById(id).subscribe(data => {
+      const response = await this.articlesService.getArticleById(id).subscribe(data => {
             console.log('Producto cargado:', data);
            this.product.set(data);
           });
