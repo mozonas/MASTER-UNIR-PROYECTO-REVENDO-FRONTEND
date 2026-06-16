@@ -1,0 +1,33 @@
+
+.card-header {
+  background-color: #8cd86a !important;
+  border-bottom: none !important;
+}
+
+.badge-incidencias {
+  background-color: #dc3545 !important;
+  color: #ffffff !important;
+}
+
+.badge-limpio {
+  background-color: var(--gray-100) !important;
+  color: var(--gray-500) !important;
+  border: 1px solid var(--gray-200) !important;
+}
+
+.font-badge {
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); opacity: 0.95; }
+  100% { transform: scale(1); }
+}
+
+
