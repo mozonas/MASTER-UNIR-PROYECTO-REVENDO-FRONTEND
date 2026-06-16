@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 import { WelcomeComponent } from './pages/authentication/welcome-component/welcome-component';
 import { LoginComponent } from './pages/authentication/login/login.component';
 import { SignupComponent } from './pages/authentication/signup/signup.component';
-
+import { HomeComponent } from './pages/home/home.component';
 import { UserPageInfoComponent } from './pages/user/user-page-info/user-page-info';
 import { UserPageEditComponent } from './pages/user/user-page-edit/user-page-edit';
 import { UserPageSell } from './pages/user/user-page-sell/user-page-sell';
@@ -18,9 +18,7 @@ import { ModerationComponent } from './pages/moderation/moderation.component';
 //11062026 MOG IMPORTACION COMPOENTES ADMIN
 //import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 import { AdminUserManagementComponent } from './pages/admin/admin-user-management/admin-user-management.component';
-import { AdminArticleManagementComponent} from './pages/admin/admin-article-management/admin-article-management.component';
 import { AdminCategoryManagementComponent } from './pages/admin/admin-category-management/admin-category-management.component';
-import { AdminReportManagementComponent} from './pages/admin/admin-report-management/admin-report-management.component';
 
 import { AboutComponent } from './pages/about/about';
 import { HelpComponent } from './pages/help/help';
@@ -31,10 +29,9 @@ import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
-  { path: "", pathMatch: 'full', redirectTo: "home" },
-  { path: "home", component: WelcomeComponent },
-
-  { path: "login", component: LoginComponent },
+  { path: '', pathMatch: 'full', redirectTo: 'welcome' },
+  { path: 'welcome', component: WelcomeComponent },
+  { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
 
   { path: 'user-info', component: UserPageInfoComponent, canActivate: [authGuard] },
@@ -48,9 +45,7 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: AdminDashboardComponent},
       { path: 'users', component: AdminUserManagementComponent },
-      { path: 'articles', component: AdminArticleManagementComponent },
       { path: 'categories', component: AdminCategoryManagementComponent },
-      { path: 'reports', component: AdminReportManagementComponent },
 
       // 👇 ESTA LÍNEA HACE QUE USERS SE CARGUE POR DEFECTO
       { path: '', redirectTo: 'users', pathMatch: 'full' },
