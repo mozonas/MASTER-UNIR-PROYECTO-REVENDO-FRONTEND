@@ -1,7 +1,9 @@
-<app-header-menu></app-header-menu>
+@if (authService.isLogged()) {
+    <app-header-menu></app-header-menu>
+}
 
 <router-outlet></router-outlet>
 
 @if (authService.isLogged()) {
-  <app-footer></app-footer>
+    <app-footer></app-footer>
 }
