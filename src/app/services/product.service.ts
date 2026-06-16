@@ -1,10 +1,16 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Product } from '../interfaces/product.interface';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
+
+  private http = inject (HttpClient);
+  private apiUrl = 'http://localhost:3000/api/article'
+
   // Mock data para desarrollo
   private mockProducts: Product[] = [
     {
@@ -136,4 +142,16 @@ export class ProductService {
       this.products.set(products);
     }
   }
+
+  // Artículos publicados este mes
+  getPubThisMonth() {
+    return this.http.get<{ total: number }>(`${this.apiUrl}/published/this-month`);
+  }
+
+  // Artículos publicados el mes pasado
+  getPubLastMonth(): Observable<{ total: number }> {
+    return this.http.get<{ total: number }>(`${this.apiUrl}/published/last-month`);
+  }
+
+
 }

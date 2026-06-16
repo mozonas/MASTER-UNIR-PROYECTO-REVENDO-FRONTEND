@@ -86,7 +86,7 @@ export const routes: Routes = [
 
 
 */
-];
+
 
 
 

@@ -2,19 +2,19 @@
 <div class="metrics-grid">
 <div class="metric-card">
    <div class="metric-title">Artículos publicados </div>
-   <div class="metric-value">{{ newArticles }}</div>
+   <div class="metric-value">{{ newArticles() }}</div>
    <div class="metric-sub">
-      @if (articlesDiff > 0) {
+      @if (articlesDiff() > 0) {
       <svg class="arrow up" viewBox="0 0 24 24">
          <path d="M12 4l-8 8h5v8h6v-8h5z"/>
       </svg>
       }
-      @if (articlesDiff < 0) {
+      @if (articlesDiff() < 0) {
       <svg class="arrow down" viewBox="0 0 24 24">
          <path d="M12 20l8-8h-5V4h-6v8H4z"/>
       </svg>
       }
-      <span>{{ articlesDiff }}% respecto al mes anterior</span>
+      <span>{{ articlesDiff() }}% respecto al mes anterior</span>
    </div>
 </div>
 <!-- Usuarios nuevos -->
