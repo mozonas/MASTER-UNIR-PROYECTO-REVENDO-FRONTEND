@@ -10,4 +10,7 @@ import { Article } from '../../models/article.model';
 })
 export class ProductCardComponent {
   @Input({ required: true }) article!: Article;
+   ngOnInit(): void {
+    console.log("HOLAAAA ",this.article);
+  }
 }
