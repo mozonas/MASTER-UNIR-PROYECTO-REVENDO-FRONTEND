@@ -41,6 +41,7 @@ export class ArticleDetailComponent {
           });
 
       console.log('Respuesta API:', response);
+      /* this.router.navigate(['/home']); */
 
     } catch (error) {
       console.error('Error cargando producto:', error);
