@@ -14,14 +14,13 @@ import { FooterComponent } from '../../shared/footer/footer.component';
 export class ArticleDetailComponent {
   modalOpen = false;
   selectedImage: string | null = null;
-  productId = input<string>()
-  product = signal<any | null>(null);
+  article = signal<any | null>(null);
   private route = inject(ActivatedRoute);
   private articlesService = inject(ArticleService);
 
   constructor() {
     effect(() => {
-      console.log('Producto actualizado:', this.product());
+      console.log('Artículo actualizado:', this.article());
     });
   }
 
@@ -36,15 +35,15 @@ export class ArticleDetailComponent {
     try {
 
       const response = await this.articlesService.getArticleById(id).subscribe(data => {
-            console.log('Producto cargado:', data);
-           this.product.set(data);
+            console.log('Artículo cargado:', data);
+            this.article.set(data);
           });
 
       console.log('Respuesta API:', response);
       /* this.router.navigate(['/home']); */
 
     } catch (error) {
-      console.error('Error cargando producto:', error);
+      console.error('Error cargando artículo:', error);
     }
   }
 

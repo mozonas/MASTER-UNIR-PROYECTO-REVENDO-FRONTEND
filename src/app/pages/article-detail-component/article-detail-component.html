@@ -9,7 +9,7 @@
             <div class="card-body">
                 <!-- Estado -->
                 <span class="badge estado-articulo mb-3 text-white text-uppercase fw-bold">
-                    <h3>{{product()?.estadoVenta}}</h3>
+                    <h3>{{article()?.estadoVenta}}</h3>
                 </span>
 
                 <!-- Carrusel -->
@@ -51,27 +51,27 @@
                     <div class="col-lg-5">
 
                         <h3 class="fw-bold">
-                            {{product()?.titulo}}
+                            {{article()?.titulo}}
                         </h3>
 
                         <p class="text-muted">
-                            {{product()?.descripcion}}
+                            {{article()?.descripcion}}
                         </p>
 
                         <p class="mb-1">
-                            <strong>Estado:</strong> {{product()?.estadoProducto}}
+                            <strong>Estado:</strong> {{article()?.estadoarticleo}}
                         </p>
 
                         <p class="mb-1">
-                            <strong>Envío:</strong> {{product()?.tipoEntrega}}
+                            <strong>Envío:</strong> {{article()?.tipoEntrega}}
                         </p>
 
                         <p>
-                            <strong>Pago:</strong> {{product()?.tipoPago}}
+                            <strong>Pago:</strong> {{article()?.tipoPago}}
                         </p>
 
                         <span class="badge categoria-badge">
-                            {{product()?.categoria}}
+                            {{article()?.categoria}}
                         </span>
 
                     </div>
@@ -79,7 +79,7 @@
                     <!-- Precio -->
                     <div class="col-lg-2 d-flex justify-content-center align-items-start">
                         <h1 class="fw-bold">
-                            {{product()?.precio}}€
+                            {{article()?.precio}}€
                         </h1>
                     </div>
 
@@ -103,7 +103,7 @@
                                         </small>
 
                                         <p class="mb-0">
-                                            {{product()?.nombre_vendedor}} {{product()?.apellidos_vendedor}}
+                                            {{article()?.seller.nombre}} {{article()?.seller.apellidos}}
                                         </p>
                                     </div>
 
