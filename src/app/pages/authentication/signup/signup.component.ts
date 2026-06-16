@@ -39,7 +39,33 @@ export class SignupComponent {
     }
   }
 */
+
+  maxDate: string = this.calcularMaxDate();
+
+  calcularMaxDate(): string {
+    const hoy = new Date();
+    hoy.setFullYear(hoy.getFullYear() - 18);
+    return hoy.toISOString().split('T')[0];
+  }
+
+  esMenorDeEdad(): boolean {
+    if (!this.formData.fecha_nacimiento) return false;
+    const fechaNac = new Date(this.formData.fecha_nacimiento);
+    const hoy = new Date();
+    let edad = hoy.getFullYear() - fechaNac.getFullYear();
+    const mes = hoy.getMonth() - fechaNac.getMonth();
+    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+      edad--;
+    }
+    return edad < 18;
+  }
+
   onSubmit() {
+
+    if (this.esMenorDeEdad()) {
+      alert('Debes tener al menos 18 años para registrarte.');
+      return;
+    }
 
    console.log('Enviando signup:', this.formData);
 
@@ -47,7 +73,6 @@ export class SignupComponent {
       next: (resp) => {
         console.log('Signup OK:', resp);
         alert('Usuario creado correctamente');
-        // Redirigir al login
         this.router.navigate(['/login']);
       },
       error: (err) => {

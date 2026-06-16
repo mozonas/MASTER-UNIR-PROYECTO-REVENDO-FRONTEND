@@ -11,15 +11,15 @@
              [(ngModel)]="busqueda"/>
     </div>
 
-    @for (conv of conversacionesFiltradas; track conv.id) {
+    @for (conv of conversacionesFiltradas; track conv.articulos_id) {
       <div class="conversacion-item"
-           [class.activa]="conversacionActiva?.id === conv.id"
+           [class.activa]="conversacionActiva?.articulos_id === conv.articulos_id"
            (click)="seleccionarConversacion(conv)">
-        <img [src]="conv.avatar" alt="avatar" class="conv-avatar"/>
+        <img [src]="'/images/' + conv.foto" alt="avatar" class="conv-avatar"/>
         <div class="conv-info">
           <span class="conv-nombre">{{ conv.nombre }}</span>
-          <span class="conv-articulo">{{ conv.articulo }}</span>
-          <span class="conv-ultimo">{{ conv.ultimoMensaje }}</span>
+          <span class="conv-articulo">{{ conv.titulo }}</span>
+          <span class="conv-ultimo">{{ conv.ultimo_mensaje }}</span>
         </div>
       </div>
     }
@@ -29,24 +29,24 @@
 
     @if (conversacionActiva) {
       <div class="chat-header">
-        <img [src]="conversacionActiva.avatar" alt="avatar" class="conv-avatar"/>
+        <img [src]="'/images/' + conversacionActiva.foto" alt="avatar" class="conv-avatar"/>
         <div>
           <span class="conv-nombre">{{ conversacionActiva.nombre }}</span>
-          <span class="conv-articulo">{{ conversacionActiva.articulo }}</span>
+          <span class="conv-articulo">{{ conversacionActiva.titulo }}</span>
         </div>
       </div>
 
       <div class="mensajes-container">
-        @for (mensaje of conversacionActiva.mensajes; track mensaje.hora) {
-          @if (mostrarFecha(conversacionActiva.mensajes!, $index)) {
+        @for (mensaje of mensajesActivos; track mensaje.id) {
+          @if (mostrarFecha(mensajesActivos, $index)) {
             <div class="fecha-separador">
-              <span>{{ etiquetaFecha(mensaje.fecha) }}</span>
+              <span>{{ etiquetaFecha(mensaje.created_at) }}</span>
             </div>
           }
-          <div class="mensaje" [class.mio]="mensaje.mio" [class.suyo]="!mensaje.mio">
+          <div class="mensaje" [class.mio]="esMio(mensaje)" [class.suyo]="!esMio(mensaje)">
             <div class="mensaje-burbuja">
-              {{ mensaje.texto }}
-              <span class="mensaje-hora">{{ mensaje.hora }}</span>
+              {{ mensaje.contenido }}
+              <span class="mensaje-hora">{{ horaMensaje(mensaje.created_at) }}</span>
             </div>
           </div>
         }
