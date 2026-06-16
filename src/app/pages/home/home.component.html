@@ -1,0 +1,12 @@
+<div class="home-container">
+  <div class="home-header">
+    <h1 class="home-title">Artículos</h1>
+    <span class="home-count">{{ articles.length }} artículos</span>
+  </div>
+
+  <div class="products-grid">
+    @for (article of articles; track article.id) {
+      <app-product-card [article]="article" />
+    }
+  </div>
+</div>
