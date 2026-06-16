@@ -1,7 +1,7 @@
 import { Component, effect, inject, input, signal } from '@angular/core';
 import { HeaderMenuComponent } from "../../shared/headers/header-menu/header-menu.component";
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ArticleService } from '../../services/article.service';
 import { FooterComponent } from '../../shared/footer/footer.component';
 
@@ -17,6 +17,8 @@ export class ArticleDetailComponent {
   article = signal<any | null>(null);
   private route = inject(ActivatedRoute);
   private articlesService = inject(ArticleService);
+  private router = inject(Router);
+
 
   constructor() {
     effect(() => {
@@ -25,33 +27,41 @@ export class ArticleDetailComponent {
   }
 
   async ngOnInit() {
-
     const id = this.route.snapshot.paramMap.get('id');
-
-    console.log('ID de la ruta:', id);
-
     if (!id) return;
-
-    try {
-
-      const response = await this.articlesService.getArticleById(id).subscribe(data => {
-            console.log('Artículo cargado:', data);
-            this.article.set(data);
-          });
-
-      console.log('Respuesta API:', response);
-      /* this.router.navigate(['/home']); */
-
-    } catch (error) {
-      console.error('Error cargando artículo:', error);
-    }
+    this.getArticleData(id)
   }
 
+  /**
+   * Función que solicita los datos de un artículo al Backend
+   * @param id id del artículo del que solicitamos los datos
+   */
+  async getArticleData(id: string) {
+    this.articlesService.getArticleById(id).subscribe({
+      next: (data) => {
+        this.article.set(data);
+      },
+      error: (err) => {
+        console.error('Error cargando producto:', err);
+        if (err.status === 404) {
+          this.router.navigate(['/home']);
+        }
+      }
+    });
+  }
+
+  /**
+   * Función que abre el modal que muestra la imagen del carrusel
+   * @param img 
+   */
   openImageModal(img: string) {
     this.selectedImage = img;
     this.modalOpen = true;
   }
 
+  /**
+   * Función que cierra el modal de la imagen
+   */
   closeModal() {
     this.modalOpen = false;
     this.selectedImage = null;
