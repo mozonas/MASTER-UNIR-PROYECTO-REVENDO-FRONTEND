@@ -1,13 +1,12 @@
 import { Component, effect, inject, input, signal } from '@angular/core';
-import { HeaderMenuComponent } from "../../shared/headers/header-menu/header-menu.component";
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../services/article.service';
 import { FooterComponent } from '../../shared/footer/footer.component';
 
 @Component({
   selector: 'app-article-detail-component',
-  imports: [HeaderMenuComponent, CommonModule, FooterComponent, RouterLink],
+  imports: [CommonModule, FooterComponent],
   templateUrl: './article-detail-component.html',
   styleUrl: './article-detail-component.css',
 })

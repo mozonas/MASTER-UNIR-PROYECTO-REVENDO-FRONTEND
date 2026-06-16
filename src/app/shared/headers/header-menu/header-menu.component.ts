@@ -10,11 +10,11 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class HeaderMenuComponent {
 
-  
- @Input() mostrarMenu: boolean = true;
+
+  @Input() mostrarMenu: boolean = true;
 
   //inyección servicio para seleccionar role
-  private authService = inject (AuthService); 
+  private authService = inject(AuthService);
 
   // Inyectamos el Router para la redirección post-logout
   private router = inject(Router);
@@ -30,9 +30,9 @@ export class HeaderMenuComponent {
     this.router.navigate(['/']);
   }
 
-    role = signal(this.authService.getUserRole() ?? 'USUARIO');
-    username = signal(this.authService.getUserName() ?? '');
+  role = signal(this.authService.getUserRole() ?? 'USUARIO');
+  username = signal(this.authService.getUserName() ?? '');
 
-    isStaff = computed(() => ['ADMIN', 'MODERADOR'].includes(this.role()));
+  isStaff = computed(() => ['ADMIN', 'MODERADOR'].includes(this.role()));
 
 }

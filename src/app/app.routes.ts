@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
+
 import { WelcomeComponent } from './pages/authentication/welcome-component/welcome-component';
 import { LoginComponent } from './pages/authentication/login/login.component';
 import { SignupComponent } from './pages/authentication/signup/signup.component';
 import { HomeComponent } from './pages/home/home.component';
 import { UserPageInfoComponent } from './pages/user/user-page-info/user-page-info';
 import { UserPageEditComponent } from './pages/user/user-page-edit/user-page-edit';
-import { authGuard } from './guards/auth.guard';
 import { UserPageSell } from './pages/user/user-page-sell/user-page-sell';
 import { ArticleDetailComponent } from './pages/article-detail-component/article-detail-component';
 import { AdminLayoutComponent } from './pages/admin/admin-layout/admin-layout.component';
@@ -13,14 +13,17 @@ import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-das
 
 
 //import { roleGuard } from './guards/role.guard';
-import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.component';
-import { ModerationComponent } from './pages/moderation/moderation.component';
 //11062026 MOG IMPORTACION COMPOENTES ADMIN
 //import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 import { AdminUserManagementComponent } from './pages/admin/admin-user-management/admin-user-management.component';
 import { AdminCategoryManagementComponent } from './pages/admin/admin-category-management/admin-category-management.component';
 
+import { AboutComponent } from './pages/about/about';
+import { HelpComponent } from './pages/help/help';
+import { TermsComponent } from './pages/terms/terms';
+import { PrivacyComponent } from './pages/privacy/privacy';
 
+import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
@@ -87,6 +90,11 @@ export const routes: Routes = [
 
 
 */
+  // --- Páginas Legales del Footer ---
+  { path: 'about', component: AboutComponent },
+  { path: 'help', component: HelpComponent },
+  { path: 'privacy', component: PrivacyComponent },
+  { path: 'terms', component: TermsComponent }
 ];
 
 

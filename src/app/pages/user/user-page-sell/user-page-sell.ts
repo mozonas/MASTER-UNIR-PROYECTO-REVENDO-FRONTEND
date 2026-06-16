@@ -4,12 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { AuthService } from '../../../services/auth.service';
 import { iArticle } from '../../../interfaces/article.interface';
-import { FooterComponent } from '../../../shared/footer/footer.component';
-import { HeaderMenuComponent } from '../../../shared/headers/header-menu/header-menu.component';
 
 @Component({
   selector: 'app-user-page-sell',
-  imports: [CommonModule, HeaderMenuComponent, FooterComponent],
+  imports: [CommonModule],
   templateUrl: './user-page-sell.html',
   styleUrls: ['./user-page-sell.css'],
 })
