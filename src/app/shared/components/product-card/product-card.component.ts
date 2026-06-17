@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Article } from '../../models/article.model';
@@ -13,43 +13,58 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class ProductCardComponent {
   @Input({ required: true }) article!: Article;
+  @Input() showActions = false;
+  @Output() editClicked = new EventEmitter<Article>();
+  @Output() deleteClicked = new EventEmitter<Article>();
 
-  mostrarModal = false;
-  motivoReporte = '';
-  enviando = false;
-  mensajeExito = '';
+  mostrarModal = signal(false);
+  motivoReporte = signal('');
+  enviando = signal(false);
+  mensajeExito = signal('');
+  reportado = signal(false);
 
   constructor(
     private moderationService: ModerationService,
     private authService: AuthService
   ) {}
 
+  get estaReportado(): boolean {
+    return this.reportado() || !!this.article.estado_reporte;
+  }
+
+  get estaVendido(): boolean {
+    return this.article.estadoVenta === 'VENDIDO';
+  }
+
   onReportar(event: Event): void {
     event.stopPropagation();
-    this.mostrarModal = true;
-    this.motivoReporte = '';
-    this.mensajeExito = '';
+    this.mostrarModal.set(true);
+    this.motivoReporte.set('');
+    this.mensajeExito.set('');
   }
 
   cerrarModal(): void {
-    this.mostrarModal = false;
+    this.mostrarModal.set(false);
   }
 
   enviarReporte(): void {
     const usuarioId = this.authService.getUserId();
-    if (!usuarioId) return;
+    if (!usuarioId) {
+      this.mensajeExito.set('Error: debes iniciar sesión para reportar.');
+      return;
+    }
 
-    this.enviando = true;
-    this.moderationService.reportArticle(this.article.id, this.motivoReporte.trim(), usuarioId).subscribe({
+    this.enviando.set(true);
+    this.moderationService.reportArticle(this.article.id, this.motivoReporte().trim(), usuarioId).subscribe({
       next: () => {
-        this.article.estadoVenta = 'EN_REVISION';
-        this.mensajeExito = 'Artículo reportado. Quedará en revisión por un moderador.';
-        this.enviando = false;
+        this.reportado.set(true);
+        this.mensajeExito.set('Artículo reportado. Quedará en revisión por un moderador.');
+        this.enviando.set(false);
         setTimeout(() => this.cerrarModal(), 2000);
       },
       error: () => {
-        this.mensajeExito = 'Error al enviar el reporte. Inténtalo de nuevo.';
-        this.enviando = false;
+        this.mensajeExito.set('Error al enviar el reporte. Inténtalo de nuevo.');
+        this.enviando.set(false);
       }
     });
   }

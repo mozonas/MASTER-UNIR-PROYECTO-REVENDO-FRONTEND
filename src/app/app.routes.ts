@@ -28,6 +28,7 @@ export const routes: Routes = [
   { path: 'welcome', component: WelcomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
+  { path: 'home', component: HomeComponent },
   { path: 'user-info', component: UserPageInfoComponent, canActivate: [authGuard] },
   { path: 'user-edit', component: UserPageEditComponent, canActivate: [authGuard] },
   { path: 'user-sell', component: UserPageSell },

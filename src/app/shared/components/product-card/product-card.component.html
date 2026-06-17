@@ -1,11 +1,16 @@
-<div class="product-card" [class.product-card--en-revision]="article.estadoVenta === 'EN_REVISION'">
+<div class="product-card" [class.product-card--en-revision]="estaReportado" [class.product-card--vendido]="estaVendido">
   <div class="product-card__image">
     <img [src]="article.imagen || 'images/placeholder-product.png'" [alt]="article.titulo" />
     @if (article.categoria_nombre) {
       <span class="product-card__badge">{{ article.categoria_nombre }}</span>
     }
-    @if (article.estadoVenta === 'EN_REVISION') {
+    @if (estaReportado) {
       <span class="product-card__badge product-card__badge--revision">En revisión</span>
+    }
+    @if (estaVendido) {
+      <div class="product-card__sold-overlay">
+        <span class="product-card__sold-text">VENDIDO</span>
+      </div>
     }
   </div>
   <div class="product-card__body">
@@ -15,15 +20,32 @@
       <span class="product-card__price">{{ article.precio | currency: 'EUR' : 'symbol' : '1.2-2' }}</span>
       <span class="product-card__location">{{ article.ubicacion }}</span>
     </div>
-    @if (article.estadoVenta !== 'EN_REVISION' && article.estadoVenta !== 'RETIRADO') {
+    @if (!estaReportado && !estaVendido && !showActions) {
       <button class="product-card__report-btn" (click)="onReportar($event)">
         <i class="fa fa-flag me-1"></i> Reportar
       </button>
     }
   </div>
+  @if (showActions) {
+    <div class="product-card__actions">
+      <button
+        class="product-card__action-btn product-card__action-btn--edit"
+        (click)="editClicked.emit(article)"
+        [disabled]="estaVendido"
+      >
+        <i class="fa fa-pencil me-1"></i> Editar
+      </button>
+      <button
+        class="product-card__action-btn product-card__action-btn--delete"
+        (click)="deleteClicked.emit(article)"
+      >
+        <i class="fa fa-trash me-1"></i> Eliminar
+      </button>
+    </div>
+  }
 </div>
 
-@if (mostrarModal) {
+@if (mostrarModal()) {
   <div class="report-modal-backdrop" (click)="cerrarModal()">
     <div class="report-modal" (click)="$event.stopPropagation()">
       <h5 class="report-modal__title">Reportar artículo</h5>
@@ -31,18 +53,19 @@
       <textarea
         class="report-modal__textarea"
         placeholder="Describe el motivo del reporte..."
-        [(ngModel)]="motivoReporte"
+        [value]="motivoReporte()"
+        (input)="motivoReporte.set($any($event.target).value)"
         rows="4"
         maxlength="500">
       </textarea>
       <div class="report-modal__actions">
         <button class="btn btn-secondary btn-sm" (click)="cerrarModal()">Cancelar</button>
-        <button class="btn btn-danger btn-sm" (click)="enviarReporte()" [disabled]="motivoReporte.trim().length < 5 || enviando">
-          {{ enviando ? 'Enviando...' : 'Enviar reporte' }}
+        <button class="btn btn-danger btn-sm" (click)="enviarReporte()" [disabled]="motivoReporte().trim().length < 5 || enviando()">
+          {{ enviando() ? 'Enviando...' : 'Enviar reporte' }}
         </button>
       </div>
-      @if (mensajeExito) {
-        <p class="report-modal__success">{{ mensajeExito }}</p>
+      @if (mensajeExito()) {
+        <p class="report-modal__success">{{ mensajeExito() }}</p>
       }
     </div>
   </div>

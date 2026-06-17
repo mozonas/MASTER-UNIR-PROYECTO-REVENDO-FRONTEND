@@ -23,6 +23,13 @@
   color: #999;
 }
 
+.home-loading,
+.home-error {
+  text-align: center;
+  color: #999;
+  padding: 40px 0;
+}
+
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));

@@ -1,20 +1,18 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { ProductService } from '../../../services/product.service';
 import { Product } from '../../../interfaces/product.interface';
-import { FooterComponent } from '../../../shared/footer/footer.component';
+import { Article } from '../../../shared/models/article.model';
+import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 
 @Component({
   selector: 'app-user-page-sell',
-  // imports: [CommonModule, FooterComponent],
-  imports: [CommonModule],
+  imports: [CommonModule, ProductCardComponent],
   templateUrl: './user-page-sell.html',
   styleUrls: ['./user-page-sell.css'],
 })
 export class UserPageSell {
   private productService = inject(ProductService);
-  private router = inject(Router);
 
   products = this.productService.products;
 
@@ -42,53 +40,50 @@ export class UserPageSell {
     return this.filteredProducts().slice(start, start + this.pageSize);
   });
 
+  currentPageArticles = computed<Article[]>(() =>
+    this.currentPageProducts().map(p => ({
+      id: Number(p.id),
+      titulo: p.title,
+      descripcion: p.description,
+      precio: p.price,
+      ubicacion: '',
+      categorias_id: 0,
+      usuarios_id: 0,
+      imagen: p.image,
+      estadoVenta: p.status === 'sold' ? 'VENDIDO' : p.status === 'reported' ? 'EN_REVISION' : 'DISPONIBLE',
+      estado_reporte: p.status === 'reported' ? 1 : null,
+    }))
+  );
+
   setFilter(filter: 'all' | 'available' | 'sold' | 'reported') {
     this.selectedFilter.set(filter);
     this.currentPage.set(1);
   }
 
   setPage(page: number) {
-    if (page < 1 || page > this.pageCount()) {
-      return;
-    }
+    if (page < 1 || page > this.pageCount()) return;
     this.currentPage.set(page);
   }
 
-  editProduct(product: Product) {
-    console.log('Editar producto:', product);
-    // TODO: Navegar a la vista de edición de artículo cuando esté disponible
-    alert(`Editar producto: ${product.title}\n(Placeholder - Vista de edición aún no implementada)`);
+  onEdit(article: Article): void {
+    const product = this.products().find(p => Number(p.id) === article.id);
+    if (product) {
+      alert(`Editar producto: ${product.title}\n(Placeholder - Vista de edición aún no implementada)`);
+    }
   }
 
-  addNewProduct() {
-    console.log('Agregar nuevo producto');
-    // TODO: Navegar a la vista de crear nuevo artículo cuando esté disponible
-    alert('Crear nuevo artículo\n(Placeholder - Vista de creación aún no implementada)');
-  }
-
-  deleteProduct(product: Product) {
+  onDelete(article: Article): void {
+    const product = this.products().find(p => Number(p.id) === article.id);
+    if (!product) return;
     const confirmed = confirm(`¿Está seguro de que desea eliminar "${product.title}"? Esta acción no se puede deshacer.`);
-    
     if (confirmed) {
       this.productService.deleteProduct(product.id);
       this.currentPage.set(Math.min(this.currentPage(), this.pageCount()));
-      console.log('Producto eliminado:', product.title);
     }
   }
 
-  getStatusBadgeClass(status: string): string {
-    return status === 'sold' ? 'badge-danger' : status === 'reported' ? 'badge-warning' : 'badge-success';
-  }
-
-  getStatusText(status: string): string {
-    switch (status) {
-      case 'sold':
-        return 'Vendido';
-      case 'reported':
-        return 'Reportado';
-      default:
-        return 'Disponible';
-    }
+  addNewProduct() {
+    alert('Crear nuevo artículo\n(Placeholder - Vista de creación aún no implementada)');
   }
 
   getFilterCount(filter: 'all' | 'available' | 'sold' | 'reported'): number {

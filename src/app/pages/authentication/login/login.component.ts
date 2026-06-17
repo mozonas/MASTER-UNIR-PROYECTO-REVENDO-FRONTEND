@@ -28,6 +28,16 @@ export class LoginComponent {
     password: ['', Validators.required],
   });
 
+  // DEV ONLY — eliminar antes de producción
+  devLogin() {
+    const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+      .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+    const payload = btoa(JSON.stringify({ perfil: 'USUARIO', userId: 1, username: 'TestUser' }))
+      .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+    sessionStorage.setItem('token', `${header}.${payload}.dev_fake_sig`);
+    this.router.navigate(['/user-info']);
+  }
+
   onSubmit() {
     if (this.form.invalid) return;
 

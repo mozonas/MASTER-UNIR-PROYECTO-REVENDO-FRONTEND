@@ -1,12 +1,30 @@
-<div class="home-container">
-  <div class="home-header">
-    <h1 class="home-title">Artículos</h1>
-    <span class="home-count">{{ articles.length }} artículos</span>
-  </div>
+<app-header-menu></app-header-menu>
 
-  <div class="products-grid">
-    @for (article of articles; track article.id) {
-      <app-product-card [article]="article" />
+<div class="home-container">
+
+  <div class="home-header">
+    @if (categoriaId()) {
+      <h1 class="home-title">{{ articles()[0]?.categoria_nombre || 'Categoría' }}</h1>
+    } @else {
+      <h1 class="home-title">Artículos</h1>
+    }
+    @if (!loading()) {
+      <span class="home-count">{{ articles().length }} artículos</span>
     }
   </div>
+
+  @if (loading()) {
+    <p class="home-loading">Cargando artículos...</p>
+  } @else if (error()) {
+    <p class="home-error">No se pudieron cargar los artículos.</p>
+  } @else if (articles().length === 0) {
+    <p class="home-loading">No hay artículos en esta categoría.</p>
+  } @else {
+    <div class="products-grid">
+      @for (article of articles(); track article.id) {
+        <app-product-card [article]="article" />
+      }
+    </div>
+  }
+
 </div>
