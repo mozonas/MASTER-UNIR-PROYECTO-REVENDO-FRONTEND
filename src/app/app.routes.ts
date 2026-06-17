@@ -26,6 +26,10 @@ import { PrivacyComponent } from './pages/privacy/privacy';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
+
+//17062026 mog componente error404
+import { Error404Component } from './pages/error-404/error-404';
+
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'welcome' },
   { path: 'welcome', component: WelcomeComponent },
@@ -94,7 +98,10 @@ export const routes: Routes = [
   { path: 'about', component: AboutComponent },
   { path: 'help', component: HelpComponent },
   { path: 'privacy', component: PrivacyComponent },
-  { path: 'terms', component: TermsComponent }
+  { path: 'terms', component: TermsComponent },
+  { path: '404', component: Error404Component },
+  { path: '**', component: Error404Component } // Esta ruta debe ir al final, ya que es la ruta comodín para páginas no encontradas
+
 ];
 
 
