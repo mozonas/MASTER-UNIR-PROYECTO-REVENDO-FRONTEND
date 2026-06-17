@@ -3,7 +3,7 @@ import { Product } from '../interfaces/product.interface';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PubStats } from '../interfaces/pub-stats.interface';
-import {Ventas} from '../interfaces/ventas.interface'
+import {VentasMes} from '../interfaces/ventas.interface'
 
  @Injectable({
   providedIn: 'root'
@@ -155,9 +155,13 @@ export class ProductService {
     return this.http.get<{ total: number }>(`${this.apiUrl}/published/last-month`);
   }
 
-  // Articulos vendidos est mes
-   getVentasMensuales(month: number): Observable<Ventas[]> {
-    return this.http.get<Ventas[]>(`${this.apiUrl}/sold/${month}`);
+  // Articulos vendidos este mes
+   getVentasMensuales(month: number): Observable<VentasMes[]> {
+    return this.http.get<VentasMes[]>(`${this.apiUrl}/sold/${month}`);
+  }
+  // Articulos vendidos este año
+  getVentasAnuales(year:number): Observable<{mes:number;total: number}[]>  {
+    return this.http.get<{mes:number;total: number}[]>(`${this.apiUrl}/sold/year/${year}`);
   }
 
 }

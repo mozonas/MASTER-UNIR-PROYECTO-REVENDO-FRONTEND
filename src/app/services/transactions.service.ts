@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Transactions } from '../interfaces/transactions.interface';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
@@ -11,16 +12,11 @@ export class TransactionsServices {
   private http = inject (HttpClient);
   private apiUrl = 'http://localhost:3000/api/transactions';
 
-  // Obtener ventas al mes anuales
+  //** Ruta del back para obtener usuarios activos mes actual y mes anterior */
+  getActiveUsers(): Observable<{ mesActual: number; mesAnterior: number }> {
+  return this.http.get<{ mesActual: number; mesAnterior: number }>(
+    `${this.apiUrl}/active-users`
+  );
+}
 
-  getVentasAnuales(year:number){
-    return this.http.get <{mes:number;total: number}[]>(`${this.apiUrl}/anual/${year}`);
-  }
-
-    // Ventas diarias de un mes
-  getVentasMensuales(month: number, year: number) {
-    return this.http.get<Transactions[]>(
-      `${this.apiUrl}/mensual/${month}?year=${year}`
-    );
-  }
 }

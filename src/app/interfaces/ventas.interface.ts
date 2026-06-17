@@ -1,4 +1,4 @@
-export interface Ventas {
+export interface VentasMes {
     dia:number,
     total:number
 }

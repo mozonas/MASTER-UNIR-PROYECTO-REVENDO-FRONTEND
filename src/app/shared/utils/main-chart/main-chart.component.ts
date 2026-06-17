@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import  Chart  from 'chart.js/auto';
 import { TransactionsServices } from '../../../services/transactions.service';
 import { forkJoin } from 'rxjs';
+import { ProductService } from '../../../services/product.service';
 
 @Component({
   selector: 'app-main-chart',
@@ -13,7 +14,7 @@ import { forkJoin } from 'rxjs';
 export class MainChartComponent {
   
 // del servicio: articulos vendidos por año
-private transaction = inject (TransactionsServices)
+private productServices = inject (ProductService)
 
 ngOnInit(){
   this.comparativaYears()
@@ -25,8 +26,8 @@ comparativaYears (){
   const mesActual = new Date().getMonth()+1;
 
   forkJoin({
-    actual: this.transaction.getVentasAnuales(year),
-    anterior: this.transaction.getVentasAnuales(lastYear) }).subscribe(({ actual, anterior }) => {
+    actual: this.productServices.getVentasAnuales(year),
+    anterior: this.productServices.getVentasAnuales(lastYear) }).subscribe(({ actual, anterior }) => {
 
     const ventasActual = Array(12).fill(0);
     const ventasAnterior = Array(12).fill(0);
