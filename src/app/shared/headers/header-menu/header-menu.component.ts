@@ -1,4 +1,4 @@
-import { Component, computed, inject, Input, signal } from '@angular/core';
+import { Component, computed, effect, inject, Input, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 
@@ -9,8 +9,7 @@ import { AuthService } from '../../../services/auth.service';
   styleUrl: './header-menu.component.css',
 })
 export class HeaderMenuComponent {
-
-
+  
   @Input() mostrarMenu: boolean = true;
 
   //inyección servicio para seleccionar role
@@ -18,6 +17,15 @@ export class HeaderMenuComponent {
 
   // Inyectamos el Router para la redirección post-logout
   private router = inject(Router);
+
+  isLogged = this.authService.isLogged;
+
+
+   constructor() {
+    effect(() => {
+      
+    });
+  }
 
   logout(): void {
     // Borra el token del sessionStorage (ajusta 'token' al nombre exacto que uses)
@@ -34,5 +42,7 @@ export class HeaderMenuComponent {
   username = signal(this.authService.getUserName() ?? '');
 
   isStaff = computed(() => ['ADMIN', 'MODERADOR'].includes(this.role()));
+
+
 
 }

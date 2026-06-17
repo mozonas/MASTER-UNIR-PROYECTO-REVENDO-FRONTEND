@@ -1,6 +1,9 @@
 <!-- cabezera -->
 <div class="page-shell">
   <header class="p-4 mb-3 border-bottom page-header">
+
+    <!--menu admin-moderador-->
+    @if (isStaff()){
     <div class="container-fluid d-grid g-4 align-items-center" style="grid-template-columns: 1fr 2fr">
       <!-- LOGO -->
       <div class="logo-container">
@@ -9,8 +12,6 @@
         </a>
         <p class="texto-marca">ReVendo</p>
       </div>
-      <!--menu admin-moderador-->
-      @if (isStaff()){
       <!-- TExt + AVATAR -->
       <div class="d-flex align-items-center gap-5 ms-auto">
         <!-- text -->
@@ -36,38 +37,52 @@
           </ul>
         </div>
       </div>
-      }
-      @else{
-      @if (mostrarMenu) {
-      <!-- BARRA DE BÚSQUEDA + AVATAR -->
-      <div class="d-flex align-items-center justify-content-between gap-4">
-        <!-- Barra busqueda -->
-        <div class="input-group mb-3 mt-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text">
-              <img src="/images/lupa.png" width="24" height="24" alt="Buscar">
-            </span>
-          </div>
-          <input type="text" class="form-control" placeholder="Buscar articulos" aria-label="Buscar">
-        </div>
-        <!-- AVATAR-->
-        <div class="flex-shrink-0 dropdown avatar-dropdown">
-          <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            <img src="/images/profile-avatar.svg" alt="Avatar de perfil" width="38" height="38"
-              class="rounded-circle" />
+    </div>
+    }
+    @else{
+    @if (mostrarMenu) {
+    <div class="container-fluid  align-items-center">
+      <div class=" row d-grid g-2" style="grid-template-columns: 1fr 2fr">
+
+        <!-- LOGO -->
+        <div class="logo-container">
+          <a href="#">
+            <img src="/images/logo_revendo.png" alt="Revendo logo" width="80" height="60" />
           </a>
-          <ul class="dropdown-menu dropdown-menu-end text-small shadow">
-            <li><a class="dropdown-item">Nuevo artículo</a></li>
-            <li><a class="dropdown-item" [routerLink]="['/user-info']">Ver perfil</a></li>
-            <li><a class="dropdown-item">Favoritos</a></li>
-            <li>
-              <hr class="dropdown-divider" />
-            </li>
-            <li><a class="dropdown-item" (click)="logout()" style="cursor: pointer;">Salir</a></li>
-          </ul>
+          <p class="texto-marca">ReVendo</p>
         </div>
+        <!-- BARRA DE BÚSQUEDA + AVATAR -->
+        <div class="d-flex align-items-center justify-content-between gap-4">
+          <!-- Barra busqueda -->
+          <div class="input-group mb-3 mt-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <img src="/images/lupa.png" width="24" height="24" alt="Buscar">
+              </span>
+            </div>
+            <input type="text" class="form-control" placeholder="Buscar articulos" aria-label="Buscar">
+          </div>
+          <!-- AVATAR-->
+          <div class="flex-shrink-0 dropdown avatar-dropdown">
+            <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              <img src="/images/profile-avatar.svg" alt="Avatar de perfil" width="38" height="38"
+                class="rounded-circle" />
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end text-small shadow">
+              <li><a class="dropdown-item">Nuevo artículo</a></li>
+              <li><a class="dropdown-item" [routerLink]="['/user-info']">Ver perfil</a></li>
+              <li><a class="dropdown-item">Favoritos</a></li>
+              <li>
+                <hr class="dropdown-divider" />
+              </li>
+              <li><a class="dropdown-item" (click)="logout()" style="cursor: pointer;">Salir</a></li>
+            </ul>
+          </div>
+        </div>
+
       </div>
+
       <!-- NAV -->
       <nav class="py-2 bg-body page-nav">
         <div class="container d-flex flex-wrap">
@@ -126,8 +141,10 @@
           </ul>
         </div>
       </nav>
-      }
-      }
+
     </div>
+    }
+    }
+
   </header>
 </div>

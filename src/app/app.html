@@ -1,9 +1,13 @@
-@if (authService.isLogged()) {
+<div class="app-container">
+   <!--  @if (authService.isLogged()) { -->
     <app-header-menu></app-header-menu>
-}
+   <!--  } -->
 
-<router-outlet></router-outlet>
+    <main class="main-content">
+        <router-outlet></router-outlet>
+    </main>
 
-@if (authService.isLogged()) {
+   <!--  @if (authService.isLogged()) { -->
     <app-footer></app-footer>
-}
+   <!--  } -->
+</div>
