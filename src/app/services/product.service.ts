@@ -2,8 +2,10 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Product } from '../interfaces/product.interface';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { PubStats } from '../interfaces/pub-stats.interface';
+import {Ventas} from '../interfaces/ventas.interface'
 
-@Injectable({
+ @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
@@ -144,14 +146,18 @@ export class ProductService {
   }
 
   // Artículos publicados este mes
-  getPubThisMonth() {
+  getPubThisMonth():Observable <PubStats> {
     return this.http.get<{ total: number }>(`${this.apiUrl}/published/this-month`);
   }
 
   // Artículos publicados el mes pasado
-  getPubLastMonth(): Observable<{ total: number }> {
+  getPubLastMonth(): Observable<PubStats> {
     return this.http.get<{ total: number }>(`${this.apiUrl}/published/last-month`);
   }
 
+  // Articulos vendidos est mes
+   getVentasMensuales(month: number): Observable<Ventas[]> {
+    return this.http.get<Ventas[]>(`${this.apiUrl}/sold/${month}`);
+  }
 
 }

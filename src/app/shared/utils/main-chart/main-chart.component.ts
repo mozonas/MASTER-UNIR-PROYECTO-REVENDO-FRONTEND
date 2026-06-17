@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import  Chart  from 'chart.js/auto';
 import { TransactionsServices } from '../../../services/transactions.service';
-import {  forkJoin } from 'rxjs';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-main-chart',

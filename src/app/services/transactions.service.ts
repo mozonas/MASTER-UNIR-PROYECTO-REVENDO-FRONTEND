@@ -1,11 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { Transactions } from '../interfaces/transactions.interface';
 
 
-export interface VentasDia {
-  dia: number;
-  total: number;
-}
 @Injectable({
   providedIn: 'root',
 })
@@ -22,7 +19,7 @@ export class TransactionsServices {
 
     // Ventas diarias de un mes
   getVentasMensuales(month: number, year: number) {
-    return this.http.get<VentasDia[]>(
+    return this.http.get<Transactions[]>(
       `${this.apiUrl}/mensual/${month}?year=${year}`
     );
   }
