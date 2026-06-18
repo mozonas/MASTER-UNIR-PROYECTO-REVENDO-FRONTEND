@@ -1,98 +1,148 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { ProductService } from '../../../services/product.service';
-import { Product } from '../../../interfaces/product.interface';
-import { FooterComponent } from '../../../shared/footer/footer.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ArticleService } from '../../../services/article.service';
+import { AuthService } from '../../../services/auth.service';
+import { iArticle } from '../../../interfaces/article.interface';
 
 @Component({
   selector: 'app-user-page-sell',
-  // imports: [CommonModule, FooterComponent],
   imports: [CommonModule],
   templateUrl: './user-page-sell.html',
   styleUrls: ['./user-page-sell.css'],
 })
-export class UserPageSell {
-  private productService = inject(ProductService);
+
+export class UserPageSell implements OnInit {
+
+  // 1. INYECTORES DE DEPENDENCIAS
+
+  private articleService = inject(ArticleService);
+  private authService = inject(AuthService);
+  private route = inject(ActivatedRoute);
   private router = inject(Router);
-
-  products = this.productService.products;
-
-  selectedFilter = signal<'all' | 'available' | 'sold' | 'reported'>('all');
+  // 2. PROPIEDADES Y SIGNALS ESTÁNDAR
+  articles = this.articleService.Articles;
+  selectedFilter = signal<'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'>('all');
   currentPage = signal(1);
   pageSize = 6;
 
-  filteredProducts = computed(() => {
+  // 3. PROPIEDADES COMPUTADAS (COMPUTED SIGNALS)
+
+  filteredarticles = computed(() => {
     const filter = this.selectedFilter();
-    const allProducts = this.products();
-    if (filter === 'all') return allProducts;
-    return allProducts.filter(p => p.status === filter);
+    const allarticles = this.articles();
+    const articlesArray = Array.isArray(allarticles) ? allarticles : [];
+    if (filter === 'all') return articlesArray;
+    return articlesArray.filter(p => p.estadoVenta === filter);
   });
-
   pageCount = computed(() => {
-    return Math.max(1, Math.ceil(this.filteredProducts().length / this.pageSize));
+    return Math.max(1, Math.ceil(this.filteredarticles().length / this.pageSize));
   });
-
   pageNumbers = computed(() => {
     return Array.from({ length: this.pageCount() }, (_, index) => index + 1);
   });
-
-  currentPageProducts = computed(() => {
+  currentPagearticles = computed(() => {
     const start = (this.currentPage() - 1) * this.pageSize;
-    return this.filteredProducts().slice(start, start + this.pageSize);
+    const filtered = this.filteredarticles();
+    const filteredArray = Array.isArray(filtered) ? filtered : [];
+    return filteredArray.slice(start, start + this.pageSize);
   });
 
-  setFilter(filter: 'all' | 'available' | 'sold' | 'reported') {
+  // 4. CICLO DE VIDA (LIFECYCLE HOOKS)
+
+  ngOnInit(): void {
+    this.loadArticles();
+  }
+
+  // 5. PETICIONES A LA API Y SERVICIOS
+
+  private loadArticles(): void {
+    const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
+    const userId = routeUserId ?? this.authService.getUserId();
+
+    if (!userId) {
+      console.error('No se pudo obtener el ID de usuario para cargar los artículos.');
+      return;
+    }
+
+    this.articleService.getAllUserArticles(userId).subscribe({
+      next: (articles) => {
+        // Asignamos los datos reales del backend a la Signal global del servicio
+        this.articleService.Articles.set(articles);
+ 
+        // PRUEBA DE LOG: Verificación en la consola del navegador
+        console.log('--- PRUEBA DE LOG EN FRONTEND ---');
+        console.log('Datos directos recibidos desde Express:', articles);
+        console.log('Contenido de la Signal local actualizada:', this.articles());
+        console.table(articles);
+      },
+      error: (error) => {
+        console.error('Error al cargar artículos:', error);
+      }
+    });
+  }
+  deleteArticle(article: iArticle) {
+    const confirmed = confirm(`¿Está seguro de que desea eliminar "${article.titulo}"? Esta acción no se puede deshacer.`);
+    if (confirmed) {
+      this.articleService.deleteArticle(article.id);
+      this.currentPage.set(Math.min(this.currentPage(), this.pageCount()));
+      console.log('Articulo eliminado:', article.titulo);
+    }
+  }
+ 
+  // 6. ACCIONES DE LA INTERFAZ / EVENTOS DE USUARIO
+
+  setFilter(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO') {
     this.selectedFilter.set(filter);
     this.currentPage.set(1);
   }
-
   setPage(page: number) {
     if (page < 1 || page > this.pageCount()) {
       return;
     }
     this.currentPage.set(page);
   }
-
-  editProduct(product: Product) {
-    console.log('Editar producto:', product);
-    // TODO: Navegar a la vista de edición de artículo cuando esté disponible
-    alert(`Editar producto: ${product.title}\n(Placeholder - Vista de edición aún no implementada)`);
+  editArticle(article: iArticle) {
+    console.log('Editar articleo:', article);
+    alert(`Editar articleo: ${article.titulo}\n(Placeholder - Vista de edición aún no implementada)`);
   }
-
-  addNewProduct() {
-    console.log('Agregar nuevo producto');
-    // TODO: Navegar a la vista de crear nuevo artículo cuando esté disponible
+  addNewArticle() {
+    console.log('Agregar nuevo articleo');
     alert('Crear nuevo artículo\n(Placeholder - Vista de creación aún no implementada)');
   }
-
-  deleteProduct(product: Product) {
-    const confirmed = confirm(`¿Está seguro de que desea eliminar "${product.title}"? Esta acción no se puede deshacer.`);
-    
-    if (confirmed) {
-      this.productService.deleteProduct(product.id);
-      this.currentPage.set(Math.min(this.currentPage(), this.pageCount()));
-      console.log('Producto eliminado:', product.title);
+ 
+  // 7. MÉTODOS FORMATO Y PLANTILLA (TEMPLATE UTILS)
+  
+  getStatusBadgeClass(estado: string): string {
+    switch (estado) {
+      case 'VENDIDO':
+        return 'badge-danger';
+      case 'RESERVADO':
+        return 'badge-warning';
+      default:
+        return 'badge-success';
     }
   }
-
-  getStatusBadgeClass(status: string): string {
-    return status === 'sold' ? 'badge-danger' : status === 'reported' ? 'badge-warning' : 'badge-success';
-  }
-
-  getStatusText(status: string): string {
-    switch (status) {
-      case 'sold':
+  getStatusText(estado: string): string {
+    switch (estado) {
+      case 'VENDIDO':
         return 'Vendido';
-      case 'reported':
+      case 'RESERVADO':
         return 'Reportado';
       default:
         return 'Disponible';
     }
   }
 
-  getFilterCount(filter: 'all' | 'available' | 'sold' | 'reported'): number {
-    if (filter === 'all') return this.products().length;
-    return this.products().filter(p => p.status === filter).length;
+  getFilterCount(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'): number {
+    const allarticles = this.articles();
+    const articlesArray = Array.isArray(allarticles) ? allarticles : [];
+    if (filter === 'all') return articlesArray.length;
+    return articlesArray.filter(p => p.estadoVenta === filter).length;
+  }
+
+  viewArticle(article: any) {
+    console.log('Ver artículo:', article.id);
+    this.router.navigate(['/article-detail', article.id]);
   }
 }

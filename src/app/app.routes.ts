@@ -1,30 +1,108 @@
 import { Routes } from '@angular/router';
+
 import { WelcomeComponent } from './pages/authentication/welcome-component/welcome-component';
 import { LoginComponent } from './pages/authentication/login/login.component';
 import { SignupComponent } from './pages/authentication/signup/signup.component';
+import { HomeComponent } from './pages/home/home.component';
 import { UserPageInfoComponent } from './pages/user/user-page-info/user-page-info';
 import { UserPageEditComponent } from './pages/user/user-page-edit/user-page-edit';
-import { authGuard } from './guards/auth.guard';
 import { UserPageSell } from './pages/user/user-page-sell/user-page-sell';
 import { ArticleDetailComponent } from './pages/article-detail-component/article-detail-component';
-import { AdminHeaderComponent } from './shared/headers/admin-header/admin-header.component';
-import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.component';
-import { ModerationComponent } from './pages/moderation/moderation.component';
+import { AdminLayoutComponent } from './pages/admin/admin-layout/admin-layout.component';
+import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 
 
+//import { roleGuard } from './guards/role.guard';
+//11062026 MOG IMPORTACION COMPOENTES ADMIN
+//import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
+import { AdminUserManagementComponent } from './pages/admin/admin-user-management/admin-user-management.component';
+import { AdminCategoryManagementComponent } from './pages/admin/admin-category-management/admin-category-management.component';
+
+import { AboutComponent } from './pages/about/about';
+import { HelpComponent } from './pages/help/help';
+import { TermsComponent } from './pages/terms/terms';
+import { PrivacyComponent } from './pages/privacy/privacy';
+
+import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
+
+//17062026 mog componente error404
+import { Error404Component } from './pages/error-404/error-404';
+
 export const routes: Routes = [
-  { path: "", pathMatch: 'full', redirectTo: "home" },
-  { path: "home", component: WelcomeComponent },
-  { path: "login", component: LoginComponent },
+  { path: '', pathMatch: 'full', redirectTo: 'welcome' },
+  { path: 'welcome', component: WelcomeComponent },
+  { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
+  { path: 'home', component: HomeComponent, canActivate: [authGuard] },
   { path: 'user-info', component: UserPageInfoComponent, canActivate: [authGuard] },
   { path: 'user-edit', component: UserPageEditComponent, canActivate: [authGuard] },
-  { path: 'user-sell', component: UserPageSell },
-  { path: 'article-detail', component: ArticleDetailComponent },
+  { path: 'user-sell/:id', component: UserPageSell, /* canActivate: [authGuard]  */},
+  { path: 'article-detail/:id', component: ArticleDetailComponent },
+  { path: 'admin', 
+    component: AdminLayoutComponent, 
+    canActivate: [roleGuard(['ADMIN'])], 
+    children: [
+      { path: 'dashboard', component: AdminDashboardComponent},
+      { path: 'users', component: AdminUserManagementComponent },
+      { path: 'categories', component: AdminCategoryManagementComponent },
+
+      // 👇 ESTA LÍNEA HACE QUE USERS SE CARGUE POR DEFECTO
+      { path: '', redirectTo: 'users', pathMatch: 'full' },
+      // prueba para editar usuario desde admin
+      { 
+        path: 'users/editar/:id', 
+        component: UserPageEditComponent 
+      },
+
+    ]
+  },
+  
+
+ 
+  
+
+  // A medida que se vayan creando los componentes de cada página, se irán añadiendo aquí con su correspondiente path y guard si es necesario
+  //Habrá incluso rutas para cada rol, por ejemplo, /admin, /moderador, /usuario, etc. y se protegerán con el guard correspondiente para cada rol
+  //Usaremos la línea comentada roleGuard
+
+  /*
+  Cómo usarlo:
+  {
+    path: 'admin',
+    canActivate: [roleGuard(['admin'])],
+    loadComponent: () => import('./pages/admin/admin.component')
+  }
   { path: 'header-menu', component: HeaderMenuComponent},
-  { path: 'admin-header', component: AdminHeaderComponent, canActivate: [roleGuard(['admin'])] },
+  { path: 'admin-header', component: AdminHeaderComponent, canActivate: [roleGuard(['ADMIN'])] },
   { path: 'moderation', component: ModerationComponent },
+  {
+  path: 'admin',
+  canActivate: [roleGuard(['ADMIN'])],
+  component: AdminLayout,
+  children: [
+    { path: 'users', component: AdminUserManagementComponent },
+    { path: 'articles', component: AdminArticleManagementComponent },
+    { path: 'categories', component: AdminCategoryManagementComponent },
+    { path: 'reports', component: AdminReportManagementComponent },
+
+    // 👇 ESTA LÍNEA HACE QUE USERS SE CARGUE POR DEFECTO
+    { path: '', redirectTo: 'users', pathMatch: 'full' }
+  ]
+}
+
+
+*/
+  // --- Páginas Legales del Footer ---
+  { path: 'about', component: AboutComponent },
+  { path: 'help', component: HelpComponent },
+  { path: 'privacy', component: PrivacyComponent },
+  { path: 'terms', component: TermsComponent },
+  { path: '404', component: Error404Component },
+  { path: '**', component: Error404Component } // Esta ruta debe ir al final, ya que es la ruta comodín para páginas no encontradas
 
 ];
+
+
+

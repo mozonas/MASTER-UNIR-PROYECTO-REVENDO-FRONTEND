@@ -1,0 +1,12 @@
+.component-view {
+  margin-left: 250px;    
+  padding: 1rem;
+  width: calc(100% - 250px);
+  height: calc(100vh - 138px);
+  overflow-y: auto;
+
+}
+
+
+
+
