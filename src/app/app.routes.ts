@@ -22,6 +22,7 @@ import { AdminCategoryManagementComponent } from './pages/admin/admin-category-m
 
 
 import { roleGuard } from './guards/role.guard';
+import { AdminActivityComponent } from './pages/admin/admin-activity/admin-activity.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'welcome' },
@@ -39,7 +40,7 @@ export const routes: Routes = [
       { path: 'dashboard', component: AdminDashboardComponent},
       { path: 'users', component: AdminUserManagementComponent },
       { path: 'categories', component: AdminCategoryManagementComponent },
-
+      { path: 'activity/:range', component: AdminActivityComponent },
       // 👇 ESTA LÍNEA HACE QUE USERS SE CARGUE POR DEFECTO
       { path: '', redirectTo: 'users', pathMatch: 'full' },
       // prueba para editar usuario desde admin

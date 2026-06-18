@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Transactions } from '../interfaces/transactions.interface';
 import { Observable } from 'rxjs';
 
 

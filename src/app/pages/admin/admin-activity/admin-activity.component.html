@@ -1,0 +1,36 @@
+<!-- Actividad reciente -->
+<div class="recent-activity card p-4 shadow-sm mt-4">
+   <h4 class="mb-3">Actividad reciente</h4>
+   <table class="table table-hover align-middle">
+      <thead>
+         <tr>
+            <th>Tipo</th>
+            <th>Descripción</th>
+            <th>Usuario</th>
+            <th>Fecha</th>
+         </tr>
+      </thead>
+      <tbody>
+         @for (item of activity; track $index) {
+         <tr>
+            <td>
+               @switch (item.type) {
+               @case ('usuario') {
+               <span class="badge bg-primary">Usuario</span>
+               }
+               @case ('articulo') {
+               <span class="badge bg-success">Artículo</span>
+               }
+               @case ('reporte') {
+               <span class="badge bg-danger">Reporte</span>
+               }
+               }
+            </td>
+            <td>{{ item.description }}</td>
+            <td>{{ item.user }}</td>
+            <td>{{ item.date | date:'dd/MM/yyyy HH:mm' }}</td>
+         </tr>
+         }
+      </tbody>
+   </table>
+</div>
