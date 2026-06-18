@@ -4,11 +4,10 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Article } from '../../shared/models/article.model';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
-import { HeaderMenuComponent } from '../../shared/headers/header-menu/header-menu.component';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, ProductCardComponent, HeaderMenuComponent],
+  imports: [CommonModule, ProductCardComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })

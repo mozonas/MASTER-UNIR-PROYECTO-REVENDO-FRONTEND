@@ -1,7 +1,9 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProductService } from '../../../services/product.service';
-import { Product } from '../../../interfaces/product.interface';
+import { ActivatedRoute } from '@angular/router';
+import { ArticleService } from '../../../services/article.service';
+import { AuthService } from '../../../services/auth.service';
+import { iArticle } from '../../../interfaces/article.interface';
 import { Article } from '../../../shared/models/article.model';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 
@@ -11,91 +13,104 @@ import { ProductCardComponent } from '../../../shared/components/product-card/pr
   templateUrl: './user-page-sell.html',
   styleUrls: ['./user-page-sell.css'],
 })
-export class UserPageSell {
-  private productService = inject(ProductService);
+export class UserPageSell implements OnInit {
+  private articleService = inject(ArticleService);
+  private authService = inject(AuthService);
+  private route = inject(ActivatedRoute);
 
-  products = this.productService.products;
+  articles = this.articleService.Articles;
 
-  selectedFilter = signal<'all' | 'available' | 'sold' | 'reported'>('all');
+  selectedFilter = signal<'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'>('all');
   currentPage = signal(1);
   pageSize = 6;
 
-  // 3. PROPIEDADES COMPUTADAS (COMPUTED SIGNALS)
-
-  filteredarticles = computed(() => {
+  filteredArticles = computed(() => {
     const filter = this.selectedFilter();
-    const allarticles = this.articles();
-    const articlesArray = Array.isArray(allarticles) ? allarticles : [];
-    if (filter === 'all') return articlesArray;
-    return articlesArray.filter(p => p.estadoVenta === filter);
+    const all = this.articles();
+    if (filter === 'all') return all;
+    return all.filter(a => a.estadoVenta === filter);
   });
+
   pageCount = computed(() => {
-    return Math.max(1, Math.ceil(this.filteredarticles().length / this.pageSize));
+    return Math.max(1, Math.ceil(this.filteredArticles().length / this.pageSize));
   });
+
   pageNumbers = computed(() => {
     return Array.from({ length: this.pageCount() }, (_, index) => index + 1);
   });
-  currentPagearticles = computed(() => {
+
+  private currentPageRawArticles = computed(() => {
     const start = (this.currentPage() - 1) * this.pageSize;
-    const filtered = this.filteredarticles();
-    const filteredArray = Array.isArray(filtered) ? filtered : [];
-    return filteredArray.slice(start, start + this.pageSize);
+    return this.filteredArticles().slice(start, start + this.pageSize);
   });
 
   currentPageArticles = computed<Article[]>(() =>
-    this.currentPageProducts().map(p => ({
-      id: Number(p.id),
-      titulo: p.title,
-      descripcion: p.description,
-      precio: p.price,
+    this.currentPageRawArticles().map(a => ({
+      id: Number(a.id),
+      titulo: a.titulo,
+      descripcion: a.descripcion,
+      precio: a.precio,
       ubicacion: '',
-      categorias_id: 0,
-      usuarios_id: 0,
-      imagen: p.image,
-      estadoVenta: p.status === 'sold' ? 'VENDIDO' : p.status === 'reported' ? 'EN_REVISION' : 'DISPONIBLE',
-      estado_reporte: p.status === 'reported' ? 1 : null,
+      categorias_id: a.categorias_id,
+      usuarios_id: a.usuarios_id,
+      imagen: a.image ?? undefined,
+      estadoVenta: a.estadoVenta as Article['estadoVenta'],
+      estado_reporte: a.estado_reporte ?? null,
     }))
   );
 
-  setFilter(filter: 'all' | 'available' | 'sold' | 'reported') {
+  ngOnInit(): void {
+    this.loadArticles();
+  }
+
+  private loadArticles(): void {
+    const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
+    const userId = routeUserId ?? this.authService.getUserId();
+
+    if (!userId) {
+      console.error('No se pudo obtener el ID de usuario para cargar los artículos.');
+      return;
+    }
+
+    this.articleService.getAllUserArticles(userId).subscribe({
+      error: (error) => console.error('Error al cargar artículos:', error),
+    });
+  }
+
+  setFilter(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO') {
     this.selectedFilter.set(filter);
     this.currentPage.set(1);
   }
+
   setPage(page: number) {
     if (page < 1 || page > this.pageCount()) return;
     this.currentPage.set(page);
   }
 
   onEdit(article: Article): void {
-    const product = this.products().find(p => Number(p.id) === article.id);
-    if (product) {
-      alert(`Editar producto: ${product.title}\n(Placeholder - Vista de edición aún no implementada)`);
+    const original = this.articles().find((a: iArticle) => a.id === String(article.id));
+    if (original) {
+      alert(`Editar artículo: ${original.titulo}\n(Placeholder - Vista de edición aún no implementada)`);
     }
   }
 
   onDelete(article: Article): void {
-    const product = this.products().find(p => Number(p.id) === article.id);
-    if (!product) return;
-    const confirmed = confirm(`¿Está seguro de que desea eliminar "${product.title}"? Esta acción no se puede deshacer.`);
+    const original = this.articles().find((a: iArticle) => a.id === String(article.id));
+    if (!original) return;
+    const confirmed = confirm(`¿Está seguro de que desea eliminar "${original.titulo}"? Esta acción no se puede deshacer.`);
     if (confirmed) {
-      this.productService.deleteProduct(product.id);
+      this.articleService.deleteArticle(original.id);
       this.currentPage.set(Math.min(this.currentPage(), this.pageCount()));
     }
   }
 
-  addNewProduct() {
+  addNewArticle() {
     alert('Crear nuevo artículo\n(Placeholder - Vista de creación aún no implementada)');
   }
 
   getFilterCount(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'): number {
-    const allarticles = this.articles();
-    const articlesArray = Array.isArray(allarticles) ? allarticles : [];
-    if (filter === 'all') return articlesArray.length;
-    return articlesArray.filter(p => p.estadoVenta === filter).length;
-  }
-
-  viewArticle(article: any) {
-    console.log('Ver artículo:', article.id);
-    this.router.navigate(['/article-detail', article.id]);
+    const all = this.articles();
+    if (filter === 'all') return all.length;
+    return all.filter(a => a.estadoVenta === filter).length;
   }
 }
