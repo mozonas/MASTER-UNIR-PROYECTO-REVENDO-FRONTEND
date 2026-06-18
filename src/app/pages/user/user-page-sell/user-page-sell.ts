@@ -1,60 +1,67 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { AuthService } from '../../../services/auth.service';
 import { iArticle } from '../../../interfaces/article.interface';
+import { Article } from '../../../shared/models/article.model';
+import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 
 @Component({
   selector: 'app-user-page-sell',
-  imports: [CommonModule],
+  imports: [CommonModule, ProductCardComponent],
   templateUrl: './user-page-sell.html',
   styleUrls: ['./user-page-sell.css'],
 })
-
 export class UserPageSell implements OnInit {
-
-  // 1. INYECTORES DE DEPENDENCIAS
-
   private articleService = inject(ArticleService);
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  // 2. PROPIEDADES Y SIGNALS ESTÁNDAR
+
   articles = this.articleService.Articles;
+
   selectedFilter = signal<'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'>('all');
   currentPage = signal(1);
   pageSize = 6;
 
-  // 3. PROPIEDADES COMPUTADAS (COMPUTED SIGNALS)
-
-  filteredarticles = computed(() => {
+  filteredArticles = computed(() => {
     const filter = this.selectedFilter();
-    const allarticles = this.articles();
-    const articlesArray = Array.isArray(allarticles) ? allarticles : [];
-    if (filter === 'all') return articlesArray;
-    return articlesArray.filter(p => p.estadoVenta === filter);
+    const all = this.articles();
+    if (filter === 'all') return all;
+    return all.filter(a => a.estadoVenta === filter);
   });
+
   pageCount = computed(() => {
-    return Math.max(1, Math.ceil(this.filteredarticles().length / this.pageSize));
+    return Math.max(1, Math.ceil(this.filteredArticles().length / this.pageSize));
   });
+
   pageNumbers = computed(() => {
     return Array.from({ length: this.pageCount() }, (_, index) => index + 1);
   });
-  currentPagearticles = computed(() => {
+
+  private currentPageRawArticles = computed(() => {
     const start = (this.currentPage() - 1) * this.pageSize;
-    const filtered = this.filteredarticles();
-    const filteredArray = Array.isArray(filtered) ? filtered : [];
-    return filteredArray.slice(start, start + this.pageSize);
+    return this.filteredArticles().slice(start, start + this.pageSize);
   });
 
-  // 4. CICLO DE VIDA (LIFECYCLE HOOKS)
+  currentPageArticles = computed<Article[]>(() =>
+    this.currentPageRawArticles().map(a => ({
+      id: Number(a.id),
+      titulo: a.titulo,
+      descripcion: a.descripcion,
+      precio: a.precio,
+      ubicacion: '',
+      categorias_id: a.categorias_id,
+      usuarios_id: a.usuarios_id,
+      imagen: a.image ?? undefined,
+      estadoVenta: a.estadoVenta as Article['estadoVenta'],
+      estado_reporte: a.estado_reporte ?? null,
+    }))
+  );
 
   ngOnInit(): void {
     this.loadArticles();
   }
-
-  // 5. PETICIONES A LA API Y SERVICIOS
 
   private loadArticles(): void {
     const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
@@ -66,83 +73,44 @@ export class UserPageSell implements OnInit {
     }
 
     this.articleService.getAllUserArticles(userId).subscribe({
-      next: (articles) => {
-        // Asignamos los datos reales del backend a la Signal global del servicio
-        this.articleService.Articles.set(articles);
- 
-        // PRUEBA DE LOG: Verificación en la consola del navegador
-        console.log('--- PRUEBA DE LOG EN FRONTEND ---');
-        console.log('Datos directos recibidos desde Express:', articles);
-        console.log('Contenido de la Signal local actualizada:', this.articles());
-        console.table(articles);
-      },
-      error: (error) => {
-        console.error('Error al cargar artículos:', error);
-      }
+      error: (error) => console.error('Error al cargar artículos:', error),
     });
   }
-  deleteArticle(article: iArticle) {
-    const confirmed = confirm(`¿Está seguro de que desea eliminar "${article.titulo}"? Esta acción no se puede deshacer.`);
-    if (confirmed) {
-      this.articleService.deleteArticle(article.id);
-      this.currentPage.set(Math.min(this.currentPage(), this.pageCount()));
-      console.log('Articulo eliminado:', article.titulo);
-    }
-  }
- 
-  // 6. ACCIONES DE LA INTERFAZ / EVENTOS DE USUARIO
 
   setFilter(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO') {
     this.selectedFilter.set(filter);
     this.currentPage.set(1);
   }
+
   setPage(page: number) {
-    if (page < 1 || page > this.pageCount()) {
-      return;
-    }
+    if (page < 1 || page > this.pageCount()) return;
     this.currentPage.set(page);
   }
-  editArticle(article: iArticle) {
-    console.log('Editar articleo:', article);
-    alert(`Editar articleo: ${article.titulo}\n(Placeholder - Vista de edición aún no implementada)`);
+
+  onEdit(article: Article): void {
+    const original = this.articles().find((a: iArticle) => a.id === String(article.id));
+    if (original) {
+      alert(`Editar artículo: ${original.titulo}\n(Placeholder - Vista de edición aún no implementada)`);
+    }
   }
+
+  onDelete(article: Article): void {
+    const original = this.articles().find((a: iArticle) => a.id === String(article.id));
+    if (!original) return;
+    const confirmed = confirm(`¿Está seguro de que desea eliminar "${original.titulo}"? Esta acción no se puede deshacer.`);
+    if (confirmed) {
+      this.articleService.deleteArticle(original.id);
+      this.currentPage.set(Math.min(this.currentPage(), this.pageCount()));
+    }
+  }
+
   addNewArticle() {
-    console.log('Agregar nuevo articleo');
     alert('Crear nuevo artículo\n(Placeholder - Vista de creación aún no implementada)');
-  }
- 
-  // 7. MÉTODOS FORMATO Y PLANTILLA (TEMPLATE UTILS)
-  
-  getStatusBadgeClass(estado: string): string {
-    switch (estado) {
-      case 'VENDIDO':
-        return 'badge-danger';
-      case 'RESERVADO':
-        return 'badge-warning';
-      default:
-        return 'badge-success';
-    }
-  }
-  getStatusText(estado: string): string {
-    switch (estado) {
-      case 'VENDIDO':
-        return 'Vendido';
-      case 'RESERVADO':
-        return 'Reportado';
-      default:
-        return 'Disponible';
-    }
   }
 
   getFilterCount(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'): number {
-    const allarticles = this.articles();
-    const articlesArray = Array.isArray(allarticles) ? allarticles : [];
-    if (filter === 'all') return articlesArray.length;
-    return articlesArray.filter(p => p.estadoVenta === filter).length;
-  }
-
-  viewArticle(article: any) {
-    console.log('Ver artículo:', article.id);
-    this.router.navigate(['/article-detail', article.id]);
+    const all = this.articles();
+    if (filter === 'all') return all.length;
+    return all.filter(a => a.estadoVenta === filter).length;
   }
 }

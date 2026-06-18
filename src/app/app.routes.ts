@@ -20,6 +20,7 @@ import { ModerationComponent } from './pages/moderation/moderation.component';
 import { ArticlesListComponent } from './pages/moderation/components/articles-list/articles-list.component';
 import { ModerationDashboardComponent } from './pages/moderation/components/moderation-dashboard/moderation-dashboard.component';
 import { ChatsListComponent } from './pages/moderation/components/chats-list/chats-list.component';
+import { ArticleReportDetailComponent } from './pages/moderation/components/article-report-detail/article-report-detail.component';
 
 
 //11062026 MOG IMPORTACION COMPOENTES ADMIN
@@ -75,10 +76,11 @@ export const routes: Routes = [
       { path: '', redirectTo: 'panel', pathMatch: 'full' },
       { path: 'panel', component: ModerationDashboardComponent },
       { path: 'articulos', component: ArticlesListComponent },
+      { path: 'articulos/detalle/:id', component: ArticleReportDetailComponent },
       { path: 'chat', component: ChatsListComponent }
     ]
-  }
-  
+  },
+
 
  
   

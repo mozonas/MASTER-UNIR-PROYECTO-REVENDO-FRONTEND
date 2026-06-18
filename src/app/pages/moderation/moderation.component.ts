@@ -9,7 +9,7 @@ import { SidebarOption } from '../../interfaces/sidebar.interface';
 @Component({
   selector: 'app-moderation',
   standalone: true,
-  imports: [CommonModule, SidebarComponent, RouterOutlet], 
+  imports: [CommonModule, SidebarComponent, RouterOutlet],
   templateUrl: './moderation.component.html',
   styleUrls: ['./moderation.component.css']
 })
@@ -17,7 +17,6 @@ export class ModerationComponent implements OnInit {
   private moderationService = inject(ModerationService);
   private router = inject(Router); // 👈 Inyección del enrutador de Angular
 
-  // Opciones de navegación del menú lateral
   menuOptions: SidebarOption[] = [
     { id: 'panel', name: 'Panel principal', icon: 'bi-speedometer2' },
     { id: 'articulos', name: 'Gestión de artículos', icon: 'bi-box-seam' },
@@ -29,19 +28,24 @@ export class ModerationComponent implements OnInit {
   pendingChatsCount = signal<number>(0);
 
   ngOnInit(): void {
+    this.cargarContadores();
+  }
+
+  cargarContadores(): void {
     this.moderationService.getBadgesCounters().subscribe({
       next: (data: BadgesResponse) => {
         this.pendingArticlesCount.set(data.pendingArticlesCount);
         this.pendingChatsCount.set(data.pendingChatsCount);
       },
       error: (err) => {
-        console.error('Error al recuperar contadores desde Angular:', err);
+        console.error('Error al recuperar contadores:', err);
         this.pendingArticlesCount.set(0);
         this.pendingChatsCount.set(0);
       }
     });
   }
-// Redireccionamiento del menu lateral
+
+  // Redireccionamiento del menu lateral
   handleNavigation(tabId: string): void {
     if (tabId === 'panel') {
       this.router.navigate(['/moderation/panel']);
@@ -52,5 +56,3 @@ export class ModerationComponent implements OnInit {
     }
   }
 }
-
-
