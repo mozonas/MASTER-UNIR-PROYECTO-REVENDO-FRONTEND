@@ -1,14 +1,17 @@
 <div class="home-container">
 
   <div class="home-header">
-    @if (categoriaId()) {
-      <h1 class="home-title">{{ articles()[0]?.categoria_nombre || 'Categoría' }}</h1>
+    @if (categoriaIds()?.length) {
+      <h1 class="home-title">{{ tituloCategoria() || articles()[0]?.categoria_nombre || 'Categoría' }}</h1>
     } @else {
       <h1 class="home-title">Artículos</h1>
     }
     @if (!loading()) {
       <span class="home-count">{{ articles().length }} artículos</span>
     }
+    <button class="btn btn-success btn-lg shadow-sm home-new-article-btn" (click)="addNewArticle()">
+      <i class="bi bi-plus-lg me-2"></i> Nuevo Artículo
+    </button>
   </div>
 
   <div class="products-grid">

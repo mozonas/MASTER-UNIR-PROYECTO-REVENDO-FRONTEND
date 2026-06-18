@@ -20,11 +20,6 @@
       <span class="product-card__price">{{ article.precio | currency: 'EUR' : 'symbol' : '1.2-2' }}</span>
       <span class="product-card__location">{{ article.ubicacion }}</span>
     </div>
-    @if (!estaReportado && !estaVendido && !showActions) {
-      <button class="product-card__report-btn" (click)="onReportar($event)">
-        <i class="fa fa-flag me-1"></i> Reportar
-      </button>
-    }
   </div>
   @if (showActions) {
     <div class="product-card__actions">
@@ -44,29 +39,3 @@
     </div>
   }
 </div>
-
-@if (mostrarModal()) {
-  <div class="report-modal-backdrop" (click)="cerrarModal()">
-    <div class="report-modal" (click)="$event.stopPropagation()">
-      <h5 class="report-modal__title">Reportar artículo</h5>
-      <p class="report-modal__subtitle">{{ article.titulo }}</p>
-      <textarea
-        class="report-modal__textarea"
-        placeholder="Describe el motivo del reporte..."
-        [value]="motivoReporte()"
-        (input)="motivoReporte.set($any($event.target).value)"
-        rows="4"
-        maxlength="500">
-      </textarea>
-      <div class="report-modal__actions">
-        <button class="btn btn-secondary btn-sm" (click)="cerrarModal()">Cancelar</button>
-        <button class="btn btn-danger btn-sm" (click)="enviarReporte()" [disabled]="motivoReporte().trim().length < 5 || enviando()">
-          {{ enviando() ? 'Enviando...' : 'Enviar reporte' }}
-        </button>
-      </div>
-      @if (mensajeExito()) {
-        <p class="report-modal__success">{{ mensajeExito() }}</p>
-      }
-    </div>
-  </div>
-}

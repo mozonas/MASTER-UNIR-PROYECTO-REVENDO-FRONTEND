@@ -46,9 +46,16 @@
                     <!-- Artículo -->
                     <div class="col-lg-5">
 
-                        <h3 class="fw-bold">
-                            {{article()?.titulo}}
-                        </h3>
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h3 class="fw-bold">
+                                {{article()?.titulo}}
+                            </h3>
+
+                            <button *ngIf="!estaReportado && !estaVendido" class="btn btn-outline-danger btn-sm"
+                                (click)="onReportar()">
+                                <i class="fa fa-flag me-1"></i> Reportar
+                            </button>
+                        </div>
 
                         <p class="text-muted">
                             {{article()?.descripcion}}
@@ -152,5 +159,24 @@
             </div>
 
         </div>
+    </div>
+</div>
+
+<!-- Modal de reporte -->
+<div class="report-modal-backdrop" *ngIf="mostrarModalReporte()" (click)="cerrarModalReporte()">
+    <div class="report-modal" (click)="$event.stopPropagation()">
+        <h5 class="report-modal__title">Reportar artículo</h5>
+        <p class="report-modal__subtitle">{{article()?.titulo}}</p>
+        <textarea class="report-modal__textarea" placeholder="Describe el motivo del reporte..."
+            [value]="motivoReporte()" (input)="motivoReporte.set($any($event.target).value)" rows="4"
+            maxlength="500"></textarea>
+        <div class="report-modal__actions">
+            <button class="btn btn-secondary btn-sm" (click)="cerrarModalReporte()">Cancelar</button>
+            <button class="btn btn-danger btn-sm" (click)="enviarReporte()"
+                [disabled]="motivoReporte().trim().length < 5 || enviandoReporte()">
+                {{ enviandoReporte() ? 'Enviando...' : 'Enviar reporte' }}
+            </button>
+        </div>
+        <p class="report-modal__success" *ngIf="mensajeReporte()">{{mensajeReporte()}}</p>
     </div>
 </div>

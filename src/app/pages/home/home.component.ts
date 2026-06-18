@@ -16,19 +16,21 @@ export class HomeComponent implements OnInit {
   private route = inject(ActivatedRoute);
 
   allArticles = signal<Article[]>([]);
-  categoriaId = signal<number | null>(null);
+  categoriaIds = signal<number[] | null>(null);
+  tituloCategoria = signal<string | null>(null);
   loading = signal(true);
   error = signal(false);
 
   articles = computed(() => {
-    const id = this.categoriaId();
-    return id ? this.allArticles().filter(a => a.categorias_id === id) : this.allArticles();
+    const ids = this.categoriaIds();
+    return ids && ids.length ? this.allArticles().filter(a => ids.includes(a.categorias_id)) : this.allArticles();
   });
 
   ngOnInit(): void {
     this.route.queryParamMap.subscribe(params => {
       const cat = params.get('categoria');
-      this.categoriaId.set(cat ? Number(cat) : null);
+      this.categoriaIds.set(cat ? cat.split(',').map(Number) : null);
+      this.tituloCategoria.set(params.get('nombre'));
     });
 
     this.http.get<{ status: string; data: any[] }>('http://localhost:3000/api/articles').subscribe({
@@ -53,5 +55,9 @@ export class HomeComponent implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  addNewArticle() {
+    alert('Crear nuevo artículo\n(Placeholder - Vista de creación aún no implementada)');
   }
 }

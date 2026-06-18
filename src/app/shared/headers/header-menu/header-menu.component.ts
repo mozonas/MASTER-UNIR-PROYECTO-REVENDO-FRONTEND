@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
 
 interface Categoria { id: number; nombre: string; }
-interface GrupoCategoria { label: string; subcategorias: Categoria[]; }
+interface GrupoCategoria { label: string; ids: number[]; subcategorias: Categoria[]; }
 
 // Agrupación visual: los IDs vienen de SELECT id, nombre FROM categorias
 const GRUPOS_CONFIG: { label: string; ids: number[] }[] = [
@@ -42,13 +42,14 @@ export class HeaderMenuComponent implements OnInit {
         const todas = resp.data;
         const grupos: GrupoCategoria[] = GRUPOS_CONFIG.map(g => ({
           label: g.label,
+          ids: g.ids,
           subcategorias: todas.filter(c => g.ids.includes(c.id))
         }));
         this.gruposCategorias.set(grupos);
       },
       error: () => {
         // Sin conexión al back: mostrar grupos sin subcategorías
-        this.gruposCategorias.set(GRUPOS_CONFIG.map(g => ({ label: g.label, subcategorias: [] as Categoria[] })));
+        this.gruposCategorias.set(GRUPOS_CONFIG.map(g => ({ label: g.label, ids: g.ids, subcategorias: [] as Categoria[] })));
       }
     });
   }

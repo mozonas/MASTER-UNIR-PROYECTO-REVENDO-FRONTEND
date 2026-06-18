@@ -81,7 +81,8 @@
             <!-- Grupos dinámicos desde BD -->
             @for (grupo of gruposCategorias(); track grupo.label) {
               <li class="nav-item dropdown flex-fill text-center">
-                <a class="nav-link dropdown-toggle link-body-emphasis px-2" role="button" data-bs-toggle="dropdown">
+                <a class="nav-link dropdown-toggle link-body-emphasis px-2" role="button"
+                  [routerLink]="['/home']" [queryParams]="{ categoria: grupo.ids.join(','), nombre: grupo.label }">
                   {{ grupo.label }}
                 </a>
                 @if (grupo.subcategorias.length > 0) {
