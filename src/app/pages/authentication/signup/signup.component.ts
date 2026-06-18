@@ -5,13 +5,12 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { HeaderMenuComponent } from "../../../shared/headers/header-menu/header-menu.component";
 
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [FormsModule, CommonModule, HeaderMenuComponent],
+  imports: [FormsModule, CommonModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
