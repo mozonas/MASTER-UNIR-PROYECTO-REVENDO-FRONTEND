@@ -30,9 +30,10 @@
             </p>
 
             <div class="d-flex justify-content-center mt-3">
-              <button class="btn btn-outline-secondary btn-sm px-3 rounded-pill fw-semibold" (click)="irAEditar()">
-                <i class="fa fa-pencil me-1"></i> Editar perfil
-              </button>
+              @if (!isAdminViewing) {
+              <button class="btn btn-outline-secondary btn-sm px-3 rounded-pill fw-semibold" (click)="irAEditar()"> <i
+                  class="fa fa-pencil me-1"></i>Editar mi Perfil</button>
+              }
             </div>
           </div>
 
