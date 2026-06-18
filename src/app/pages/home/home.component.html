@@ -13,18 +13,9 @@
     }
   </div>
 
-  @if (loading()) {
-    <p class="home-loading">Cargando artículos...</p>
-  } @else if (error()) {
-    <p class="home-error">No se pudieron cargar los artículos.</p>
-  } @else if (articles().length === 0) {
-    <p class="home-loading">No hay artículos en esta categoría.</p>
-  } @else {
-    <div class="products-grid">
-      @for (article of articles(); track article.id) {
-        <app-product-card [article]="article" />
-      }
-    </div>
-  }
-
+  <div class="products-grid">
+    @for (article of articles; track article.id) {
+      <app-product-card [article]="article" />
+    }
+  </div>
 </div>

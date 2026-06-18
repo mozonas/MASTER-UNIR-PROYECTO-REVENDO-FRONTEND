@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../../services/product.service';
 import { Product } from '../../../interfaces/product.interface';
@@ -20,24 +20,26 @@ export class UserPageSell {
   currentPage = signal(1);
   pageSize = 6;
 
-  filteredProducts = computed(() => {
+  // 3. PROPIEDADES COMPUTADAS (COMPUTED SIGNALS)
+
+  filteredarticles = computed(() => {
     const filter = this.selectedFilter();
-    const allProducts = this.products();
-    if (filter === 'all') return allProducts;
-    return allProducts.filter(p => p.status === filter);
+    const allarticles = this.articles();
+    const articlesArray = Array.isArray(allarticles) ? allarticles : [];
+    if (filter === 'all') return articlesArray;
+    return articlesArray.filter(p => p.estadoVenta === filter);
   });
-
   pageCount = computed(() => {
-    return Math.max(1, Math.ceil(this.filteredProducts().length / this.pageSize));
+    return Math.max(1, Math.ceil(this.filteredarticles().length / this.pageSize));
   });
-
   pageNumbers = computed(() => {
     return Array.from({ length: this.pageCount() }, (_, index) => index + 1);
   });
-
-  currentPageProducts = computed(() => {
+  currentPagearticles = computed(() => {
     const start = (this.currentPage() - 1) * this.pageSize;
-    return this.filteredProducts().slice(start, start + this.pageSize);
+    const filtered = this.filteredarticles();
+    const filteredArray = Array.isArray(filtered) ? filtered : [];
+    return filteredArray.slice(start, start + this.pageSize);
   });
 
   currentPageArticles = computed<Article[]>(() =>
@@ -59,7 +61,6 @@ export class UserPageSell {
     this.selectedFilter.set(filter);
     this.currentPage.set(1);
   }
-
   setPage(page: number) {
     if (page < 1 || page > this.pageCount()) return;
     this.currentPage.set(page);
@@ -86,8 +87,15 @@ export class UserPageSell {
     alert('Crear nuevo artículo\n(Placeholder - Vista de creación aún no implementada)');
   }
 
-  getFilterCount(filter: 'all' | 'available' | 'sold' | 'reported'): number {
-    if (filter === 'all') return this.products().length;
-    return this.products().filter(p => p.status === filter).length;
+  getFilterCount(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'): number {
+    const allarticles = this.articles();
+    const articlesArray = Array.isArray(allarticles) ? allarticles : [];
+    if (filter === 'all') return articlesArray.length;
+    return articlesArray.filter(p => p.estadoVenta === filter).length;
+  }
+
+  viewArticle(article: any) {
+    console.log('Ver artículo:', article.id);
+    this.router.navigate(['/article-detail', article.id]);
   }
 }

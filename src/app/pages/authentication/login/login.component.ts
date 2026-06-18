@@ -5,11 +5,10 @@ import { inject } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import {signal} from '@angular/core';
 import { Router } from '@angular/router';
-import { HeaderMenuComponent } from "../../../shared/headers/header-menu/header-menu.component";
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, HeaderMenuComponent],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
@@ -67,7 +66,7 @@ export class LoginComponent {
           break;
         //redireccionar a la página de usuario que se decida, yo lo redireccionaría al listado de productos a vender
         default:
-          this.router.navigate(['/user-info']);
+          this.router.navigate(['/home']);
           break;
       }
       },
