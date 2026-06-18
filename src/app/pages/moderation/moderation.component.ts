@@ -1,32 +1,31 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, RouterOutlet } from '@angular/router';
 import { ModerationService } from '../../services/moderation.service';
-import { BadgesResponse, ArticleInReview } from '../../interfaces/moderation.interface';
+import { BadgesResponse } from '../../interfaces/moderation.interface';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 import { SidebarOption } from '../../interfaces/sidebar.interface';
 
 @Component({
   selector: 'app-moderation',
   standalone: true,
-  imports: [CommonModule, SidebarComponent],
+  imports: [CommonModule, SidebarComponent, RouterOutlet],
   templateUrl: './moderation.component.html',
   styleUrls: ['./moderation.component.css']
 })
 export class ModerationComponent implements OnInit {
-  currentTab: string = 'panel';
-
   private moderationService = inject(ModerationService);
+  private router = inject(Router); // 👈 Inyección del enrutador de Angular
 
   menuOptions: SidebarOption[] = [
     { id: 'panel', name: 'Panel principal', icon: 'bi-speedometer2' },
-    { id: 'chat', name: 'Gestión de chat', icon: 'bi-chat-left-text' },
-    { id: 'articulos', name: 'Gestión de artículos', icon: 'bi-box-seam' }
+    { id: 'articulos', name: 'Gestión de artículos', icon: 'bi-box-seam' },
+    { id: 'chat', name: 'Gestión de mensajería', icon: 'bi-chat-left-text' }
   ];
 
+  // Contadores para mostrar en los badges de las opciones del menú lateral
   pendingArticlesCount = signal<number>(0);
   pendingChatsCount = signal<number>(0);
-  articulosEnRevision = signal<ArticleInReview[]>([]);
-  cargandoArticulos = signal<boolean>(false);
 
   ngOnInit(): void {
     this.cargarContadores();
@@ -46,34 +45,14 @@ export class ModerationComponent implements OnInit {
     });
   }
 
-  changeTab(tabId: string): void {
-    this.currentTab = tabId;
-    if (tabId === 'articulos') {
-      this.cargarArticulosEnRevision();
+  // Redireccionamiento del menu lateral
+  handleNavigation(tabId: string): void {
+    if (tabId === 'panel') {
+      this.router.navigate(['/moderation/panel']);
+    } else if (tabId === 'articulos') {
+      this.router.navigate(['/moderation/articulos']);
+    } else if (tabId === 'chat') {
+      this.router.navigate(['/moderation/chat']);
     }
-  }
-
-  cargarArticulosEnRevision(): void {
-    this.cargandoArticulos.set(true);
-    this.moderationService.getArticlesInReview().subscribe({
-      next: (data) => {
-        this.articulosEnRevision.set(data);
-        this.cargandoArticulos.set(false);
-      },
-      error: (err) => {
-        console.error('Error al cargar artículos en revisión:', err);
-        this.cargandoArticulos.set(false);
-      }
-    });
-  }
-
-  resolverReporte(reporteId: number, accion: 'aprobar' | 'descartar'): void {
-    this.moderationService.resolveReport(reporteId, accion).subscribe({
-      next: () => {
-        this.articulosEnRevision.update(lista => lista.filter(a => a.reporte_id !== reporteId));
-        this.pendingArticlesCount.update(n => Math.max(0, n - 1));
-      },
-      error: (err) => console.error('Error al resolver reporte:', err)
-    });
   }
 }

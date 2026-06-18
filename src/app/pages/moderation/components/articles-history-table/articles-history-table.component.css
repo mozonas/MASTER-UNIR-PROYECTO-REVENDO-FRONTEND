@@ -1,0 +1,38 @@
+
+.custom-table th {
+  color: var(--gray-700);
+  font-weight: 600;
+  background-color: var(--gray-100);
+  border-bottom: 2px solid var(--gray-200);
+  padding: 12px 8px;
+}
+
+.custom-table td {
+  color: var(--gray-900);
+  border-bottom: 1px solid var(--gray-200);
+  padding: 12px 8px;
+  font-size: 14px; 
+}
+
+.txt-error { color: var(--semantic-error) !important; }
+.txt-success { color: var(--dark-green) !important; }
+
+.col-fecha { width: 16%; }
+.col-caso { width: 8%; }
+.col-resolucion { width: 14%; }
+.col-articulo { width: 24%; }
+.col-motivo { width: 28%; }
+.col-acciones { width: 10%; }
+
+.col-text-notes { 
+  max-width: 320px; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  width: 100%;
+}
+
+
+
+
