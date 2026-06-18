@@ -1,0 +1,13 @@
+.mt4-moderator {
+  margin-top: 1.5rem !important;
+  min-height: 75vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-header {
+  background-color: #8cd86a !important;
+  border-bottom: none !important;
+}
+

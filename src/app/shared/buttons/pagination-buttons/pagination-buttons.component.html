@@ -1,0 +1,8 @@
+<div class="d-flex gap-2">
+  <button class="btn-pag" (click)="onPageChange(-1)" [disabled]="isFirstPage()">
+    ◀
+  </button>
+  <button class="btn-pag" (click)="onPageChange(1)" [disabled]="isLastPage()">
+    ▶
+  </button>
+</div>
