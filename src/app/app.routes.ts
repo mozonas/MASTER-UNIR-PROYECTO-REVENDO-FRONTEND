@@ -13,6 +13,15 @@ import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-das
 
 
 //import { roleGuard } from './guards/role.guard';
+import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.component';
+
+// Importaciones del módulo Moderación
+import { ModerationComponent } from './pages/moderation/moderation.component';
+import { ArticlesListComponent } from './pages/moderation/components/articles-list/articles-list.component';
+import { ModerationDashboardComponent } from './pages/moderation/components/moderation-dashboard/moderation-dashboard.component';
+import { ChatsListComponent } from './pages/moderation/components/chats-list/chats-list.component';
+
+
 //11062026 MOG IMPORTACION COMPOENTES ADMIN
 //import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 import { AdminUserManagementComponent } from './pages/admin/admin-user-management/admin-user-management.component';
@@ -58,6 +67,17 @@ export const routes: Routes = [
 
     ]
   },
+
+  // Directorios sección Moderación
+  { path: 'moderation', 
+    component: ModerationComponent,
+    children: [
+      { path: '', redirectTo: 'panel', pathMatch: 'full' },
+      { path: 'panel', component: ModerationDashboardComponent },
+      { path: 'articulos', component: ArticlesListComponent },
+      { path: 'chat', component: ChatsListComponent }
+    ]
+  }
   
 
  
