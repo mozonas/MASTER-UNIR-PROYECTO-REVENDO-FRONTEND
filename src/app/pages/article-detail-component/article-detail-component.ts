@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, effect, inject, input, signal } from '@an
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../services/article.service';
+import { AuthService } from '../../services/auth.service';
 import { DetailSeller } from "../../shared/detail-seller/detail-seller";
 
 @Component({
@@ -16,8 +17,8 @@ export class ArticleDetailComponent {
   article = signal<any | null>(null);
   private route = inject(ActivatedRoute);
   private articlesService = inject(ArticleService);
+  private authService = inject(AuthService);
   private router = inject(Router);
-  idVendedor: number = Number(this.route.snapshot.paramMap.get('id'));
 
   constructor() {
     effect(() => {
@@ -28,8 +29,7 @@ export class ArticleDetailComponent {
   async ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) return;
-    this.getArticleData(id)
-    this.idVendedor = Number(id)
+    this.getArticleData(id);
   }
 
   /**
@@ -40,6 +40,7 @@ export class ArticleDetailComponent {
     this.articlesService.getArticleById(id).subscribe({
       next: (data) => {
         this.article.set(data);
+
       },
       error: (err) => {
         console.error('Error cargando producto:', err);

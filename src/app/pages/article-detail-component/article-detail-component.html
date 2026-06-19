@@ -55,7 +55,7 @@
                         </p>
 
                         <p class="mb-1">
-                            <strong>Estado:</strong> {{article()?.estadoarticleo}}
+                            <strong>Estado:</strong> {{article()?.estadoProducto}}
                         </p>
 
                         <p class="mb-1">
@@ -95,7 +95,7 @@
                                         </p>
                                     </div>
 
-                                    <app-detail-seller [sellerId]="idVendedor">
+                                    <app-detail-seller [sellerId]="article()?.usuarios_id">
                                     </app-detail-seller>
 
                                 </div>
