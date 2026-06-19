@@ -15,8 +15,8 @@
                             <div class="carousel-inner">
                                 @for (foto of article()?.fotos; track $index) {
                                 <div class="carousel-item" [class.active]="$first">
-                                    <img class="d-block w-100" [src]="foto.url"
-                                        (click)="openImageModal(foto.url)">
+                                    <img class="d-block w-100" [src]="'http://localhost:3000/' + foto.url"
+                                        (click)="openImageModal('http://localhost:3000/' + foto.url)">
                                 </div>
                                 }
                             </div>
