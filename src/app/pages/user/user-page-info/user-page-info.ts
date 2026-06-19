@@ -6,11 +6,12 @@ import { AuthService } from '../../../services/auth.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Usuario } from '../../../interfaces/user.interface';
 import { UserPageSell } from '../user-page-sell/user-page-sell';
+import { DetailSeller } from "../../../shared/detail-seller/detail-seller";
 
 @Component({
   selector: 'app-user-page-info',
   standalone: true,
-  imports: [CommonModule, UserPageSell ],
+  imports: [CommonModule, UserPageSell, DetailSeller],
   templateUrl: './user-page-info.html',
   styleUrls: ['./user-page-info.css']
 })
@@ -48,6 +49,7 @@ export class UserPageInfoComponent implements OnInit {
 
   personalDetails: { label: string; value: string; lowercase?: boolean }[] = [];
   listaValoraciones: any[] = [];
+  idVendedor!: number;
 
   ngOnInit(): void {
     console.log('🔄 Iniciando carga del perfil del usuario...');
@@ -63,7 +65,7 @@ export class UserPageInfoComponent implements OnInit {
     }
 
     console.log(`🔍 Cargando datos para el usuario ID: ${userIdParaCargar}`);
-
+    this.idVendedor = userIdParaCargar;
     // Recuperamos los datos del perfil del usuario
     this.userService.getPerfilUsuario(userIdParaCargar).subscribe({
       next: (userData: any) => {
@@ -162,7 +164,7 @@ export class UserPageInfoComponent implements OnInit {
     const estrellasArray = [];
 
     for (let i = 1; i <= 5; i++) {
-            // Calculamos la diferencia entre la nota media y la estrella actual
+      // Calculamos la diferencia entre la nota media y la estrella actual
       const diferencia = this.ratingMedia - (i - 1);
       // Estrella completa
       if (diferencia >= 0.75) estrellasArray.push('fa-star');
