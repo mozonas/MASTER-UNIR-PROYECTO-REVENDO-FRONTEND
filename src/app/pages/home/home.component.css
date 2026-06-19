@@ -28,3 +28,11 @@
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 20px;
 }
+.home-filters::-webkit-scrollbar {
+  height: 6px;
+}
+
+.home-filters::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}

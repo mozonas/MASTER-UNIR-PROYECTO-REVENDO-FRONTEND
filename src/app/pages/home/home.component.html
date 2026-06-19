@@ -1,12 +1,123 @@
-<div class="home-container">
-  <div class="home-header">
-    <h1 class="home-title">Artículos</h1>
-    <span class="home-count">{{ articles.length }} artículos</span>
+<div class="container py-4">
+
+  <!-- ========================= -->
+  <!-- FILTROS EN UNA SOLA LÍNEA -->
+  <!-- ========================= -->
+  <div class="home-filters d-flex flex-nowrap gap-2 overflow-auto pb-2 mb-4">
+
+    <!-- Buscador -->
+    <input type="text" class="form-control" style="width: 200px"
+      placeholder="Buscar artículos..."
+      [value]="filters().texto"
+      (input)="onSearchTextChange($any($event.target).value)" />
+
+    <!-- Categoría -->
+    <select class="form-select" style="width: 180px"
+      [value]="filters().categoria"
+      (change)="onCategoryChange($any($event.target).value)">
+      <option value="">Categoría</option>
+      @for (cat of categories(); track cat.id) {
+        <option [value]="cat.id">{{ cat.nombre }}</option>
+      }
+    </select>
+
+    <!-- Estado -->
+    <select class="form-select" style="width: 160px"
+      [value]="filters().estado"
+      (change)="onEstadoChange($any($event.target).value)">
+      <option value="">Estado</option>
+      <option value="Sin usar">Sin usar</option>
+      <option value="En buen estado">En buen estado</option>
+      <option value="Parcialmente dañado">Parcialmente dañado</option>
+      <option value="Dañado">Dañado</option>
+    </select>
+
+
+    <!-- Precio mínimo -->
+    <input type="number" class="form-control" style="width: 120px"
+      placeholder="Mín."
+      [value]="filters().min"
+      (input)="onMinPriceChange($any($event.target).value)" />
+
+    <!-- Precio máximo -->
+    <input type="number" class="form-control" style="width: 120px"
+      placeholder="Máx."
+      [value]="filters().max"
+      (input)="onMaxPriceChange($any($event.target).value)" />
+
+    <!-- Ordenación -->
+    <select class="form-select" style="width: 160px"
+      [value]="filters().orden"
+      (change)="onOrdenChange($any($event.target).value)">
+      <option value="recientes">Más recientes</option>
+      <option value="precio_asc">Precio ↑</option>
+      <option value="precio_desc">Precio ↓</option>
+    </select>
+
+    <!-- Localización -->
+    <input type="text" class="form-control" style="width: 160px"
+      placeholder="Localización"
+      [value]="filters().localizacion"
+      (input)="onLocationChange($any($event.target).value)" />
+
+    <!-- Reset -->
+    <button class="btn btn-outline-secondary"
+      (click)="resetFilters()">
+      Limpiar
+    </button>
+
   </div>
 
-  <div class="products-grid">
-    @for (article of articles; track article.id) {
-    <app-product-card [article]="article" />
+  <!-- ========================= -->
+  <!-- CABECERA -->
+  <!-- ========================= -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="m-0">Artículos</h2>
+    <span class="text-muted">{{ items().length }} artículos</span>
+  </div>
+
+  <!-- ========================= -->
+  <!-- LOADING -->
+  <!-- ========================= -->
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary"></div>
+      <p class="mt-3">Cargando artículos...</p>
+    </div>
+  }
+
+  <!-- ========================= -->
+  <!-- GRID DE PRODUCTOS -->
+  <!-- ========================= -->
+  <div class="row g-3">
+    @for (article of items(); track article.id) {
+      <div class="col-6 col-md-4 col-lg-3">
+        <app-product-card [article]="article" />
+      </div>
     }
   </div>
+
+  <!-- ========================= -->
+  <!-- PAGINACIÓN -->
+  <!-- ========================= -->
+  @if (totalPages() > 1) {
+    <div class="d-flex justify-content-center gap-3 mt-4">
+      <button class="btn btn-primary"
+        (click)="changePage(currentPage() - 1)"
+        [disabled]="currentPage() === 1">
+        Anterior
+      </button>
+
+      <span class="align-self-center">
+        {{ currentPage() }} / {{ totalPages() }}
+      </span>
+
+      <button class="btn btn-primary"
+        (click)="changePage(currentPage() + 1)"
+        [disabled]="currentPage() === totalPages()">
+        Siguiente
+      </button>
+    </div>
+  }
+
 </div>

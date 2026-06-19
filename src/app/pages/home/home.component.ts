@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { Article } from '../../shared/models/article.model';
+import { Component, OnInit, computed, inject } from '@angular/core';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
+import { HomeArticleService } from '../../services/home-article.service';
+import { CategoryService } from '../../services/category.service';
 
 @Component({
   selector: 'app-home',
@@ -8,95 +9,88 @@ import { ProductCardComponent } from '../../shared/components/product-card/produ
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
-export class HomeComponent {
-  articles: Article[] = [
-    {
-      id: 1,
-      titulo: 'Bicicleta de montaña',
-      descripcion: 'Bicicleta en buen estado, poco uso. Talla M, 21 velocidades.',
-      precio: 180,
-      ubicacion: 'Valencia',
-      categorias_id: 1,
-      categoria_nombre: 'Ocio y deportes',
-      usuarios_id: 1,
-      imagen: 'images/bici_montaña.jpeg',
-    },
-    {
-      id: 2,
-      titulo: 'iPhone 13 Pro',
-      descripcion: 'iPhone 13 Pro 256GB. Con funda y cargador original. Sin arañazos.',
-      precio: 650,
-      ubicacion: 'Madrid',
-      categorias_id: 2,
-      categoria_nombre: 'Electrónica',
-      usuarios_id: 2,
-      imagen: 'images/iphone_13_pro.jpeg',
-    },
-    {
-      id: 3,
-      titulo: 'Sofá 3 plazas',
-      descripcion: 'Sofá gris de 3 plazas, tapizado desmontable y lavable. 2 años de uso.',
-      precio: 220,
-      ubicacion: 'Barcelona',
-      categorias_id: 3,
-      categoria_nombre: 'Hogar y muebles',
-      usuarios_id: 3,
-      imagen: 'images/sofa.jpeg',
-    },
-    {
-      id: 4,
-      titulo: 'Chaqueta de cuero',
-      descripcion: 'Chaqueta de cuero genuino, talla L. Color negro. Ideal para moto.',
-      precio: 95,
-      ubicacion: 'Sevilla',
-      categorias_id: 4,
-      categoria_nombre: 'Moda y accesorios',
-      usuarios_id: 4,
-      imagen: 'images/chaqueta_cueto.jpeg',
-    },
-    {
-      id: 5,
-      titulo: 'PlayStation 5',
-      descripcion: 'PS5 edición disco con 2 mandos DualSense y 4 juegos incluidos.',
-      precio: 420,
-      ubicacion: 'Bilbao',
-      categorias_id: 2,
-      categoria_nombre: 'Electrónica',
-      usuarios_id: 5,
-      imagen: 'images/play_5.jpeg',
-    },
-    {
-      id: 6,
-      titulo: 'Mesa de escritorio',
-      descripcion: 'Mesa de madera maciza 160x80cm, con cajones laterales. Color roble.',
-      precio: 140,
-      ubicacion: 'Zaragoza',
-      categorias_id: 3,
-      categoria_nombre: 'Hogar y muebles',
-      usuarios_id: 1,
-      imagen: 'https://picsum.photos/seed/wooddesk/400/300',
-    },
-    {
-      id: 7,
-      titulo: 'Patines en línea',
-      descripcion: 'Rollerblade talla 42 con protecciones de codos y rodillas incluidas.',
-      precio: 60,
-      ubicacion: 'Valencia',
-      categorias_id: 1,
-      categoria_nombre: 'Ocio y deportes',
-      usuarios_id: 2,
-      imagen: 'images/patines.jpeg',
-    },
-    {
-      id: 8,
-      titulo: 'Cámara Sony A7III',
-      descripcion: 'Mirrorless full frame con objetivo 28-70mm. Menos de 5000 disparos.',
-      precio: 1200,
-      ubicacion: 'Madrid',
-      categorias_id: 2,
-      categoria_nombre: 'Electrónica',
-      usuarios_id: 3,
-      imagen: 'images/camara_sony.jpeg',
-    },
-  ];
+export class HomeComponent implements OnInit {
+
+  private homeService = inject(HomeArticleService);
+  private categoryService = inject(CategoryService);
+
+  results = this.homeService.results;
+  loading = this.homeService.loading;
+  filters = this.homeService.filters;
+
+  categories = this.categoryService.categories;
+
+  items = computed(() => this.results()?.items ?? []);
+  totalPages = computed(() => this.results()?.totalPages ?? 1);
+  currentPage = computed(() => this.results()?.currentPage ?? 1);
+
+  ngOnInit() {
+    this.homeService.searchArticles();
+    this.categoryService.loadCategories();
+  }
+
+  // -----------------------------
+  // PAGINACIÓN
+  // -----------------------------
+  changePage(page: number) {
+    this.homeService.updateFilter('page', page);
+  }
+
+  // -----------------------------
+  // TEXTO
+  // -----------------------------
+  onSearchTextChange(value: string) {
+    this.homeService.updateFilter('texto', value);
+  }
+
+  // -----------------------------
+  // CATEGORÍA
+  // -----------------------------
+  onCategoryChange(value: string) {
+    this.homeService.updateFilter('categoria', value || null);
+  }
+
+  // -----------------------------
+  // ESTADO DE CONSERVACIÓN
+  // -----------------------------
+  onEstadoChange(value: string) {
+    this.homeService.updateFilter('estado', value || null);
+  }
+
+  // -----------------------------
+  // PRECIO MÍNIMO
+  // -----------------------------
+  onMinPriceChange(value: string) {
+    const num = Number(value);
+    this.homeService.updateFilter('min', isNaN(num) ? 0 : num);
+  }
+
+  // -----------------------------
+  // PRECIO MÁXIMO
+  // -----------------------------
+  onMaxPriceChange(value: string) {
+    const num = Number(value);
+    this.homeService.updateFilter('max', isNaN(num) ? 999999 : num);
+  }
+
+  // -----------------------------
+  // ORDENACIÓN
+  // -----------------------------
+  onOrdenChange(value: string) {
+    this.homeService.updateFilter('orden', value);
+  }
+
+  // -----------------------------
+  // LOCALIZACIÓN
+  // -----------------------------
+  onLocationChange(value: string) {
+    this.homeService.updateFilter('localizacion', value || null);
+  }
+
+  // -----------------------------
+  // RESET DE FILTROS
+  // -----------------------------
+  resetFilters() {
+    this.homeService.resetFilters();
+  }
 }
