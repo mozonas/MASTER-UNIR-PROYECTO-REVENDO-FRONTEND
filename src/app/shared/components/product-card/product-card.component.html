@@ -1,4 +1,4 @@
-<div class="product-card" [class.product-card--en-revision]="estaReportado" [class.product-card--vendido]="estaVendido">
+<div class="product-card" [class.product-card--en-revision]="estaReportado" [class.product-card--vendido]="estaVendido" (click)="viewArticle(article)">
   <div class="product-card__image">
     <img [src]="article.imagen || 'images/placeholder-product.png'" [alt]="article.titulo" />
     @if (article.categoria_nombre) {
