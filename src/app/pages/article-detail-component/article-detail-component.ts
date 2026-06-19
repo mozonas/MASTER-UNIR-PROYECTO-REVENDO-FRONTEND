@@ -43,7 +43,7 @@ export class ArticleDetailComponent {
       error: (err) => {
         console.error('Error cargando producto:', err);
         if (err.status === 404) {
-          this.router.navigate(['/404']);
+          this.router.navigate(['/home']);
         }
       }
     });
