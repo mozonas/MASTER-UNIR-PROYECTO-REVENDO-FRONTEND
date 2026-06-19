@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { Article } from '../../models/article.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-product-card',
@@ -13,6 +14,8 @@ export class ProductCardComponent {
   @Input() showActions = false;
   @Output() editClicked = new EventEmitter<Article>();
   @Output() deleteClicked = new EventEmitter<Article>();
+  private router = inject(Router);
+
 
   get estaReportado(): boolean {
     return !!this.article.estado_reporte;
@@ -20,5 +23,10 @@ export class ProductCardComponent {
 
   get estaVendido(): boolean {
     return this.article.estadoVenta === 'VENDIDO';
+  }
+
+  viewArticle(article: Article) {
+    console.log('Ver artículo:', this.article.id);
+    this.router.navigate(['/article-detail', this.article.id]);
   }
 }
