@@ -62,7 +62,7 @@
                         </p>
 
                         <p class="mb-1">
-                            <strong>Estado:</strong> {{article()?.estadoarticleo}}
+                            <strong>Estado:</strong> {{article()?.estadoProducto}}
                         </p>
 
                         <p class="mb-1">
@@ -87,77 +87,55 @@
                     </div>
 
                     <!-- Vendedor -->
-                    <!-- "calle_direccion_vendedor": "Paseo Marítimo 32",
-    "cp_direccion_vendedor": "29016",
-    "ciudad_direccion_vendedor": "Málaga",
-    "provincia_direccion_vendedor": "Málaga",
-    "pais_direccion_vendedor": "España" -->
                     <div class="col-lg-5">
-
                         <div class="card">
-
                             <div class="card-body">
 
-                                <div class="d-flex justify-content-between mb-3">
+                                <!-- Información del vendedor -->
+                                <div class="d-flex justify-content-between align-items-center mb-3">
 
                                     <div>
-                                        <small class="text-muted">
-                                            Vendedor/a
-                                        </small>
-
-                                        <p class="mb-0">
-                                            {{article()?.seller.nombre}} {{article()?.seller.apellidos}}
+                                        <small class="text-muted">Vendedor/a</small>
+                                        <p class="mb-0 fw-bold">
+                                            {{ article()?.seller.nombre }}
+                                            {{ article()?.seller.apellidos }}
                                         </p>
                                     </div>
 
-                                    <div>
-                                        <small class="text-muted">
-                                            Puntuación
-                                        </small>
-
-                                        <div class="text-warning">
-                                            ★★★★☆
-                                        </div>
-                                    </div>
+                                    <app-detail-seller [sellerId]="article()?.usuarios_id">
+                                    </app-detail-seller>
 
                                 </div>
 
-                                <p>
-                                    20 artículos vendidos
-                                </p>
-
-                                <button class="btn btn-success w-100">
-                                    Mensaje directo
-                                </button>
+                                <!-- Botón -->
+                                <div class="d-grid">
+                                    <button class="btn btn-success">
+                                        Mensaje directo
+                                    </button>
+                                </div>
 
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- FOOTER -->
-<app-footer></app-footer>
+    <!-- Modal -->
+    <div class="modal modal-dialog-centered fade" tabindex="-1" role="dialog" [ngClass]="{ show: modalOpen }"
+        [ngStyle]="{ display: modalOpen ? 'block' : 'none' }">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        (click)="closeModal()"></button>
+                </div>
+                <div class="modal-body">
+                    <img [src]="selectedImage" class="img-fluid" />
+                </div>
 
-<!-- Modal -->
-<div class="modal modal-dialog-centered fade" tabindex="-1" role="dialog" [ngClass]="{ show: modalOpen }"
-    [ngStyle]="{ display: modalOpen ? 'block' : 'none' }">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                    (click)="closeModal()"></button>
             </div>
-            <div class="modal-body">
-                <img [src]="selectedImage" class="img-fluid" />
-            </div>
-
         </div>
     </div>
 </div>

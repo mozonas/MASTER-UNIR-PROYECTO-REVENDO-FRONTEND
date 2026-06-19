@@ -1,14 +1,14 @@
-import { Component, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../services/article.service';
 import { ModerationService } from '../../services/moderation.service';
 import { AuthService } from '../../services/auth.service';
-import { FooterComponent } from '../../shared/footer/footer.component';
+import { DetailSeller } from "../../shared/detail-seller/detail-seller";
 
 @Component({
   selector: 'app-article-detail-component',
-  imports: [CommonModule, FooterComponent],
+  imports: [CommonModule, DetailSeller],
   templateUrl: './article-detail-component.html',
   styleUrl: './article-detail-component.css',
 })
@@ -18,9 +18,9 @@ export class ArticleDetailComponent {
   article = signal<any | null>(null);
   private route = inject(ActivatedRoute);
   private articlesService = inject(ArticleService);
+  private authService = inject(AuthService);
   private router = inject(Router);
   private moderationService = inject(ModerationService);
-  private authService = inject(AuthService);
 
   mostrarModalReporte = signal(false);
   motivoReporte = signal('');
@@ -79,7 +79,7 @@ export class ArticleDetailComponent {
   async ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) return;
-    this.getArticleData(id)
+    this.getArticleData(id);
   }
 
   /**
@@ -90,6 +90,7 @@ export class ArticleDetailComponent {
     this.articlesService.getArticleById(id).subscribe({
       next: (data) => {
         this.article.set(data);
+
       },
       error: (err) => {
         console.error('Error cargando producto:', err);
@@ -116,4 +117,5 @@ export class ArticleDetailComponent {
     this.modalOpen = false;
     this.selectedImage = null;
   }
+
 }
