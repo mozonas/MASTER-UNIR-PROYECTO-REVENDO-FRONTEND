@@ -39,9 +39,14 @@
 
                                 <div class="col-12">
                                         <label for="categoria" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Categoría</label>
-                                        <input id="categoria" type="text" formControlName="categorias_id" class="form-control p-2.5 rounded-3" maxlength="50" placeholder="Nombre de la categoría" [class.is-invalid]="isControlInvalid('categorias_id')">
+                                        <select id="categoria" formControlName="categorias_id" class="form-select p-2.5 rounded-3" [class.is-invalid]="isControlInvalid('categorias_id')">
+                                                <option value="" disabled>Selecciona una categoría</option>
+                                                @for (categoria of categoriasOptions(); track categoria.id) {
+                                                        <option [value]="categoria.id">{{ categoria.nombre }}</option>
+                                                }
+                                        </select>
                                         @if (isControlInvalid('categorias_id')) {
-                                        <div class="invalid-feedback">La categoría es obligatoria (máximo 50 caracteres).</div>
+                                        <div class="invalid-feedback">Selecciona una categoría.</div>
                                         }
                                 </div>
 
@@ -82,8 +87,31 @@
                                 </div>
 
                                 <div class="col-12">
-                                        <label for="image" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">URL de imagen</label>
-                                        <input id="image" type="text" formControlName="image" class="form-control p-2.5 rounded-3" placeholder="https://...">
+                                        <label for="image1" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">URL de imagen 1 (obligatoria)</label>
+                                        <input id="image1" type="text" formControlName="image1" class="form-control p-2.5 rounded-3" placeholder="https://..." [class.is-invalid]="isControlInvalid('image1')">
+                                        @if (isControlInvalid('image1')) {
+                                        <div class="invalid-feedback">La primera imagen es obligatoria.</div>
+                                        }
+                                </div>
+
+                                <div class="col-12">
+                                        <label for="image2" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">URL de imagen 2 (opcional)</label>
+                                        <input id="image2" type="text" formControlName="image2" class="form-control p-2.5 rounded-3" placeholder="https://...">
+                                </div>
+
+                                <div class="col-12">
+                                        <label for="image3" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">URL de imagen 3 (opcional)</label>
+                                        <input id="image3" type="text" formControlName="image3" class="form-control p-2.5 rounded-3" placeholder="https://...">
+                                </div>
+
+                                <div class="col-12">
+                                        <label for="image4" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">URL de imagen 4 (opcional)</label>
+                                        <input id="image4" type="text" formControlName="image4" class="form-control p-2.5 rounded-3" placeholder="https://...">
+                                </div>
+
+                                <div class="col-12">
+                                        <label for="image5" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">URL de imagen 5 (opcional)</label>
+                                        <input id="image5" type="text" formControlName="image5" class="form-control p-2.5 rounded-3" placeholder="https://...">
                                 </div>
 
                                 <div class="col-12 p-3 border border-warning rounded-3 bg-warning bg-opacity-10">

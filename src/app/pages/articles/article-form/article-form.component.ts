@@ -31,6 +31,7 @@ export class ArticleFormComponent implements OnInit {
         tipoEntregaOptions = signal<string[]>([]);
         tipoPagoOptions = signal<string[]>([]);
         estadoProductoOptions = signal<string[]>([]);
+        categoriasOptions = signal<Array<{ id: number; nombre: string }>>([]);
 
         private readonly fieldValidationOrder = [
                 'titulo',
@@ -39,6 +40,7 @@ export class ArticleFormComponent implements OnInit {
                 'categorias_id',
                 'tipoEntrega',
                 'tipoPago',
+                'image1',
         ] as const;
 
         ngOnInit(): void {
@@ -49,6 +51,7 @@ export class ArticleFormComponent implements OnInit {
                                         if (enums.tipoEntrega) this.tipoEntregaOptions.set(enums.tipoEntrega);
                                         if (enums.tipoPago) this.tipoPagoOptions.set(enums.tipoPago);
                                         if (enums.estadoProducto) this.estadoProductoOptions.set(enums.estadoProducto);
+                                        if (enums.categorias) this.categoriasOptions.set(enums.categorias);
                                 },
                                 error: (err) => console.error('Error al cargar ENUMs del artículo:', err)
                         });
@@ -60,8 +63,12 @@ export class ArticleFormComponent implements OnInit {
                         estadoProducto: [''],
                         tipoEntrega: ['', Validators.required],
                         tipoPago: ['', Validators.required],
-                        categorias_id: ['', [Validators.required, Validators.maxLength(50)]],
-                        image: [''],
+                        categorias_id: ['', [Validators.required]],
+                        image1: ['', [Validators.required]],
+                        image2: [''],
+                        image3: [''],
+                        image4: [''],
+                        image5: [''],
                         usuarios_id: [null],
                 });
 
@@ -86,18 +93,26 @@ export class ArticleFormComponent implements OnInit {
                                         tipoEntrega: '',
                                         tipoPago: '',
                                         categorias_id: '',
-                                        image: '',
+                                        image1: '',
+                                        image2: '',
+                                        image3: '',
+                                        image4: '',
+                                        image5: '',
                                         usuarios_id: null,
                                 });
 
                                 if (articleId) {
                                         this.isEditing = true;
+                                        this.articleForm.get('image1')?.clearValidators();
+                                        this.articleForm.get('image1')?.updateValueAndValidity({ emitEvent: false });
                                         this.currentArticleId = articleId;
                                         this.loadArticle(articleId);
                                         return;
                                 }
 
                                 this.isEditing = false;
+                                this.articleForm.get('image1')?.setValidators([Validators.required]);
+                                this.articleForm.get('image1')?.updateValueAndValidity({ emitEvent: false });
                                 this.currentArticleId = null;
                         });
         }
@@ -116,7 +131,11 @@ export class ArticleFormComponent implements OnInit {
                                         tipoEntrega: article.tipoEntrega,
                                         tipoPago: article.tipoPago,
                                         categorias_id: article.categorias_id ?? '',
-                                        image: article.image ?? '',
+                                        image1: article.image ?? '',
+                                        image2: '',
+                                        image3: '',
+                                        image4: '',
+                                        image5: '',
                                         usuarios_id: article.usuarios_id ?? null,
                                 });
                         },
@@ -140,6 +159,17 @@ export class ArticleFormComponent implements OnInit {
                 }
 
                 const formValue = this.articleForm.value;
+                const images = [
+                        formValue.image1,
+                        formValue.image2,
+                        formValue.image3,
+                        formValue.image4,
+                        formValue.image5,
+                ]
+                        .map((url: string | null | undefined) => (url ?? '').trim())
+                        .filter((url: string) => !!url)
+                        .slice(0, 5);
+
                 const articlePayload = {
                         titulo: formValue.titulo,
                         descripcion: formValue.descripcion,
@@ -148,6 +178,7 @@ export class ArticleFormComponent implements OnInit {
                         tipoEntrega: formValue.tipoEntrega,
                         tipoPago: formValue.tipoPago,
                         categorias_id: formValue.categorias_id,
+                        images,
                 };
                 if (this.isEditing && this.currentArticleId) {
                         this.articleService.updateArticle(this.currentArticleId, articlePayload).subscribe({

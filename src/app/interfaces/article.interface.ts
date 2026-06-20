@@ -10,6 +10,7 @@ export interface iArticle {
   created_at: Date;
   usuarios_id: number;
   categorias_id: number;
+  categoria_nombre?: string;
   image: string | null;
   estado_reporte?: number | null;
 }

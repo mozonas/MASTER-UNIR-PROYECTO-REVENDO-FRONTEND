@@ -12,6 +12,14 @@ export interface ArticleUpsertPayload {
   tipoEntrega: string;
   tipoPago: string;
   categorias_id: number | string;
+  images?: string[];
+}
+
+export interface ArticleEnumsPayload {
+  categorias: Array<{ id: number; nombre: string }>;
+  estadoProducto: string[];
+  tipoEntrega: string[];
+  tipoPago: string[];
 }
 
 @Injectable({
@@ -71,13 +79,13 @@ export class ArticleService {
     return this.http.delete<any>(`${this.apiUrl}/user-sell/${id}`);
   }
 
-  getArticleEnums(): Observable<{ estadoProducto: string[]; tipoEntrega: string[]; tipoPago: string[] }> {
+  getArticleEnums(): Observable<ArticleEnumsPayload> {
     return this.http.get<any>(`${this.apiUrl}/article/enums`).pipe(
       map(response => response?.data ?? response)
     );
   }
 
-  getEnums(): Observable<{ estadoProducto: string[]; tipoEntrega: string[]; tipoPago: string[] }> {
+  getEnums(): Observable<ArticleEnumsPayload> {
     return this.getArticleEnums();
   }
 
@@ -125,6 +133,7 @@ export class ArticleService {
       created_at: createdAt,
       usuarios_id: Number(articulo.usuarios_id ?? 0),
       categorias_id: Number(articulo.categorias_id ?? 0),
+      categoria_nombre: articulo.categoria_nombre ? String(articulo.categoria_nombre) : (articulo.categoria ? String(articulo.categoria) : undefined),
       image: articulo.image ?? articulo.foto ?? articulo.url ?? null,
       estado_reporte: articulo.estado_reporte != null ? Number(articulo.estado_reporte) : null
     } as iArticle;

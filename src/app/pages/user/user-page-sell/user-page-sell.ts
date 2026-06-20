@@ -53,6 +53,7 @@ export class UserPageSell implements OnInit {
       precio: a.precio,
       ubicacion: '',
       categorias_id: a.categorias_id,
+      categoria_nombre: a.categoria_nombre,
       usuarios_id: a.usuarios_id,
       imagen: this.normalizeImagePath(a.image) ?? undefined,
       estadoVenta: a.estadoVenta as Article['estadoVenta'],
