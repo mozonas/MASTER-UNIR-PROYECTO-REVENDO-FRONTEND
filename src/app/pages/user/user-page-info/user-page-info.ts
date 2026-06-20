@@ -207,4 +207,12 @@ export class UserPageInfoComponent implements OnInit {
   irAEditar(): void {
     this.router.navigate(['/user-edit']);
   }
+
+    onCancelar(): void {
+    if (this.route.snapshot.paramMap.get('id')) {
+      this.router.navigate(['/admin/users']);
+    } else {
+      this.router.navigate(['/user-info']);
+    }
+  }
 }
