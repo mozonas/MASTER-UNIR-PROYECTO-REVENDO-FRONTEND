@@ -1,19 +1,18 @@
-import { Component, computed, inject, Input, signal, OnInit } from '@angular/core';
+import { Component, computed, inject, Input, signal, OnInit, effect } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
+import { CategoryService } from '../../../services/category.service';
 
 interface Categoria { id: number; nombre: string; }
 interface GrupoCategoria { label: string; ids: number[]; subcategorias: Categoria[]; }
 
-// Agrupación visual: los IDs vienen de SELECT id, nombre FROM categorias
 const GRUPOS_CONFIG: { label: string; ids: number[] }[] = [
-  { label: 'Electrónica',       ids: [1, 2, 3, 4, 5] },          // Móviles, Tablets, Ordenadores, Consolas, Televisores
-  { label: 'Hogar y muebles',   ids: [6, 7, 11, 20] },           // Muebles, Electrodomésticos, Jardín, Bricolaje
-  { label: 'Moda y accesorios', ids: [8, 9, 10] },               // Ropa, Calzado, Accesorios
-  { label: 'Ocio y deportes',   ids: [14, 17, 18, 19] },         // Instrumentos, Libros y ocio, Coleccionismo, Deporte y aire libre
-  { label: 'Motor y familia',   ids: [12, 13, 15, 16] },         // Bebés, Mascotas, Coches, Motos
+  { label: 'Electrónica',       ids: [1, 2, 3, 4, 5] },
+  { label: 'Hogar y muebles',   ids: [6, 7, 11, 20] },
+  { label: 'Moda y accesorios', ids: [8, 9, 10] },
+  { label: 'Ocio y deportes',   ids: [14, 17, 18, 19] },
+  { label: 'Motor y familia',   ids: [12, 13, 15, 16] },
 ];
 
 @Component({
@@ -28,7 +27,7 @@ export class HeaderMenuComponent implements OnInit {
 
   private authService = inject(AuthService);
   private router = inject(Router);
-  private http = inject(HttpClient);
+  private categoryService = inject(CategoryService);
 
   gruposCategorias = signal<GrupoCategoria[]>([]);
 
@@ -37,20 +36,21 @@ export class HeaderMenuComponent implements OnInit {
   isStaff = computed(() => ['ADMIN', 'MODERADOR'].includes(this.role()));
 
   ngOnInit(): void {
-    this.http.get<{ status: string; data: Categoria[] }>('http://localhost:3000/api/categories').subscribe({
-      next: (resp) => {
-        const todas = resp.data;
-        const grupos: GrupoCategoria[] = GRUPOS_CONFIG.map(g => ({
-          label: g.label,
-          ids: g.ids,
-          subcategorias: todas.filter(c => g.ids.includes(c.id))
-        }));
-        this.gruposCategorias.set(grupos);
-      },
-      error: () => {
-        // Sin conexión al back: mostrar grupos sin subcategorías
-        this.gruposCategorias.set(GRUPOS_CONFIG.map(g => ({ label: g.label, ids: g.ids, subcategorias: [] as Categoria[] })));
-      }
+
+    //MOG Cargar categorías desde MI service
+    this.categoryService.loadCategories();
+
+    //MOG Reconstruir grupos cuando cambien las categorías
+    effect(() => {
+      const todas = this.categoryService.categories();
+
+      const grupos = GRUPOS_CONFIG.map(g => ({
+        label: g.label,
+        ids: g.ids,
+        subcategorias: todas.filter(c => g.ids.includes(c.id))
+      }));
+
+      this.gruposCategorias.set(grupos);
     });
   }
 

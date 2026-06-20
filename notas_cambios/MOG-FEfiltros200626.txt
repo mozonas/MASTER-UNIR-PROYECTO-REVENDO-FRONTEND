@@ -1,0 +1,183 @@
+============================================================
+RESUMEN COMPLETO DE CAMBIOS REALIZADOS EN EL FRONTEND
+Proyecto: MASTER-UNIR-PROYECTO-REVENDO-FRONTEND
+Fecha: 20/06/2026
+Autor: Miguel
+============================================================
+
+Este documento recoge TODOS los archivos modificados según
+GitKraken (12 archivos), con su ruta, qué se cambió y por qué.
+
+============================================================
+1) src/app/Interfaces/article.interface.ts
+============================================================
+CAMBIOS:
+- Se revisó la interfaz iArticle para confirmar que id es number.
+- Se ajustó el servicio y los componentes para respetar este tipo.
+
+MOTIVO:
+- Evitar conflictos entre id:string y id:number.
+
+------------------------------------------------------------
+
+============================================================
+2) src/app/pages/article-detail-component/article-detail-component.ts
+============================================================
+CAMBIOS:
+- Conversión del parámetro de ruta a number:
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+- getArticleData(id: number) en lugar de string.
+- Llamada corregida a getArticleById(id:number).
+
+MOTIVO:
+- El servicio ahora usa id:number.
+
+------------------------------------------------------------
+
+============================================================
+3) src/app/pages/home/home.component.css
+============================================================
+CAMBIOS:
+- GitKraken lo marca como modificado, pero no se tocó durante
+  la depuración. Probablemente cambios locales previos.
+
+MOTIVO:
+- No relacionado con la corrección de errores.
+
+------------------------------------------------------------
+
+============================================================
+4) src/app/pages/home/home.component.html
+============================================================
+CAMBIOS:
+- Igual que el CSS: GitKraken lo detecta, pero no se modificó
+  durante la depuración.
+
+MOTIVO:
+- Cambios previos o formateo automático.
+
+------------------------------------------------------------
+
+============================================================
+5) src/app/pages/home/home.component.ts
+============================================================
+CAMBIOS:
+- GitKraken lo marca como modificado, pero NO se tocó en la
+  depuración de errores.
+
+MOTIVO:
+- Cambios previos o autoformateo.
+
+------------------------------------------------------------
+
+============================================================
+6) src/app/pages/user/user-page-sell/user-page-sell.ts
+============================================================
+CAMBIOS IMPORTANTES:
+- Eliminado import de Article.
+- currentPageArticles ahora devuelve iArticle[].
+- Eliminado mapeo manual incorrecto.
+- setFilter() corregido.
+- onEdit() y onDelete() ahora reciben iArticle.
+- Comparaciones corregidas (id:number).
+- deleteArticle() llamado con number.
+
+MOTIVO:
+- Resolver errores TS2739, TS2367 y TS2345.
+
+------------------------------------------------------------
+
+============================================================
+7) src/app/services/article.service.ts
+============================================================
+CAMBIOS IMPORTANTES:
+- Unificación total de id:number.
+- getArticleById(id:number).
+- deleteArticle(id:number).
+- updateArticle(id:number).
+- mapRawArticleToIArticle() ahora devuelve id:number.
+
+MOTIVO:
+- Coherencia con iArticle y evitar errores de compilación.
+
+------------------------------------------------------------
+
+============================================================
+8) src/app/services/category.service.ts
+============================================================
+CAMBIOS:
+- GitKraken lo marca como modificado, pero NO se tocó durante
+  la depuración.
+
+MOTIVO:
+- Cambios previos o autoformateo.
+
+------------------------------------------------------------
+
+============================================================
+9) src/app/services/home-article.service.ts
+============================================================
+CAMBIOS:
+- GitKraken lo marca como modificado, pero NO se tocó durante
+  la depuración.
+
+MOTIVO:
+- Cambios previos o autoformateo.
+
+------------------------------------------------------------
+
+============================================================
+10) src/app/shared/components/product-card/product-card.component.html
+============================================================
+CAMBIOS:
+- GitKraken lo marca como modificado, pero NO se tocó durante
+  la depuración.
+
+MOTIVO:
+- Cambios previos o autoformateo.
+
+------------------------------------------------------------
+
+============================================================
+11) src/app/shared/components/product-card/product-card.component.ts
+============================================================
+CAMBIOS:
+- Confirmado que @Input() article es iArticle.
+- No se modificó directamente, pero fue clave para corregir
+  user-page-sell.ts.
+
+MOTIVO:
+- Asegurar coherencia de tipos.
+
+------------------------------------------------------------
+
+============================================================
+12) src/app/shared/headers/header-menu.component.ts
+============================================================
+CAMBIOS:
+- GitKraken lo marca como modificado, pero NO se tocó durante
+  la depuración.
+
+MOTIVO:
+- Cambios previos o autoformateo.
+
+------------------------------------------------------------
+
+============================================================
+RESUMEN GLOBAL
+============================================================
+
+Los archivos realmente modificados para corregir errores fueron:
+- article.interface.ts
+- article-detail-component.ts
+- user-page-sell.ts
+- article.service.ts
+
+Los otros 8 archivos aparecen como modificados por:
+- cambios previos
+- autoformateo
+- cambios no relacionados con la depuración
+
+============================================================
+FIN DEL DOCUMENTO
+============================================================

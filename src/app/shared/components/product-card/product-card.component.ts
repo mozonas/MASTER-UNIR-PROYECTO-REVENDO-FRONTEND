@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-import { Article } from '../../models/article.model';
 import { Router } from '@angular/router';
+import { iArticle } from '../../../interfaces/article.interface';
 
 @Component({
   selector: 'app-product-card',
@@ -10,12 +10,34 @@ import { Router } from '@angular/router';
   styleUrl: './product-card.component.css',
 })
 export class ProductCardComponent {
-  @Input({ required: true }) article!: Article;
+
+  @Input({ required: true }) article!: iArticle;
   @Input() showActions = false;
-  @Output() editClicked = new EventEmitter<Article>();
-  @Output() deleteClicked = new EventEmitter<Article>();
+
+  @Output() editClicked = new EventEmitter<iArticle>();
+  @Output() deleteClicked = new EventEmitter<iArticle>();
+
   private router = inject(Router);
 
+  // ============================
+  // NORMALIZADORES
+  // ============================
+
+  get imageUrl(): string {
+    return this.article.image
+        || this.article.imagen
+        || 'images/placeholder-product.png';
+  }
+
+  get location(): string {
+    return this.article.ubicacion
+        || this.article.localizacion
+        || 'Sin ubicación';
+  }
+
+  get categoryName(): string {
+    return this.article.categoria_nombre || 'Sin categoría';
+  }
 
   get estaReportado(): boolean {
     return !!this.article.estado_reporte;
@@ -25,8 +47,7 @@ export class ProductCardComponent {
     return this.article.estadoVenta === 'VENDIDO';
   }
 
-  viewArticle(article: Article) {
-    console.log('Ver artículo:', this.article.id);
+  viewArticle(article: iArticle) {
     this.router.navigate(['/article-detail', this.article.id]);
   }
 }

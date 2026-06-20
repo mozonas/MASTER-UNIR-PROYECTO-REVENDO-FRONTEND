@@ -1,9 +1,15 @@
+/* ========================= */
+/* CONTENEDOR GENERAL        */
+/* ========================= */
 .home-container {
   padding: 28px 24px;
   max-width: 1400px;
   margin: 0 auto;
 }
 
+/* ========================= */
+/* HEADER                    */
+/* ========================= */
 .home-header {
   display: flex;
   align-items: baseline;
@@ -11,6 +17,21 @@
   margin-bottom: 24px;
 }
 
+.home-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.home-count {
+  font-size: 13px;
+  color: #999;
+}
+
+/* ========================= */
+/* BOTÓN NUEVO ARTÍCULO      */
+/* ========================= */
 .home-new-article-btn {
   margin-left: auto;
 }
@@ -35,18 +56,18 @@
   margin-right: 0.5rem;
 }
 
-.home-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: #333;
-  margin: 0;
+/* ========================= */
+/* GRID DE PRODUCTOS         */
+/* ========================= */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
 }
 
-.home-count {
-  font-size: 13px;
-  color: #999;
-}
-
+/* ========================= */
+/* LOADING / ERROR           */
+/* ========================= */
 .home-loading,
 .home-error {
   text-align: center;
@@ -54,8 +75,15 @@
   padding: 40px 0;
 }
 
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 20px;
+/* ========================= */
+/* SCROLLBAR DE LOS FILTROS  */
+/* (TU CSS DEL JUEVES)       */
+/* ========================= */
+.home-filters::-webkit-scrollbar {
+  height: 6px;
+}
+
+.home-filters::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
 }

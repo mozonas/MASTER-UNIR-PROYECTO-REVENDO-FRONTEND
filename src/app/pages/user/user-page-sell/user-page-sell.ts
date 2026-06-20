@@ -4,7 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { AuthService } from '../../../services/auth.service';
 import { iArticle } from '../../../interfaces/article.interface';
-import { Article } from '../../../shared/models/article.model';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 
 @Component({
@@ -44,19 +43,9 @@ export class UserPageSell implements OnInit {
     return this.filteredArticles().slice(start, start + this.pageSize);
   });
 
-  currentPageArticles = computed<Article[]>(() =>
-    this.currentPageRawArticles().map(a => ({
-      id: Number(a.id),
-      titulo: a.titulo,
-      descripcion: a.descripcion,
-      precio: a.precio,
-      ubicacion: '',
-      categorias_id: a.categorias_id,
-      usuarios_id: a.usuarios_id,
-      imagen: a.image ?? undefined,
-      estadoVenta: a.estadoVenta as Article['estadoVenta'],
-      estado_reporte: a.estado_reporte ?? null,
-    }))
+  // Ahora sí: devolvemos iArticle sin transformarlo
+  currentPageArticles = computed<iArticle[]>(() =>
+    this.currentPageRawArticles()
   );
 
   ngOnInit(): void {
@@ -87,16 +76,17 @@ export class UserPageSell implements OnInit {
     this.currentPage.set(page);
   }
 
-  onEdit(article: Article): void {
-    const original = this.articles().find((a: iArticle) => a.id === String(article.id));
+  onEdit(article: iArticle): void {
+    const original = this.articles().find(a => a.id === article.id);
     if (original) {
       alert(`Editar artículo: ${original.titulo}\n(Placeholder - Vista de edición aún no implementada)`);
     }
   }
 
-  onDelete(article: Article): void {
-    const original = this.articles().find((a: iArticle) => a.id === String(article.id));
+  onDelete(article: iArticle): void {
+    const original = this.articles().find(a => a.id === article.id);
     if (!original) return;
+
     const confirmed = confirm(`¿Está seguro de que desea eliminar "${original.titulo}"? Esta acción no se puede deshacer.`);
     if (confirmed) {
       this.articleService.deleteArticle(original.id);
