@@ -1,11 +1,10 @@
-import { Component, OnInit, inject, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, NgZone, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
 import { Usuario } from '../../../interfaces/user.interface';
-import { ActivatedRoute } from '@angular/router';
 
 // Importamos PlaceKit Autocomplete
 import placekitAutocomplete from '@placekit/autocomplete-js';
@@ -17,13 +16,14 @@ import placekitAutocomplete from '@placekit/autocomplete-js';
   templateUrl: './user-page-edit.html',
   styleUrls: ['./user-page-edit.css']
 })
-export class UserPageEditComponent implements OnInit {
+export class UserPageEditComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
   private route = inject(ActivatedRoute);
+  private ngZone = inject(NgZone);
 
   isLoaded: boolean = false;
   editForm!: FormGroup;
@@ -33,13 +33,20 @@ export class UserPageEditComponent implements OnInit {
   fotoPreview: string | null = null;
   userIdParaEditar: number | null = null;
 
-  // Guardará la instancia para evitar inicializaciones duplicadas
+  // Instancia para limpiar el plugin
   private pkInstance: any = null;
 
   ngOnInit(): void {
     this.initForm();
     this.resolverUserId();
     this.cargarDatosUsuario();
+  }
+
+  ngOnDestroy(): void {
+    // Limpieza de la instancia al destruir el componente
+    if (this.pkInstance && typeof this.pkInstance.destroy === 'function') {
+      this.pkInstance.destroy();
+    }
   }
 
   private initForm(): void {
@@ -100,8 +107,10 @@ export class UserPageEditComponent implements OnInit {
           this.isLoaded = true;
           this.cdr.detectChanges();
 
-          // Inicializamos PlaceKit justo después de que la vista se haya cargado
-          this.initPlaceKit();
+          // Un pequeño timeout para dar tiempo a que la directiva estructural (ej: *ngIf="isLoaded") dibuje el input en el DOM
+          setTimeout(() => {
+            this.initPlaceKit();
+          }, 50);
         }
       },
       error: (err) => console.error('❌ Error al recuperar los datos del usuario:', err)
@@ -109,26 +118,43 @@ export class UserPageEditComponent implements OnInit {
   }
 
   private initPlaceKit(): void {
-    // Timeout mínimo para asegurar que el DOM con @if(isLoaded) ya se ha renderizado por completo
-    setTimeout(() => {
-      const inputDireccion = document.getElementById('direccion');
+    const inputDireccion = document.getElementById('direccion') as HTMLInputElement;
 
-      if (inputDireccion && !this.pkInstance) {
-        this.pkInstance = placekitAutocomplete('pk_FzdoduYQyIfq0FaY+Ez9KCtgoITLWkpJT6UuNRw5z+U=', {
-          target: '#direccion',
-          countries: ['es'], // Opcional: limita la búsqueda (ej: 'es' para España)
-          maxResults: 5,
-        });
+    if (inputDireccion && !this.pkInstance) {
+      this.pkInstance = placekitAutocomplete('pk_FzdoduYQyIfq0FaY+Ez9KCtgoITLWkpJT6UuNRw5z+U=', {
+        target: inputDireccion,
+        countries: ['es'],
+        maxResults: 5,
+      });
 
-        // Evento cuando el usuario selecciona una dirección de la lista
-        this.pkInstance.on('pick', (value: string, item: any) => {
+      this.pkInstance.on('pick', (value: string, item: any) => {
+        this.ngZone.run(() => {
+          // 1. Extraemos de forma segura los metadatos desglosados de PlaceKit
+          const calleYNumero = item.name || value; // Ej: "Calle Gema, 4"
+          const codigoPostal = item.zipcode && item.zipcode.length > 0 ? item.zipcode[0] : ''; // Ej: "41015"
+          const localidad = item.city || ''; // Ej: "Sevilla"
+          const pais = item.country || 'España'; // Ej: "España"
+
+          // 2. Construimos una cadena de texto postal perfecta e inequívoca
+          let direccionCompleta = `${calleYNumero}`;
+          if (codigoPostal || localidad) {
+            direccionCompleta += `, ${codigoPostal} ${localidad}`.trim();
+          }
+          direccionCompleta += `, ${pais}`;
+
+          // Limpiamos espacios extraños o comas repetidas si algún dato faltase
+          direccionCompleta = direccionCompleta.replace(/,\s*,/g, ',').trim();
+
+          // 3. Insertamos el valor formateado completo en el Formulario Reactivo
           this.editForm.patchValue({
-            direccion: value // Sincroniza el valor seleccionado con el FormReactive
+            direccion: direccionCompleta
           });
+
           this.editForm.get('direccion')?.markAsDirty();
+          this.editForm.get('direccion')?.markAsTouched();
         });
-      }
-    }, 50);
+      });
+    }
   }
 
   onFileChange(event: any): void {

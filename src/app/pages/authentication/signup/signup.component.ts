@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 
-// 1. IMPORTACIÓN CORRECTA DE NPM (Elimina el 'declare var')
 import placekitAutocomplete from '@placekit/autocomplete-js';
 
 @Component({
@@ -43,31 +42,57 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
   }
 
   private initPlaceKit(): void {
-    // Al usar AfterViewInit, el elemento de formulario ya existe con total seguridad
     const inputDireccion = document.getElementById('direccion') as HTMLInputElement;
 
     if (inputDireccion && !this.pkInstance) {
-      // 2. Inicializamos directamente usando la función importada de NPM
       this.pkInstance = placekitAutocomplete('pk_FzdoduYQyIfq0FaY+Ez9KCtgoITLWkpJT6UuNRw5z+U=', {
         target: inputDireccion,
         countries: ['es'],
         maxResults: 5,
       });
 
-      // 3. Controlamos el evento dentro de la zona de Angular
       this.pkInstance.on('pick', (value: string, item: any) => {
         this.ngZone.run(() => {
-          this.formData.direccion = value;
+          // 1. Extraemos los metadatos desglosados de PlaceKit
+          const calleYNumero = item.name || value;
+          const codigoPostal = item.zipcode && item.zipcode.length > 0 ? item.zipcode[0] : '';
+          const localidad = item.city || '';
+          const pais = item.country || 'España';
 
-          // Forzamos la actualización de ngModel
-          inputDireccion.dispatchEvent(new Event('input', { bubbles: true }));
+          // 2. Construimos la cadena de texto larga e inequívoca
+          let direccionCompleta = `${calleYNumero}`;
+          if (codigoPostal || localidad) {
+            direccionCompleta += `, ${codigoPostal} ${localidad}`.trim();
+          }
+          direccionCompleta += `, ${pais}`;
+          direccionCompleta = direccionCompleta.replace(/,\s*,/g, ',').trim();
+
+          // 3. Usamos setTimeout para ganarle la carrera a los eventos internos de PlaceKit
+          setTimeout(() => {
+            // Escribimos el valor formateado completo directamente en el cuadro de texto
+            inputDireccion.value = direccionCompleta;
+
+            // Sincronizamos nuestro objeto de datos
+            this.formData.direccion = direccionCompleta;
+
+            // Despierta a Angular avisándole de que el valor definitivo ya está en el input
+            inputDireccion.dispatchEvent(new Event('input', { bubbles: true }));
+            inputDireccion.dispatchEvent(new Event('change', { bubbles: true }));
+          }, 0);
         });
       });
     }
   }
 
   onSubmit() {
-    console.log('Enviando signup:', this.formData);
+    // Antes de enviar los datos, aseguramos que formData lleve lo que se ve en la caja de texto
+    const inputDireccion = document.getElementById('direccion') as HTMLInputElement;
+    if (inputDireccion && inputDireccion.value) {
+      this.formData.direccion = inputDireccion.value;
+    }
+
+    console.log('Enviando signup verificado:', this.formData);
+
     this.authService.signup(this.formData).subscribe({
       next: (resp) => {
         alert('Usuario creado correctamente');
@@ -75,7 +100,7 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
       },
       error: (err) => {
         console.error('Error en signup:', err);
-        alert('Error al crear usuario');
+        alert('Error al crear usuario. Verifica los campos e inténtalo de nuevo.');
       }
     });
   }

@@ -89,6 +89,7 @@ export class UserPageInfoComponent implements OnInit {
           return;
         }
         const userObj = Array.isArray(userData) ? userData[0] : userData;
+        console.log("¡ATENCIÓN! Dirección real que devuelve la API:", userObj?.direccion);
 
         if (userObj) {
           this.currentUser = userObj;
@@ -101,7 +102,7 @@ export class UserPageInfoComponent implements OnInit {
       },
       error: (err) => {
         console.error('❌ Error en la petición HTTP al recargar:', err);
-        this.isLoaded = true; 
+        this.isLoaded = true;
         this.cdr.detectChanges();
       }
     });
@@ -139,10 +140,30 @@ export class UserPageInfoComponent implements OnInit {
   }
 
   private generarUrlMapa(): void {
-    const direccion = this.currentUser.direccion ? this.currentUser.direccion.trim() : '';
+    const direccionCompleta = this.currentUser.direccion ? this.currentUser.direccion.trim() : '';
 
-    if (direccion) {
-      const urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccion)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+    if (direccionCompleta) {
+      let urlBase = '';
+
+      // Comprobamos si la dirección viene con el tag de coordenadas [COORD: lat,lng]
+      if (direccionCompleta.includes('[COORD:')) {
+        try {
+          // Extraemos la parte de las coordenadas
+          const coordSection = direccionCompleta.split('[COORD:')[1].replace(']', '').trim();
+          const [lat, lng] = coordSection.split(',');
+
+          // Url exacta para embeber coordenadas con una sola chincheta (q=) y centrado (ll=)
+          urlBase = `https://maps.google.com/maps?q=${lat.trim()},${lng.trim()}&ll=${lat.trim()},${lng.trim()}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+        } catch (e) {
+          console.error('Error al parsear las coordenadas de la dirección:', e);
+          // Si falla el parseo por lo que sea, cae en el buscador clásico por texto
+          urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+        }
+      } else {
+        // Si es un usuario antiguo sin el tag de coordenadas, buscamos por texto plano
+        urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+      }
+
       this.mapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(urlBase);
     } else {
       this.mapUrl = null;
@@ -158,7 +179,7 @@ export class UserPageInfoComponent implements OnInit {
       { label: 'Cumpleaños', value: this.currentUser.fecha_nacimiento ? new Date(this.currentUser.fecha_nacimiento).toLocaleDateString('es-ES') : 'No especificado' },
       { label: 'Miembro desde', value: this.currentUser.created_at ? new Date(this.currentUser.created_at).toLocaleDateString('es-ES') : 'No especificado' }
     ];
-   
+
     if (this.currentUser.perfil === 'MODERADOR' || this.currentUser.perfil === 'ADMIN') {
       this.personalDetails.push({
         label: 'Rol de Cuenta',
