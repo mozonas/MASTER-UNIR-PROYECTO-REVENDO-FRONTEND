@@ -25,6 +25,15 @@ export class ProductCardComponent {
     return this.article.estadoVenta === 'VENDIDO';
   }
 
+  get imageSrc(): string {
+    const imagen = this.article.imagen?.trim();
+    if (!imagen || imagen === 'undefined' || imagen === 'null') {
+      return '/images/404.png';
+    }
+
+    return `http://localhost:3000/${imagen}`;
+  }
+
   viewArticle(article: Article) {
     console.log('Ver artículo:', this.article.id);
     this.router.navigate(['/article-detail', this.article.id]);

@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { AuthService } from '../../../services/auth.service';
 import { iArticle } from '../../../interfaces/article.interface';
@@ -17,6 +17,7 @@ export class UserPageSell implements OnInit {
   private articleService = inject(ArticleService);
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   articles = this.articleService.Articles;
 
@@ -53,7 +54,7 @@ export class UserPageSell implements OnInit {
       ubicacion: '',
       categorias_id: a.categorias_id,
       usuarios_id: a.usuarios_id,
-      imagen: a.image ?? undefined,
+      imagen: this.normalizeImagePath(a.image) ?? undefined,
       estadoVenta: a.estadoVenta as Article['estadoVenta'],
       estado_reporte: a.estado_reporte ?? null,
     }))
@@ -90,7 +91,9 @@ export class UserPageSell implements OnInit {
   onEdit(article: Article): void {
     const original = this.articles().find((a: iArticle) => a.id === String(article.id));
     if (original) {
-      alert(`Editar artículo: ${original.titulo}\n(Placeholder - Vista de edición aún no implementada)`);
+      const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
+      const userId = routeUserId ?? this.authService.getUserId();
+      void this.router.navigate(['/article-form', original.id], { queryParams: { userId } });
     }
   }
 
@@ -99,18 +102,35 @@ export class UserPageSell implements OnInit {
     if (!original) return;
     const confirmed = confirm(`¿Está seguro de que desea eliminar "${original.titulo}"? Esta acción no se puede deshacer.`);
     if (confirmed) {
-      this.articleService.deleteArticle(original.id);
-      this.currentPage.set(Math.min(this.currentPage(), this.pageCount()));
+      this.articleService.deleteArticle(original.id).subscribe({
+        next: () => this.currentPage.set(Math.min(this.currentPage(), this.pageCount())),
+        error: (error) => console.error('Error al eliminar artículo:', error),
+      });
     }
   }
 
   addNewArticle() {
-    alert('Crear nuevo artículo\n(Placeholder - Vista de creación aún no implementada)');
+    const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
+    const userId = routeUserId ?? this.authService.getUserId();
+    void this.router.navigate(['/article-form'], { queryParams: { userId } });
   }
 
   getFilterCount(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'): number {
     const all = this.articles();
     if (filter === 'all') return all.length;
     return all.filter(a => a.estadoVenta === filter).length;
+  }
+
+  private normalizeImagePath(value: unknown): string | null {
+    if (typeof value !== 'string') {
+      return null;
+    }
+
+    const trimmed = value.trim();
+    if (!trimmed || trimmed === 'undefined' || trimmed === 'null') {
+      return null;
+    }
+
+    return trimmed;
   }
 }

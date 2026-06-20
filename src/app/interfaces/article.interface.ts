@@ -1,5 +1,3 @@
-import { StreamingResourceOptions } from "@angular/core";
-
 export interface iArticle {
   id: string;
   titulo: string;
