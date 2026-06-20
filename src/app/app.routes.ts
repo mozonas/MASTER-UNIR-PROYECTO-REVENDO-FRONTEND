@@ -75,7 +75,7 @@ export const routes: Routes = [
     ]
   },
 
-  // Directorios sección Moderación
+    // Directorios sección Moderación
   { path: 'moderation', 
     component: ModerationComponent,
     children: [
@@ -86,12 +86,6 @@ export const routes: Routes = [
       { path: 'chat', component: ChatsListComponent }
     ]
   },
-
-
- 
-  
-
-
 
 
   // A medida que se vayan creando los componentes de cada página, se irán añadiendo aquí con su correspondiente path y guard si es necesario
