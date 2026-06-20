@@ -81,7 +81,8 @@ export class ArticleService {
     usuarios_id: Number(articulo.usuarios_id ?? 0),
     categorias_id: Number(articulo.categorias_id ?? 0),
     image: articulo.foto ?? null,
-    estado_reporte: articulo.estado_reporte != null ? Number(articulo.estado_reporte) : null
+    estado_reporte: articulo.estado_reporte != null ? Number(articulo.estado_reporte) : null,
+    ubicacion:''
   };
 }
 

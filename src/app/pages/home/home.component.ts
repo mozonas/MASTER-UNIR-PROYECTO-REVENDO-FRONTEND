@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Article } from '../../shared/models/article.model';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
+import { FilterService } from '../../services/filterHome.service';
 
 @Component({
   selector: 'app-home',
@@ -14,8 +15,18 @@ import { ProductCardComponent } from '../../shared/components/product-card/produ
 export class HomeComponent implements OnInit {
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
+  private filterService = inject(FilterService);
 
+  // Signals expuestos al HTML
+  filters = this.filterService.filters;
+  categories = this.filterService.categories;
+
+  // Artículos mostrados en pantalla
+  results = signal<Article[]>([]);
+
+  // Artículos originales (carga inicial)
   allArticles = signal<Article[]>([]);
+
   categoriaIds = signal<number[] | null>(null);
   tituloCategoria = signal<string | null>(null);
   loading = signal(true);
@@ -23,7 +34,9 @@ export class HomeComponent implements OnInit {
 
   articles = computed(() => {
     const ids = this.categoriaIds();
-    return ids && ids.length ? this.allArticles().filter(a => ids.includes(a.categorias_id)) : this.allArticles();
+    return ids && ids.length
+      ? this.allArticles().filter(a => ids.includes(a.categorias_id))
+      : this.allArticles();
   });
 
   ngOnInit(): void {
@@ -33,10 +46,11 @@ export class HomeComponent implements OnInit {
       this.tituloCategoria.set(params.get('nombre'));
     });
 
+    // CARGA INICIAL — ESTO ES LO QUE SE VE AL ENTRAR
     this.http.get<{ status: string; data: any[] }>('http://localhost:3000/api/articles').subscribe({
       next: (resp) => {
-        this.allArticles.set(resp.data.map(a => ({
-          id: a.id,
+        const mapped = resp.data.map(a => ({
+          id: Number(a.id),
           titulo: a.titulo,
           descripcion: a.descripcion,
           precio: a.precio,
@@ -47,7 +61,11 @@ export class HomeComponent implements OnInit {
           imagen: a.foto ?? '',
           estadoVenta: a.estadoVenta,
           estado_reporte: a.estado_reporte,
-        })));
+        }));
+
+        this.allArticles.set(mapped);
+        this.results.set(mapped);   // ← ESTO ES LO QUE VE EL HTML
+
         this.loading.set(false);
       },
       error: () => {
@@ -55,9 +73,91 @@ export class HomeComponent implements OnInit {
         this.loading.set(false);
       }
     });
+
+    this.filterService.loadCategories();
+
+    // ❌ IMPORTANTE: NO LLAMAR A executeSearch() AQUÍ
   }
 
+  // 🔥 MÉTODO ORIGINAL QUE FALTABA
   addNewArticle() {
     alert('Crear nuevo artículo\n(Placeholder - Vista de creación aún no implementada)');
+  }
+
+  // ============================================================
+  //   HANDLERS DEL BUSCADOR
+  // ============================================================
+
+  onSearchTextChange(value: string) {
+    this.filterService.updateFilter('texto', value);
+    this.executeSearch();
+  }
+
+  onCategoryChange(value: string) {
+    this.filterService.updateFilter('categoria', value);
+    this.executeSearch();
+  }
+
+  onEstadoChange(value: string) {
+    this.filterService.updateFilter('estado', value);
+    this.executeSearch();
+  }
+
+  onMinPriceChange(value: string) {
+    this.filterService.updateFilter('min', value);
+    this.executeSearch();
+  }
+
+  onMaxPriceChange(value: string) {
+    this.filterService.updateFilter('max', value);
+    this.executeSearch();
+  }
+
+  onOrdenChange(value: string) {
+    this.filterService.updateFilter('orden', value);
+    this.executeSearch();
+  }
+
+  onLocationChange(value: string) {
+    this.filterService.updateFilter('localizacion', value);
+    this.executeSearch();
+  }
+
+  resetFilters() {
+    this.filterService.resetFilters();
+    this.results.set(this.allArticles());   // ← VUELVE AL ESTADO INICIAL
+  }
+
+  // ============================================================
+  //   LLAMADA CENTRAL AL BACKEND (solo cuando hay filtros)
+  // ============================================================
+
+  private executeSearch() {
+    this.loading.set(true);
+
+    this.filterService.searchArticles().subscribe({
+      next: (resp) => {
+
+        const mapped: Article[] = resp.data.map(a => ({
+          id: Number(a.id),
+          titulo: a.titulo,
+          descripcion: a.descripcion,
+          precio: a.precio,
+          ubicacion: '',
+          categorias_id: a.categorias_id,
+          categoria_nombre: '',
+          usuarios_id: a.usuarios_id,
+          imagen: a.image ?? '',
+          estadoVenta: (a.estadoVenta as string).toUpperCase().trim() as Article['estadoVenta'],
+          estado_reporte: a.estado_reporte
+        }));
+
+        this.results.set(mapped);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+      }
+    });
   }
 }

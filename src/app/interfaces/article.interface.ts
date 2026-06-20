@@ -14,4 +14,6 @@ export interface iArticle {
   categorias_id: number;
   image: string | null;
   estado_reporte?: number | null;
+  // AÑADIDO PARA COMPATIBILIDAD CON Article
+  ubicacion: string;
 }
