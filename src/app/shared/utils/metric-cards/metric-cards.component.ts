@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { ProductService } from '../../../services/product.service';
+import { ArticleService } from '../../../services/article.service';
 import { ModerationService } from '../../../services/moderation.service';
 import { UserService } from '../../../services/user.service';
 import { TransactionsServices } from '../../../services/transactions.service';
@@ -12,7 +12,7 @@ import { TransactionsServices } from '../../../services/transactions.service';
 })
 export class MetricCardsComponent {
  //Traer del servicio 
- private productServices = inject (ProductService)
+ private articleServices = inject (ArticleService)
  private moderationServices = inject (ModerationService)
  private userServices = inject (UserService)
  private transactionServices = inject (TransactionsServices)
@@ -32,12 +32,12 @@ export class MetricCardsComponent {
 
  paintPubCard(){
   // Publicados mes actual
-    this.productServices.getPubThisMonth().subscribe(res=>{
+    this.articleServices.getPubThisMonth().subscribe(res=>{
       this.newArticles.set (res.total); //obtengo total del método
       this.calculateDiff();
     });
     //Publicados último mes
-    this.productServices.getPubLastMonth().subscribe (res=>{
+    this.articleServices.getPubLastMonth().subscribe (res=>{
       this.lastMonth.set (res.total);
       this.calculateDiff();
     });

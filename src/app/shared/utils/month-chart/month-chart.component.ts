@@ -1,6 +1,6 @@
 import { Component, effect, inject, signal } from '@angular/core';
 import  Chart  from 'chart.js/auto';
-import { ProductService } from '../../../services/product.service';
+import { ArticleService } from '../../../services/article.service';
 
 
 @Component({
@@ -12,7 +12,7 @@ import { ProductService } from '../../../services/product.service';
 
 export class MonthChartComponent {
   // llamada servicio ventas mes
-  private productServices= inject (ProductService)
+  private articleServices= inject (ArticleService)
   mes ='';
 
 
@@ -25,7 +25,7 @@ export class MonthChartComponent {
     // recoger año actual y obtener el mes y los datos
       const year = new Date().getFullYear();
       this.mes = new Date(year, month - 1).toLocaleString('es-ES', { month: 'long' })
-      this.productServices.getVentasMensuales(month).subscribe (data =>{
+      this.articleServices.getVentasMensuales(month).subscribe (data =>{
         //dias al mes segun el año
         const totalDias = new Date (year,month, 0).getDate();
 
