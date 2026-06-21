@@ -1,9 +1,9 @@
 import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
+import { Article } from '../../models/article.model';
+import { AuthService } from '../../../services/auth.service';
+import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
-import { iArticle } from '../../../interfaces/article.interface';
-import { ArticleService } from '../../../services/article.service';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-product-card',
@@ -12,27 +12,16 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
   styleUrl: './product-card.component.css',
 })
 export class ProductCardComponent {
-  private _article!: iArticle;
+  private authService = inject(AuthService);
+  private route = inject(ActivatedRoute);
 
-  @Input({ required: true })
-  set article(value: iArticle) {
-    this._article = value;
-    this.imageCandidates = this.articleService.getArticleImageUrls(value);
-    this.currentImageIndex = 0;
-  }
+  isAdminViewing: boolean = false;
 
-  get article(): iArticle {
-    return this._article;
-  }
-
+  @Input({ required: true }) article!: Article;
   @Input() showActions = false;
-  @Output() editClicked = new EventEmitter<iArticle>();
-  @Output() deleteClicked = new EventEmitter<iArticle>();
+  @Output() editClicked = new EventEmitter<Article>();
+  @Output() deleteClicked = new EventEmitter<Article>();
   private router = inject(Router);
-  private articleService = inject(ArticleService);
-  private sanitizer = inject(DomSanitizer);
-  imageCandidates: string[] = [];
-  currentImageIndex = 0;
 
   ngOnInit() {
     let userIdParaCargar: number | null = null;
@@ -59,25 +48,9 @@ export class ProductCardComponent {
     return this.article.estadoVenta === 'VENDIDO';
   }
 
-  get imageSrc(): string | SafeUrl {
-    const image = this.imageCandidates[this.currentImageIndex];
-    const src = image ?? '/images/placeholder_articulo.png';
-    return src.startsWith('data:image/')
-      ? this.sanitizer.bypassSecurityTrustUrl(src)
-      : src;
-  }
-
-  onImageError(): void {
-    if (this.currentImageIndex < this.imageCandidates.length - 1) {
-      this.currentImageIndex += 1;
-      return;
-    }
-
-    this.currentImageIndex = this.imageCandidates.length;
-  }
-
-  viewArticle(article: iArticle) {
+  viewArticle(article: Article) {
     console.log('Ver artículo:', this.article.id);
     this.router.navigate(['/article-detail', this.article.id]);
   }
 }
+

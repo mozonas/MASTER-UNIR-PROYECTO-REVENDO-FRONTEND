@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { iArticle } from '../../interfaces/article.interface';
+import { Article } from '../../shared/models/article.model';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
 import { FilterHomeService } from '../../services/filterHome.service';
 
@@ -83,11 +83,11 @@ ngOnInit(): void {
 
           fotos: Array.isArray(a.fotos)
             ? a.fotos
-                .filter((foto: any) => foto && typeof foto.url === 'string' && foto.url.trim())
-                .map((foto: any) => ({
-                  url: String(foto.url).trim(),
-                  nombreAlt: String(foto.nombreAlt ?? ''),
-                }))
+              .filter((foto: any) => foto && typeof foto.url === 'string' && foto.url.trim())
+              .map((foto: any) => ({
+                url: String(foto.url).trim(),
+                nombreAlt: String(foto.nombreAlt ?? ''),
+              }))
             : undefined,
 
           estadoVenta: String(a.estadoVenta ?? 'DISPONIBLE')
