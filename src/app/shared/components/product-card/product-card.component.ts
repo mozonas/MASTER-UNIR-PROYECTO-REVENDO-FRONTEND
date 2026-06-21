@@ -4,6 +4,7 @@ import { Article } from '../../models/article.model';
 import { AuthService } from '../../../services/auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
+import { iArticle } from '../../../interfaces/article.interface';
 
 @Component({
   selector: 'app-product-card',
@@ -17,10 +18,10 @@ export class ProductCardComponent {
 
   isAdminViewing: boolean = false;
 
-  @Input({ required: true }) article!: Article;
+  @Input({ required: true }) article!: iArticle;
   @Input() showActions = false;
-  @Output() editClicked = new EventEmitter<Article>();
-  @Output() deleteClicked = new EventEmitter<Article>();
+  @Output() editClicked = new EventEmitter<iArticle>();
+  @Output() deleteClicked = new EventEmitter<iArticle>();
   private router = inject(Router);
 
   ngOnInit() {
@@ -48,7 +49,7 @@ export class ProductCardComponent {
     return this.article.estadoVenta === 'VENDIDO';
   }
 
-  viewArticle(article: Article) {
+  viewArticle(article: iArticle) {
     console.log('Ver artículo:', this.article.id);
     this.router.navigate(['/article-detail', this.article.id]);
   }
