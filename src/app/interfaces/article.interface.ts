@@ -18,4 +18,8 @@ export interface iArticle {
     nombre?: string;
     apellidos?: string;
   };
+  // AÑADIDO PARA COMPATIBILIDAD CON Article
+  ubicacion: string;
+  foto?: string;
+
 }

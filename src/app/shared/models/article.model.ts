@@ -10,4 +10,5 @@ export interface Article {
   imagen?: string;
   estadoVenta?: 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO' | 'EN_REVISION' | 'RETIRADO';
   estado_reporte?: number | null;
+  foto?: string;    // lo que devuelve el backend
 }
