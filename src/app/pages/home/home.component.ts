@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { Article } from '../../shared/models/article.model';
+import { iArticle } from '../../interfaces/article.interface';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
 import { FilterHomeService } from '../../services/filterHome.service';
 
@@ -17,16 +17,7 @@ export class HomeComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private filterHomeService = inject(FilterHomeService);
 
-  // Signals expuestos al HTML
-  filters = this.filterHomeService.filters;
-  categories = this.filterHomeService.categories;
-
-  // Artículos mostrados en pantalla
-  results = signal<Article[]>([]);
-
-  // Artículos originales (carga inicial)
-  allArticles = signal<Article[]>([]);
-
+  allArticles = signal<iArticle[]>([]);
   categoriaIds = signal<number[] | null>(null);
   tituloCategoria = signal<string | null>(null);
   loading = signal(true);
@@ -49,23 +40,30 @@ export class HomeComponent implements OnInit {
     // CARGA INICIAL — ESTO ES LO QUE SE VE AL ENTRAR
     this.http.get<{ status: string; data: any[] }>('http://localhost:3000/api/articles').subscribe({
       next: (resp) => {
-        const mapped = resp.data.map(a => ({
-          id: Number(a.id),
-          titulo: a.titulo,
-          descripcion: a.descripcion,
-          precio: a.precio,
-          ubicacion: '',
-          categorias_id: a.categorias_id,
-          categoria_nombre: a.categoria_nombre ?? '',
-          usuarios_id: a.usuarios_id,
-          imagen: a.foto ?? '',
-          estadoVenta: a.estadoVenta,
-          estado_reporte: a.estado_reporte,
-        }));
-
-        this.allArticles.set(mapped);
-        this.results.set(mapped);   // ← ESTO ES LO QUE VE EL HTML
-
+        this.allArticles.set(resp.data.map(a => ({
+          id: String(a.id),
+          titulo: String(a.titulo ?? ''),
+          descripcion: String(a.descripcion ?? ''),
+          precio: Number(a.precio ?? 0),
+          categorias_id: Number(a.categorias_id ?? 0),
+          categoria_nombre: a.categoria_nombre ? String(a.categoria_nombre) : '',
+          usuarios_id: Number(a.usuarios_id ?? 0),
+          image: a.image ?? a.foto ?? null,
+          fotos: Array.isArray(a.fotos)
+            ? a.fotos
+                .filter((foto: any) => foto && typeof foto.url === 'string' && foto.url.trim())
+                .map((foto: any) => ({
+                  url: String(foto.url).trim(),
+                  nombreAlt: String(foto.nombreAlt ?? ''),
+                }))
+            : undefined,
+          estadoVenta: String(a.estadoVenta ?? 'DISPONIBLE'),
+          estadoProducto: a.estadoProducto ? String(a.estadoProducto) : undefined,
+          tipoEntrega: String(a.tipoEntrega ?? ''),
+          tipoPago: String(a.tipoPago ?? ''),
+          created_at: a.created_at ? new Date(a.created_at) : new Date(),
+          estado_reporte: a.estado_reporte != null ? Number(a.estado_reporte) : null,
+        })));
         this.loading.set(false);
       },
       error: () => {

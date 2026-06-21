@@ -1,10 +1,12 @@
-import { ChangeDetectorRef, Component, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../services/article.service';
 import { ModerationService } from '../../services/moderation.service';
 import { AuthService } from '../../services/auth.service';
 import { DetailSeller } from "../../shared/detail-seller/detail-seller";
+import { iArticle } from '../../interfaces/article.interface';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-article-detail-component',
@@ -15,18 +17,23 @@ import { DetailSeller } from "../../shared/detail-seller/detail-seller";
 export class ArticleDetailComponent {
   modalOpen = false;
   selectedImage: string | null = null;
-  article = signal<any | null>(null);
+  article = signal<iArticle | null>(null);
   private route = inject(ActivatedRoute);
   private articlesService = inject(ArticleService);
   private authService = inject(AuthService);
   private router = inject(Router);
   private moderationService = inject(ModerationService);
+  private sanitizer = inject(DomSanitizer);
 
   mostrarModalReporte = signal(false);
   motivoReporte = signal('');
   enviandoReporte = signal(false);
   mensajeReporte = signal('');
   reportado = signal(false);
+  galleryImages = computed(() => {
+    const currentArticle = this.article();
+    return currentArticle ? this.articlesService.getArticleImageUrls(currentArticle) : [];
+  });
 
   constructor() {
     effect(() => {
@@ -62,7 +69,7 @@ export class ArticleDetailComponent {
     if (!articulo) return;
 
     this.enviandoReporte.set(true);
-    this.moderationService.reportArticle(articulo.id, this.motivoReporte().trim(), usuarioId).subscribe({
+    this.moderationService.reportArticle(Number(articulo.id), this.motivoReporte().trim(), usuarioId).subscribe({
       next: () => {
         this.reportado.set(true);
         this.mensajeReporte.set('Artículo reportado. Quedará en revisión por un moderador.');
@@ -89,7 +96,7 @@ export class ArticleDetailComponent {
   async getArticleData(id: string) {
     this.articlesService.getArticleById(id).subscribe({
       next: (data) => {
-        this.article.set(data);
+        this.article.set(data ?? null);
 
       },
       error: (err) => {
@@ -116,6 +123,22 @@ export class ArticleDetailComponent {
   closeModal() {
     this.modalOpen = false;
     this.selectedImage = null;
+  }
+
+  onImageError(event: Event): void {
+    const target = event.target as HTMLImageElement | null;
+    if (!target) return;
+
+    if (!target.src.endsWith('/images/placeholder_articulo.png')) {
+      target.src = '/images/placeholder_articulo.png';
+    }
+  }
+
+  getSafeImageUrl(url: string | null | undefined): string | SafeUrl {
+    const value = url ?? '/images/placeholder_articulo.png';
+    return value.startsWith('data:image/')
+      ? this.sanitizer.bypassSecurityTrustUrl(value)
+      : value;
   }
 
 }
