@@ -53,26 +53,32 @@ export const routes: Routes = [
   { path: 'article-form', component: ArticleFormComponent, canActivate: [authGuard] },
   { path: 'article-form/:id', component: ArticleFormComponent, canActivate: [authGuard] },
   { path: 'article-detail/:id', component: ArticleDetailComponent },
-  { path: 'admin', 
-    component: AdminLayoutComponent, 
-    canActivate: [roleGuard(['ADMIN'])], 
+  {
+    path: 'admin',
+    component: AdminLayoutComponent,
+    canActivate: [roleGuard(['ADMIN'])],
     children: [
-      { path: 'dashboard', component: AdminDashboardComponent},
+      { path: 'dashboard', component: AdminDashboardComponent },
       { path: 'users', component: AdminUserManagementComponent },
       { path: 'categories', component: AdminCategoryManagementComponent },
 
       // 👇 ESTA LÍNEA HACE QUE USERS SE CARGUE POR DEFECTO
       { path: '', redirectTo: 'users', pathMatch: 'full' },
       // prueba para editar usuario desde admin
-      { 
-        path: 'users/editar/:id', 
-        component: UserPageEditComponent 
+      {
+        path: 'users/info/:id',
+        component: UserPageInfoComponent
       },
+      {
+        path: 'users/editar/:id',
+        component: UserPageEditComponent
+      },
+
 
     ]
   },
 
-  // Directorios sección Moderación
+    // Directorios sección Moderación
   { path: 'moderation', 
     component: ModerationComponent,
     children: [
@@ -84,9 +90,6 @@ export const routes: Routes = [
     ]
   },
 
-
- 
-  
 
   // A medida que se vayan creando los componentes de cada página, se irán añadiendo aquí con su correspondiente path y guard si es necesario
   //Habrá incluso rutas para cada rol, por ejemplo, /admin, /moderador, /usuario, etc. y se protegerán con el guard correspondiente para cada rol

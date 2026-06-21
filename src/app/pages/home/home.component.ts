@@ -1,10 +1,10 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { iArticle } from '../../interfaces/article.interface';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
 import { FilterHomeService } from '../../services/filterHome.service';
+import { ArticleService } from '../../services/article.service';
+import { iArticle } from '../../interfaces/article.interface';
 
 @Component({
   selector: 'app-home',
@@ -13,9 +13,9 @@ import { FilterHomeService } from '../../services/filterHome.service';
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit {
-  private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
   private filterHomeService = inject(FilterHomeService);
+  private articleService = inject(ArticleService);
 
   allArticles = signal<iArticle[]>([]);
   categoriaIds = signal<number[] | null>(null);
@@ -34,79 +34,36 @@ export class HomeComponent implements OnInit {
       : this.allArticles();
   });
 
-hasActiveFilters = computed(() => {
-  const f = this.filters();
-
-  return !!(
-    (f.texto && f.texto.trim() !== '') ||
-    (f.categoria && f.categoria !== '') ||
-    (f.estado && f.estado !== '') ||
-    (f.min && f.min !== '') ||
-    (f.max && f.max !== '') ||
-    (f.localizacion && f.localizacion.trim() !== '') ||
-    // OJO: orden solo cuenta si NO es el valor por defecto
-    (f.orden && f.orden !== 'recientes')
-  );
-});
-
-
-ngOnInit(): void {
-
-  // 1) Escuchar cambios en la URL (categorías del header)
-  this.route.queryParamMap.subscribe(params => {
-    const cat = params.get('categoria');
-    this.categoriaIds.set(cat ? cat.split(',').map(Number) : null);
-    this.tituloCategoria.set(params.get('nombre'));
-
-    // Si ya hay artículos cargados, actualizamos results()
-    if (this.allArticles().length > 0) {
-      this.results.set(this.articles());
-    }
+  hasActiveFilters = computed(() => {
+    const f = this.filters();
+    return !!(
+      (f.texto && f.texto.trim() !== '') ||
+      (f.categoria && f.categoria !== '') ||
+      (f.estado && f.estado !== '') ||
+      (f.min && f.min !== '') ||
+      (f.max && f.max !== '') ||
+      (f.localizacion && f.localizacion.trim() !== '') ||
+      (f.orden && f.orden !== 'recientes')
+    );
   });
 
-  // 2) CARGA INICIAL
-  this.http.get<{ status: string; data: any[] }>('http://localhost:3000/api/articles')
-    .subscribe({
-      next: (resp) => {
+  ngOnInit(): void {
+    // 1) Escuchar cambios en la URL
+    this.route.queryParamMap.subscribe(params => {
+      const cat = params.get('categoria');
+      this.categoriaIds.set(cat ? cat.split(',').map(Number) : null);
+      this.tituloCategoria.set(params.get('nombre'));
 
-        this.allArticles.set(resp.data.map(a => ({
-          id: String(a.id),
-          titulo: String(a.titulo ?? ''),
-          descripcion: String(a.descripcion ?? ''),
-          precio: Number(a.precio ?? 0),
-          ubicacion: String(a.ubicacion ?? ''),
-          categorias_id: Number(a.categorias_id ?? 0),
-          categoria_nombre: String(a.categoria_nombre ?? ''),
-          usuarios_id: Number(a.usuarios_id ?? 0),
-
-          image: a.image ?? a.foto ?? null,
-
-          fotos: Array.isArray(a.fotos)
-            ? a.fotos
-                .filter((foto: any) => foto && typeof foto.url === 'string' && foto.url.trim())
-                .map((foto: any) => ({
-                  url: String(foto.url).trim(),
-                  nombreAlt: String(foto.nombreAlt ?? ''),
-                }))
-            : undefined,
-
-          estadoVenta: String(a.estadoVenta ?? 'DISPONIBLE')
-            .toUpperCase()
-            .trim() as iArticle['estadoVenta'],
-
-          estadoProducto: a.estadoProducto ? String(a.estadoProducto) : undefined,
-
-          tipoEntrega: String(a.tipoEntrega ?? ''),
-          tipoPago: String(a.tipoPago ?? ''),
-
-          created_at: a.created_at ? new Date(a.created_at) : new Date(),
-
-          estado_reporte: a.estado_reporte != null ? Number(a.estado_reporte) : null,
-        })));
-
-        // 3) Aplicar categoría del header si existe
+      if (this.allArticles().length > 0) {
         this.results.set(this.articles());
+      }
+    });
 
+    // CARGA INICIAL (Ahora utilizando tu servicio)
+    this.articleService.getAllPublicArticles().subscribe({
+      next: (articulosMapeados) => {
+        this.allArticles.set(articulosMapeados);
+        this.results.set(this.articles());
         this.loading.set(false);
       },
       error: () => {
@@ -115,13 +72,11 @@ ngOnInit(): void {
       }
     });
 
-  this.filterHomeService.loadCategories();
-}
-
-
+    this.filterHomeService.loadCategories();
+  }
 
   addNewArticle() {
-    alert('Crear nuevo artículo\n(Placeholder - Vista de creación aún no implementada)');
+    alert('Crear nuevo artículo\n(Placeholder)');
   }
 
   // ============================================================
@@ -169,46 +124,23 @@ ngOnInit(): void {
   }
 
   // ============================================================
-  //   LLAMADA CENTRAL AL BACKEND (solo cuando hay filtros)
+  //   LLAMADA CENTRAL AL BUSCADOR
   // ============================================================
-
   private executeSearch() {
     this.loading.set(true);
 
     this.filterHomeService.searchArticles().subscribe({
       next: (resp) => {
-        const mapped: iArticle[] = resp.data.map(a => ({
-          id: String(a.id),
-          titulo: String(a.titulo ?? ''),
-          descripcion: String(a.descripcion ?? ''),
-          precio: Number(a.precio ?? 0),
-          ubicacion: String(a.ubicacion ?? ''),
-          categorias_id: Number(a.categorias_id ?? 0),
-          categoria_nombre: String(a.categoria_nombre ?? ''),
-          usuarios_id: Number(a.usuarios_id ?? 0),
-          image: a.image ?? a.foto ?? null,
-          fotos: Array.isArray(a.fotos)
-            ? a.fotos
-                .filter((foto: any) => foto && typeof foto.url === 'string' && foto.url.trim())
-                .map((foto: any) => ({
-                  url: String(foto.url).trim(),
-                  nombreAlt: String(foto.nombreAlt ?? ''),
-                }))
-            : undefined,
-          estadoVenta: String(a.estadoVenta ?? 'DISPONIBLE').toUpperCase().trim() as iArticle['estadoVenta'],
-          estadoProducto: a.estadoProducto ? String(a.estadoProducto) : undefined,
-          tipoEntrega: String(a.tipoEntrega ?? ''),
-          tipoPago: String(a.tipoPago ?? ''),
-          created_at: a.created_at ? new Date(a.created_at) : new Date(),
-          estado_reporte: a.estado_reporte != null ? Number(a.estado_reporte) : null,
-        }));
+        // Hacemos que pase por tu mapeador centralizado del ArticleService
+        // Nota: Si pasas esto directamente al FilterHomeService mediante RxJS, esta función se reduce a 3 líneas.
+        const mapped = Array.isArray(resp?.data)
+          ? resp.data.map((a: any) => (this.articleService as any).mapRawArticleToIArticle(a)).filter(Boolean)
+          : [];
 
         this.results.set(mapped);
         this.loading.set(false);
       },
-      error: () => {
-        this.loading.set(false);
-      }
+      error: () => this.loading.set(false)
     });
   }
 }
