@@ -1,10 +1,9 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { AuthService } from '../../../services/auth.service';
 import { iArticle } from '../../../interfaces/article.interface';
-import { Article } from '../../../shared/models/article.model';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 
 @Component({
@@ -17,6 +16,7 @@ export class UserPageSell implements OnInit {
   private articleService = inject(ArticleService);
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   articles = this.articleService.Articles;
 
@@ -47,20 +47,7 @@ export class UserPageSell implements OnInit {
     return this.filteredArticles().slice(start, start + this.pageSize);
   });
 
-  currentPageArticles = computed<Article[]>(() =>
-    this.currentPageRawArticles().map(a => ({
-      id: Number(a.id),
-      titulo: a.titulo,
-      descripcion: a.descripcion,
-      precio: a.precio,
-      ubicacion: '',
-      categorias_id: a.categorias_id,
-      usuarios_id: a.usuarios_id,
-      imagen: a.image ?? undefined,
-      estadoVenta: a.estadoVenta as Article['estadoVenta'],
-      estado_reporte: a.estado_reporte ?? null,
-    }))
-  );
+  currentPageArticles = computed<iArticle[]>(() => this.currentPageRawArticles());
 
   ngOnInit(): void {
     this.loadArticles();
@@ -105,25 +92,26 @@ export class UserPageSell implements OnInit {
     this.currentPage.set(page);
   }
 
-  onEdit(article: Article): void {
-    const original = this.articles().find((a: iArticle) => a.id === String(article.id));
-    if (original) {
-      alert(`Editar artículo: ${original.titulo}\n(Placeholder - Vista de edición aún no implementada)`);
-    }
+  onEdit(article: iArticle): void {
+    const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
+    const userId = routeUserId ?? this.authService.getUserId();
+    void this.router.navigate(['/article-form', article.id], { queryParams: { userId } });
   }
 
-  onDelete(article: Article): void {
-    const original = this.articles().find((a: iArticle) => a.id === String(article.id));
-    if (!original) return;
-    const confirmed = confirm(`¿Está seguro de que desea eliminar "${original.titulo}"? Esta acción no se puede deshacer.`);
+  onDelete(article: iArticle): void {
+    const confirmed = confirm(`¿Está seguro de que desea eliminar "${article.titulo}"? Esta acción no se puede deshacer.`);
     if (confirmed) {
-      this.articleService.deleteArticle(original.id);
-      this.currentPage.set(Math.min(this.currentPage(), this.pageCount()));
+      this.articleService.deleteArticle(article.id).subscribe({
+        next: () => this.currentPage.set(Math.min(this.currentPage(), this.pageCount())),
+        error: (error) => console.error('Error al eliminar artículo:', error),
+      });
     }
   }
 
   addNewArticle() {
-    alert('Crear nuevo artículo\n(Placeholder - Vista de creación aún no implementada)');
+    const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
+    const userId = routeUserId ?? this.authService.getUserId();
+    void this.router.navigate(['/article-form'], { queryParams: { userId } });
   }
 
   getFilterCount(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'): number {

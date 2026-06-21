@@ -1,5 +1,3 @@
-import { StreamingResourceOptions } from "@angular/core";
-
 export interface iArticle {
   id: string;
   titulo: string;
@@ -12,6 +10,12 @@ export interface iArticle {
   created_at: Date;
   usuarios_id: number;
   categorias_id: number;
+  categoria_nombre?: string;
   image: string | null;
+  fotos?: Array<{ url: string; nombreAlt: string }>;
   estado_reporte?: number | null;
+  seller?: {
+    nombre?: string;
+    apellidos?: string;
+  };
 }
