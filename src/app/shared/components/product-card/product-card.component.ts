@@ -20,8 +20,8 @@ export class ProductCardComponent {
 
   @Input({ required: true }) article!: iArticle;
   @Input() showActions = false;
-  @Output() editClicked = new EventEmitter<iArticle>();
-  @Output() deleteClicked = new EventEmitter<iArticle>();
+  @Output() editClicked = new EventEmitter<Article>();
+  @Output() deleteClicked = new EventEmitter<Article>();
   private router = inject(Router);
 
   ngOnInit() {
