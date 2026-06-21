@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { AuthService } from '../../../services/auth.service';
 import { iArticle } from '../../../interfaces/article.interface';
-import { Article } from '../../../shared/models/article.model';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 
 @Component({
@@ -45,21 +44,7 @@ export class UserPageSell implements OnInit {
     return this.filteredArticles().slice(start, start + this.pageSize);
   });
 
-  currentPageArticles = computed<Article[]>(() =>
-    this.currentPageRawArticles().map(a => ({
-      id: Number(a.id),
-      titulo: a.titulo,
-      descripcion: a.descripcion,
-      precio: a.precio,
-      ubicacion: '',
-      categorias_id: a.categorias_id,
-      categoria_nombre: a.categoria_nombre,
-      usuarios_id: a.usuarios_id,
-      imagen: this.normalizeImagePath(a.image) ?? undefined,
-      estadoVenta: a.estadoVenta as Article['estadoVenta'],
-      estado_reporte: a.estado_reporte ?? null,
-    }))
-  );
+  currentPageArticles = computed<iArticle[]>(() => this.currentPageRawArticles());
 
   ngOnInit(): void {
     this.loadArticles();
@@ -89,21 +74,16 @@ export class UserPageSell implements OnInit {
     this.currentPage.set(page);
   }
 
-  onEdit(article: Article): void {
-    const original = this.articles().find((a: iArticle) => a.id === String(article.id));
-    if (original) {
-      const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
-      const userId = routeUserId ?? this.authService.getUserId();
-      void this.router.navigate(['/article-form', original.id], { queryParams: { userId } });
-    }
+  onEdit(article: iArticle): void {
+    const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
+    const userId = routeUserId ?? this.authService.getUserId();
+    void this.router.navigate(['/article-form', article.id], { queryParams: { userId } });
   }
 
-  onDelete(article: Article): void {
-    const original = this.articles().find((a: iArticle) => a.id === String(article.id));
-    if (!original) return;
-    const confirmed = confirm(`¿Está seguro de que desea eliminar "${original.titulo}"? Esta acción no se puede deshacer.`);
+  onDelete(article: iArticle): void {
+    const confirmed = confirm(`¿Está seguro de que desea eliminar "${article.titulo}"? Esta acción no se puede deshacer.`);
     if (confirmed) {
-      this.articleService.deleteArticle(original.id).subscribe({
+      this.articleService.deleteArticle(article.id).subscribe({
         next: () => this.currentPage.set(Math.min(this.currentPage(), this.pageCount())),
         error: (error) => console.error('Error al eliminar artículo:', error),
       });
@@ -120,18 +100,5 @@ export class UserPageSell implements OnInit {
     const all = this.articles();
     if (filter === 'all') return all.length;
     return all.filter(a => a.estadoVenta === filter).length;
-  }
-
-  private normalizeImagePath(value: unknown): string | null {
-    if (typeof value !== 'string') {
-      return null;
-    }
-
-    const trimmed = value.trim();
-    if (!trimmed || trimmed === 'undefined' || trimmed === 'null') {
-      return null;
-    }
-
-    return trimmed;
   }
 }

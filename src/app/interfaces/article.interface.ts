@@ -12,5 +12,10 @@ export interface iArticle {
   categorias_id: number;
   categoria_nombre?: string;
   image: string | null;
+  fotos?: Array<{ url: string; nombreAlt: string }>;
   estado_reporte?: number | null;
+  seller?: {
+    nombre?: string;
+    apellidos?: string;
+  };
 }

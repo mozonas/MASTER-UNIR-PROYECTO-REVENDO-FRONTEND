@@ -28,6 +28,7 @@ export interface ArticleEnumsPayload {
 export class ArticleService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:3000/api';
+  private backendUrl = 'http://localhost:3000';
 
   Articles = signal<iArticle[]>([]);
 
@@ -76,7 +77,39 @@ export class ArticleService {
   }
 
   deleteArticle(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/user-sell/${id}`);
+    return this.http.delete<any>(`${this.apiUrl}/user-sell/${id}`).pipe(
+      tap(() => {
+        this.Articles.update((articles) => articles.filter((article) => article.id !== id));
+      })
+    );
+  }
+
+  findLoadedArticleById(id: number | string): iArticle | undefined {
+    return this.Articles().find((article) => article.id === String(id));
+  }
+
+  getArticleImageUrls(article: Pick<iArticle, 'image' | 'fotos'>): string[] {
+    const primary = this.resolveImageUrl(article.image, '');
+    const gallery = (article.fotos ?? [])
+      .map((foto) => this.resolveImageUrl(foto.url, ''))
+      .filter((url): url is string => !!url);
+
+    const candidates = [...gallery, primary].filter((url): url is string => !!url);
+    return [...new Set(candidates)];
+  }
+
+  resolveImageUrl(value: unknown, fallback: string = '/images/placeholder_articulo.png'): string {
+    const normalized = this.normalizeImagePath(value);
+    if (!normalized) {
+      return fallback;
+    }
+
+    if (/^(https?:)?\/\//i.test(normalized) || normalized.startsWith('data:')) {
+      return normalized;
+    }
+
+    const relativePath = normalized.startsWith('/') ? normalized : `/${normalized}`;
+    return `${this.backendUrl}${relativePath}`;
   }
 
   getArticleEnums(): Observable<ArticleEnumsPayload> {
@@ -134,8 +167,48 @@ export class ArticleService {
       usuarios_id: Number(articulo.usuarios_id ?? 0),
       categorias_id: Number(articulo.categorias_id ?? 0),
       categoria_nombre: articulo.categoria_nombre ? String(articulo.categoria_nombre) : (articulo.categoria ? String(articulo.categoria) : undefined),
-      image: articulo.image ?? articulo.foto ?? articulo.url ?? null,
-      estado_reporte: articulo.estado_reporte != null ? Number(articulo.estado_reporte) : null
+      image: this.normalizeImagePath(articulo.image ?? articulo.foto ?? articulo.url),
+      fotos: Array.isArray(articulo.fotos)
+        ? articulo.fotos
+            .filter((foto: any) => foto && typeof foto.url === 'string' && foto.url.trim())
+            .map((foto: any) => ({
+              url: String(foto.url).trim(),
+              nombreAlt: String(foto.nombreAlt ?? ''),
+            }))
+        : undefined,
+      estado_reporte: articulo.estado_reporte != null ? Number(articulo.estado_reporte) : null,
+      seller: articulo.seller && typeof articulo.seller === 'object'
+        ? {
+            nombre: articulo.seller.nombre ? String(articulo.seller.nombre) : undefined,
+            apellidos: articulo.seller.apellidos ? String(articulo.seller.apellidos) : undefined,
+          }
+        : undefined,
     } as iArticle;
+  }
+
+  private normalizeImagePath(value: unknown): string | null {
+    if (typeof value !== 'string') {
+      return null;
+    }
+
+    let trimmed = value.trim();
+    if (!trimmed || trimmed === 'undefined' || trimmed === 'null') {
+      return null;
+    }
+
+    trimmed = trimmed.replace(/^\|+/, '');
+    trimmed = trimmed.replace(/^['"]+|['"]+$/g, '');
+    trimmed = trimmed.replace(/\\/g, '/');
+    trimmed = trimmed.replace(/^(https?:\/\/)(https?:\/\/)+/i, '$1');
+
+    if (trimmed.startsWith('//')) {
+      trimmed = `https:${trimmed}`;
+    }
+
+    if (trimmed.startsWith('www.')) {
+      trimmed = `https://${trimmed}`;
+    }
+
+    return trimmed;
   }
 }

@@ -123,6 +123,7 @@ export class ArticleFormComponent implements OnInit {
                                 if (!article) {
                                         return;
                                 }
+                                const imageUrls = article.fotos?.map((foto) => foto.url).slice(0, 5) ?? [];
                                 this.articleForm.patchValue({
                                         titulo: article.titulo,
                                         descripcion: article.descripcion,
@@ -131,11 +132,11 @@ export class ArticleFormComponent implements OnInit {
                                         tipoEntrega: article.tipoEntrega,
                                         tipoPago: article.tipoPago,
                                         categorias_id: article.categorias_id ?? '',
-                                        image1: article.image ?? '',
-                                        image2: '',
-                                        image3: '',
-                                        image4: '',
-                                        image5: '',
+                                        image1: imageUrls[0] ?? article.image ?? '',
+                                        image2: imageUrls[1] ?? '',
+                                        image3: imageUrls[2] ?? '',
+                                        image4: imageUrls[3] ?? '',
+                                        image5: imageUrls[4] ?? '',
                                         usuarios_id: article.usuarios_id ?? null,
                                 });
                         },
