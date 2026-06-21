@@ -16,6 +16,7 @@
   background-color: #8cd86a;
   color: #fff;
   border: none;
+  z-index: 10;
 }
 .sidebar,
 #sidebarMenu,

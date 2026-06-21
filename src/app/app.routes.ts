@@ -40,6 +40,7 @@ import { roleGuard } from './guards/role.guard';
 
 //17062026 mog componente error404
 import { Error404Component } from './pages/error-404/error-404';
+import { AdminActivityComponent } from './pages/admin/admin-activity/admin-activity.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'welcome' },
@@ -61,7 +62,7 @@ export const routes: Routes = [
       { path: 'dashboard', component: AdminDashboardComponent },
       { path: 'users', component: AdminUserManagementComponent },
       { path: 'categories', component: AdminCategoryManagementComponent },
-
+      { path: 'activity/:range', component: AdminActivityComponent },
       // 👇 ESTA LÍNEA HACE QUE USERS SE CARGUE POR DEFECTO
       { path: '', redirectTo: 'users', pathMatch: 'full' },
       // prueba para editar usuario desde admin
