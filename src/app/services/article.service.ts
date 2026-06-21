@@ -83,6 +83,7 @@ export class ArticleService {
     image: articulo.foto ?? null,
     estado_reporte: articulo.estado_reporte != null ? Number(articulo.estado_reporte) : null,
     ubicacion:''
+    
   };
 }
 

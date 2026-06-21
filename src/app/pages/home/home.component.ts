@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Article } from '../../shared/models/article.model';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
-import { FilterService } from '../../services/filterHome.service';
+import { FilterHomeService } from '../../services/filterHome.service';
 
 @Component({
   selector: 'app-home',
@@ -15,11 +15,11 @@ import { FilterService } from '../../services/filterHome.service';
 export class HomeComponent implements OnInit {
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
-  private filterService = inject(FilterService);
+  private filterHomeService = inject(FilterHomeService);
 
   // Signals expuestos al HTML
-  filters = this.filterService.filters;
-  categories = this.filterService.categories;
+  filters = this.filterHomeService.filters;
+  categories = this.filterHomeService.categories;
 
   // Artículos mostrados en pantalla
   results = signal<Article[]>([]);
@@ -74,12 +74,10 @@ export class HomeComponent implements OnInit {
       }
     });
 
-    this.filterService.loadCategories();
+    this.filterHomeService.loadCategories();
 
-    // ❌ IMPORTANTE: NO LLAMAR A executeSearch() AQUÍ
   }
 
-  // 🔥 MÉTODO ORIGINAL QUE FALTABA
   addNewArticle() {
     alert('Crear nuevo artículo\n(Placeholder - Vista de creación aún no implementada)');
   }
@@ -89,42 +87,42 @@ export class HomeComponent implements OnInit {
   // ============================================================
 
   onSearchTextChange(value: string) {
-    this.filterService.updateFilter('texto', value);
+    this.filterHomeService.updateFilter('texto', value);
     this.executeSearch();
   }
 
   onCategoryChange(value: string) {
-    this.filterService.updateFilter('categoria', value);
+    this.filterHomeService.updateFilter('categoria', value);
     this.executeSearch();
   }
 
   onEstadoChange(value: string) {
-    this.filterService.updateFilter('estado', value);
+    this.filterHomeService.updateFilter('estado', value);
     this.executeSearch();
   }
 
   onMinPriceChange(value: string) {
-    this.filterService.updateFilter('min', value);
+    this.filterHomeService.updateFilter('min', value);
     this.executeSearch();
   }
 
   onMaxPriceChange(value: string) {
-    this.filterService.updateFilter('max', value);
+    this.filterHomeService.updateFilter('max', value);
     this.executeSearch();
   }
 
   onOrdenChange(value: string) {
-    this.filterService.updateFilter('orden', value);
+    this.filterHomeService.updateFilter('orden', value);
     this.executeSearch();
   }
 
   onLocationChange(value: string) {
-    this.filterService.updateFilter('localizacion', value);
+    this.filterHomeService.updateFilter('localizacion', value);
     this.executeSearch();
   }
 
   resetFilters() {
-    this.filterService.resetFilters();
+    this.filterHomeService.resetFilters();
     this.results.set(this.allArticles());   // ← VUELVE AL ESTADO INICIAL
   }
 
@@ -135,7 +133,7 @@ export class HomeComponent implements OnInit {
   private executeSearch() {
     this.loading.set(true);
 
-    this.filterService.searchArticles().subscribe({
+    this.filterHomeService.searchArticles().subscribe({
       next: (resp) => {
 
         const mapped: Article[] = resp.data.map(a => ({
@@ -147,7 +145,7 @@ export class HomeComponent implements OnInit {
           categorias_id: a.categorias_id,
           categoria_nombre: '',
           usuarios_id: a.usuarios_id,
-          imagen: a.image ?? '',
+          imagen: a.foto ?? '',
           estadoVenta: (a.estadoVenta as string).toUpperCase().trim() as Article['estadoVenta'],
           estado_reporte: a.estado_reporte
         }));

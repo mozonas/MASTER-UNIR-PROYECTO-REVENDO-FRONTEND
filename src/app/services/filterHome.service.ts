@@ -6,7 +6,7 @@ import { iArticle } from '../interfaces/article.interface';
 @Injectable({
   providedIn: 'root'
 })
-export class FilterService {
+export class FilterHomeService {
 
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:3000/api';
@@ -62,15 +62,16 @@ export class FilterService {
   // ============================
   searchArticles(): Observable<{ status: string; data: iArticle[] }> {
     const f = this.filters();
-    let params = new HttpParams();
 
-    if (f.texto) params = params.set('texto', f.texto);
-    if (f.categoria) params = params.set('categoria', f.categoria);
-    if (f.estado) params = params.set('estado', f.estado);
-    if (f.min) params = params.set('min', f.min);
-    if (f.max) params = params.set('max', f.max);
-    if (f.orden) params = params.set('orden', f.orden);
-    if (f.localizacion) params = params.set('localizacion', f.localizacion);
+    let params = new HttpParams()
+    .set('texto', f.texto ?? '')
+    .set('categoria', f.categoria ?? '')
+    .set('estado', f.estado ?? '')
+    .set('min', f.min ?? '')
+    .set('max', f.max ?? '')
+    .set('orden', f.orden ?? '')
+    .set('localizacion', f.localizacion ?? '');
+
 
     return this.http.get<{ status: string; data: iArticle[] }>(
       `${this.apiUrl}/filters/search`,
