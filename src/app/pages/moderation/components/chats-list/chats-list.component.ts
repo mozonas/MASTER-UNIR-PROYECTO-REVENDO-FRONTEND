@@ -41,6 +41,10 @@ export class ChatsListComponent implements OnInit {
   goToDetail(reportId: number): void {
     this.router.navigate(['/moderation/chat/detalle', reportId]);
   }
+
+  volverAlPanel(): void {
+  this.router.navigate(['/moderation/panel']);
+  }
 }
 
 
