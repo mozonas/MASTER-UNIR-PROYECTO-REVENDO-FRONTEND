@@ -22,7 +22,7 @@
 .col-resolucion { width: 14%; }
 .col-articulo { width: 24%; }
 .col-motivo { width: 28%; }
-.col-acciones { width: 10%; }
+/* .col-acciones { width: 10%; } */
 
 .col-text-notes { 
   max-width: 320px; 

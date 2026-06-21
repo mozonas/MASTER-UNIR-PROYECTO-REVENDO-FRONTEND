@@ -2,13 +2,13 @@
 import { Component, Input, Output, EventEmitter, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatReport } from '../../../../interfaces/moderation.interface';
-import { ActionButtonComponent } from '../../../../shared/buttons/action-button/action-button.component';
+// import { ActionButtonComponent } from '../../../../shared/buttons/action-button/action-button.component';
 import { PaginationButtonsComponent } from '../../../../shared/buttons/pagination-buttons/pagination-buttons.component';
 
 @Component({
   selector: 'app-chats-history-table',
   standalone: true,
-  imports: [CommonModule, ActionButtonComponent, PaginationButtonsComponent],
+  imports: [CommonModule, PaginationButtonsComponent],
   templateUrl: './chats-history-table.component.html',
   styleUrl: './chats-history-table.component.css'
 })
@@ -20,7 +20,7 @@ export class ChatsHistoryTableComponent {
     this.historyPage.set(1);
   }
 
-  @Output() viewDetail = new EventEmitter<number>();
+  // @Output() viewDetail = new EventEmitter<number>();
 
   historyPage = signal<number>(1);
   itemsPerPage = 5;

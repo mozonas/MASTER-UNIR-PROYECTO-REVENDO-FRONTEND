@@ -40,4 +40,8 @@ export class ArticlesListComponent implements OnInit {
   goToDetail(reportId: number): void {
     this.router.navigate(['/moderation/articulos/detalle', reportId]);
   }
+
+  volverAlPanel(): void {
+  this.router.navigate(['/moderation/panel']);
+  }
 }
