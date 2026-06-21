@@ -62,7 +62,7 @@ export class LoginComponent {
           break;
         //redireccionar al dashboard de moderador
         case 'MODERADOR':
-          this.router.navigate(['/moderador']);
+          this.router.navigate(['/moderation/panel']); //VCB - ruta modificada para redirigir a la pantalla principal de moderacion
           break;
         //redireccionar a la página de usuario que se decida, yo lo redireccionaría al listado de productos a vender
         default:
