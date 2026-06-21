@@ -23,6 +23,10 @@ export class HomeComponent implements OnInit {
   loading = signal(true);
   error = signal(false);
 
+  filters = this.filterHomeService.filters;
+  categories = this.filterHomeService.categories;
+  results = signal<iArticle[]>([]);
+
   articles = computed(() => {
     const ids = this.categoriaIds();
     return ids && ids.length
@@ -30,25 +34,53 @@ export class HomeComponent implements OnInit {
       : this.allArticles();
   });
 
-  ngOnInit(): void {
-    this.route.queryParamMap.subscribe(params => {
-      const cat = params.get('categoria');
-      this.categoriaIds.set(cat ? cat.split(',').map(Number) : null);
-      this.tituloCategoria.set(params.get('nombre'));
-    });
+hasActiveFilters = computed(() => {
+  const f = this.filters();
 
-    // CARGA INICIAL — ESTO ES LO QUE SE VE AL ENTRAR
-    this.http.get<{ status: string; data: any[] }>('http://localhost:3000/api/articles').subscribe({
+  return !!(
+    (f.texto && f.texto.trim() !== '') ||
+    (f.categoria && f.categoria !== '') ||
+    (f.estado && f.estado !== '') ||
+    (f.min && f.min !== '') ||
+    (f.max && f.max !== '') ||
+    (f.localizacion && f.localizacion.trim() !== '') ||
+    // OJO: orden solo cuenta si NO es el valor por defecto
+    (f.orden && f.orden !== 'recientes')
+  );
+});
+
+
+ngOnInit(): void {
+
+  // 1) Escuchar cambios en la URL (categorías del header)
+  this.route.queryParamMap.subscribe(params => {
+    const cat = params.get('categoria');
+    this.categoriaIds.set(cat ? cat.split(',').map(Number) : null);
+    this.tituloCategoria.set(params.get('nombre'));
+
+    // Si ya hay artículos cargados, actualizamos results()
+    if (this.allArticles().length > 0) {
+      this.results.set(this.articles());
+    }
+  });
+
+  // 2) CARGA INICIAL
+  this.http.get<{ status: string; data: any[] }>('http://localhost:3000/api/articles')
+    .subscribe({
       next: (resp) => {
+
         this.allArticles.set(resp.data.map(a => ({
           id: String(a.id),
           titulo: String(a.titulo ?? ''),
           descripcion: String(a.descripcion ?? ''),
           precio: Number(a.precio ?? 0),
+          ubicacion: String(a.ubicacion ?? ''),
           categorias_id: Number(a.categorias_id ?? 0),
-          categoria_nombre: a.categoria_nombre ? String(a.categoria_nombre) : '',
+          categoria_nombre: String(a.categoria_nombre ?? ''),
           usuarios_id: Number(a.usuarios_id ?? 0),
+
           image: a.image ?? a.foto ?? null,
+
           fotos: Array.isArray(a.fotos)
             ? a.fotos
                 .filter((foto: any) => foto && typeof foto.url === 'string' && foto.url.trim())
@@ -57,13 +89,24 @@ export class HomeComponent implements OnInit {
                   nombreAlt: String(foto.nombreAlt ?? ''),
                 }))
             : undefined,
-          estadoVenta: String(a.estadoVenta ?? 'DISPONIBLE'),
+
+          estadoVenta: String(a.estadoVenta ?? 'DISPONIBLE')
+            .toUpperCase()
+            .trim() as iArticle['estadoVenta'],
+
           estadoProducto: a.estadoProducto ? String(a.estadoProducto) : undefined,
+
           tipoEntrega: String(a.tipoEntrega ?? ''),
           tipoPago: String(a.tipoPago ?? ''),
+
           created_at: a.created_at ? new Date(a.created_at) : new Date(),
+
           estado_reporte: a.estado_reporte != null ? Number(a.estado_reporte) : null,
         })));
+
+        // 3) Aplicar categoría del header si existe
+        this.results.set(this.articles());
+
         this.loading.set(false);
       },
       error: () => {
@@ -72,9 +115,10 @@ export class HomeComponent implements OnInit {
       }
     });
 
-    this.filterHomeService.loadCategories();
+  this.filterHomeService.loadCategories();
+}
 
-  }
+
 
   addNewArticle() {
     alert('Crear nuevo artículo\n(Placeholder - Vista de creación aún no implementada)');
@@ -121,7 +165,7 @@ export class HomeComponent implements OnInit {
 
   resetFilters() {
     this.filterHomeService.resetFilters();
-    this.results.set(this.allArticles());   // ← VUELVE AL ESTADO INICIAL
+    this.results.set(this.allArticles());
   }
 
   // ============================================================
@@ -133,19 +177,30 @@ export class HomeComponent implements OnInit {
 
     this.filterHomeService.searchArticles().subscribe({
       next: (resp) => {
-
-        const mapped: Article[] = resp.data.map(a => ({
-          id: Number(a.id),
-          titulo: a.titulo,
-          descripcion: a.descripcion,
-          precio: a.precio,
-          ubicacion: '',
-          categorias_id: a.categorias_id,
-          categoria_nombre: '',
-          usuarios_id: a.usuarios_id,
-          imagen: a.foto ?? '',
-          estadoVenta: (a.estadoVenta as string).toUpperCase().trim() as Article['estadoVenta'],
-          estado_reporte: a.estado_reporte
+        const mapped: iArticle[] = resp.data.map(a => ({
+          id: String(a.id),
+          titulo: String(a.titulo ?? ''),
+          descripcion: String(a.descripcion ?? ''),
+          precio: Number(a.precio ?? 0),
+          ubicacion: String(a.ubicacion ?? ''),
+          categorias_id: Number(a.categorias_id ?? 0),
+          categoria_nombre: String(a.categoria_nombre ?? ''),
+          usuarios_id: Number(a.usuarios_id ?? 0),
+          image: a.image ?? a.foto ?? null,
+          fotos: Array.isArray(a.fotos)
+            ? a.fotos
+                .filter((foto: any) => foto && typeof foto.url === 'string' && foto.url.trim())
+                .map((foto: any) => ({
+                  url: String(foto.url).trim(),
+                  nombreAlt: String(foto.nombreAlt ?? ''),
+                }))
+            : undefined,
+          estadoVenta: String(a.estadoVenta ?? 'DISPONIBLE').toUpperCase().trim() as iArticle['estadoVenta'],
+          estadoProducto: a.estadoProducto ? String(a.estadoProducto) : undefined,
+          tipoEntrega: String(a.tipoEntrega ?? ''),
+          tipoPago: String(a.tipoPago ?? ''),
+          created_at: a.created_at ? new Date(a.created_at) : new Date(),
+          estado_reporte: a.estado_reporte != null ? Number(a.estado_reporte) : null,
         }));
 
         this.results.set(mapped);
