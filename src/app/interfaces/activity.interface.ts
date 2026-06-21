@@ -3,4 +3,5 @@ export interface Activity {
   description: string;
   user: string;
   date: string;
+  isBlocked?: boolean;
 }

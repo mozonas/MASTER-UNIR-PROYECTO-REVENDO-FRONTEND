@@ -5,6 +5,7 @@
   width: calc(100% - 250px);
   height: calc(100vh - 138px);
   overflow-y: auto;
+  z-index:20;
 
 }
 

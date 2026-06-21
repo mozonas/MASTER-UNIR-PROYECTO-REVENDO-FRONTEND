@@ -7,7 +7,8 @@ import { MainChartComponent } from '../../../shared/utils/main-chart/main-chart.
 
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [ MainChartComponent, MetricCardsComponent, MonthChartComponent, RecentActivityComponent],
+  standalone:true,
+  imports: [ MainChartComponent, MetricCardsComponent, MonthChartComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css'],
 })

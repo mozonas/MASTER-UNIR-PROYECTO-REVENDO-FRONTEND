@@ -82,31 +82,37 @@
     <!-- ACTIVIDAD RECIENTE -->
     <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-uppercase">
       <span>Actividad reciente</span>
-      <a (click)="desplegarMenu()" class="d-flex align-items-center dropdown-arrow">
-        <img class="dropdown-arrow" src="/images/flecha_abajo.svg" alt="flecha_abajo">
+      <a (click)="desplegarMenu(); $event.stopPropagation(); $event.preventDefault()" class="d-flex align-items-center dropdown-arrow">
+    <img class="dropdown-icon" src="/images/flecha_abajo.svg" alt="flecha_abajo">
       </a>
     </h6>
-    @if (actividadOpen) {
+    @if (actividadOpen){
       <ul id="actividad-menu" class="listado">
         <li>
-          <a class="nav-link d-flex align-items-center gap-2">
-            <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg>
+          <a class="nav-link d-flex align-items-center gap-2"
+          routerLink="/admin/activity/daily"
+          routerLinkActive="active">
+         <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg>
             Diaria
           </a>
         </li>
         <li>
-          <a class="nav-link d-flex align-items-center gap-2">
-            <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg>
+          <a class="nav-link d-flex align-items-center gap-2"
+          routerLink="/admin/activity/weekly"
+          routerLinkActive="active">
+          <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg>
             Semanal
           </a>
         </li>
         <li>
-          <a class="nav-link d-flex align-items-center gap-2">
-            <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg>
+          <a class="nav-link d-flex align-items-center gap-2"
+          routerLink="/admin/activity/monthly"
+          routerLinkActive="active">
+         <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg>
             Mensual
           </a>
         </li>
       </ul>
-    }
+   }
   </div>
 </div>
