@@ -32,6 +32,7 @@ import { AboutComponent } from './pages/about/about';
 import { HelpComponent } from './pages/help/help';
 import { TermsComponent } from './pages/terms/terms';
 import { PrivacyComponent } from './pages/privacy/privacy';
+import { ArticleFormComponent } from './pages/articles/article-form/article-form.component';
 
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
@@ -49,6 +50,8 @@ export const routes: Routes = [
   { path: 'user-info', component: UserPageInfoComponent, canActivate: [authGuard] },
   { path: 'user-edit', component: UserPageEditComponent, canActivate: [authGuard] },
   { path: 'user-sell/:id', component: UserPageSell, /* canActivate: [authGuard]  */},
+  { path: 'article-form', component: ArticleFormComponent, canActivate: [authGuard] },
+  { path: 'article-form/:id', component: ArticleFormComponent, canActivate: [authGuard] },
   { path: 'article-detail/:id', component: ArticleDetailComponent },
   { path: 'admin', 
     component: AdminLayoutComponent, 

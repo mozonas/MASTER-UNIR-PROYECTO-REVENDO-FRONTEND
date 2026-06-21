@@ -13,10 +13,10 @@
                     <div class="col-12 col-xl-10">
                         <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
-                                @for (foto of article()?.fotos; track $index) {
+                                @for (foto of galleryImages(); track $index) {
                                 <div class="carousel-item" [class.active]="$first">
-                                    <img class="d-block w-100" [src]="'http://localhost:3000/' + foto.url"
-                                        (click)="openImageModal('http://localhost:3000/' + foto.url)">
+                                    <img class="d-block w-100" [src]="getSafeImageUrl(foto)"
+                                        (click)="openImageModal(foto)" (error)="onImageError($event)">
                                 </div>
                                 }
                             </div>
@@ -68,7 +68,7 @@
                         </p>
 
                         <span class="badge categoria-badge">
-                            {{article()?.categoria}}
+                            {{article()?.categoria_nombre}}
                         </span>
 
                     </div>
@@ -91,12 +91,12 @@
                                     <div>
                                         <small class="text-muted">Vendedor/a</small>
                                         <p class="mb-0 fw-bold">
-                                            {{ article()?.seller.nombre }}
-                                            {{ article()?.seller.apellidos }}
+                                            {{ article()?.seller?.nombre }}
+                                            {{ article()?.seller?.apellidos }}
                                         </p>
                                     </div>
 
-                                    <app-detail-seller [sellerId]="article()?.usuarios_id">
+                                    <app-detail-seller [sellerId]="article()!.usuarios_id">
                                     </app-detail-seller>
 
                                 </div>
@@ -126,7 +126,7 @@
                         (click)="closeModal()"></button>
                 </div>
                 <div class="modal-body">
-                    <img [src]="selectedImage" class="img-fluid" />
+                    <img [src]="getSafeImageUrl(selectedImage)" class="img-fluid" (error)="onImageError($event)" />
                 </div>
 
             </div>
