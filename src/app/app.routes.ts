@@ -53,24 +53,25 @@ export const routes: Routes = [
   { path: 'article-form', component: ArticleFormComponent, canActivate: [authGuard] },
   { path: 'article-form/:id', component: ArticleFormComponent, canActivate: [authGuard] },
   { path: 'article-detail/:id', component: ArticleDetailComponent },
-  { path: 'admin', 
-    component: AdminLayoutComponent, 
-    canActivate: [roleGuard(['ADMIN'])], 
-    children: [
-      { path: 'dashboard', component: AdminDashboardComponent},
-      { path: 'users', component: AdminUserManagementComponent },
-      { path: 'categories', component: AdminCategoryManagementComponent },
+  {
+  path: 'admin',
+  component: AdminLayoutComponent,
+  canActivate: [roleGuard(['ADMIN'])],
+  children: [
+    { path: 'dashboard', component: AdminDashboardComponent },
+    { path: 'users', component: AdminUserManagementComponent },
+    { path: 'categories', component: AdminCategoryManagementComponent },
 
-      // 👇 ESTA LÍNEA HACE QUE USERS SE CARGUE POR DEFECTO
-      { path: '', redirectTo: 'users', pathMatch: 'full' },
-      // prueba para editar usuario desde admin
-      { 
-        path: 'users/editar/:id', 
-        component: UserPageEditComponent 
-      },
+    // Rutas del moderador dentro del admin
+    { path: 'moderacion/panel', component: ModerationDashboardComponent },
+    { path: 'moderacion/articulos', component: ArticlesListComponent },
+    { path: 'moderacion/articulos/detalle/:id', component: ArticleReportDetailComponent },
+    { path: 'moderacion/chat', component: ChatsListComponent },
 
-    ]
-  },
+    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    { path: 'users/editar/:id', component: UserPageEditComponent }
+  ]
+},
 
   // Directorios sección Moderación
   { path: 'moderation', 

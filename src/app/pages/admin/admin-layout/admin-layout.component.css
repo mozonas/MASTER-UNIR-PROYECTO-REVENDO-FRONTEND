@@ -1,12 +1,22 @@
 .component-view {
-  margin-left: 250px;    
   padding: 1rem;
-  width: calc(100% - 250px);
+  width: 100%;
   height: calc(100vh - 138px);
   overflow-y: auto;
-
 }
 
 
+.moderator-embed {
+  all: unset;
+  display: block;
+  width: 100%;
+}
+
+:host {
+  display: flex;
+  flex-direction: row;
+  height: calc(100vh - 138px);
+  overflow: hidden;
+}
 
 
