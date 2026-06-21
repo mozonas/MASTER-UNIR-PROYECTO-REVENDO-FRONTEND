@@ -74,9 +74,8 @@ export class ArticleService {
     );
   }
 
-  createArticle(article: ArticleUpsertPayload, userId?: number): Observable<any> {
-    const payload = userId ? { ...article, usuarios_id: userId } : article;
-    return this.http.post<any>(`${this.apiUrl}/user-sell${userId ? `/${userId}` : ''}`, payload);
+  createArticle(article: ArticleUpsertPayload): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/user-sell`, article);
   }
 
   updateArticle(id: string, updatedArticle: Partial<ArticleUpsertPayload>): Observable<any> {

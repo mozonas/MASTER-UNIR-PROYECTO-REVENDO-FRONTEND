@@ -69,14 +69,14 @@ export class ArticleFormComponent implements OnInit {
                         image3: [''],
                         image4: [''],
                         image5: [''],
-                        usuarios_id: [null],
                 });
 
-                this.route.queryParamMap
-                        .pipe(takeUntilDestroyed(this.destroyRef))
-                        .subscribe((queryParams) => {
-                                this.userId = Number(queryParams.get('userId')) || this.authService.getUserId();
-                        });
+                this.userId = this.authService.getUserId();
+                if (!this.userId) {
+                        alert('Debes iniciar sesión para crear o editar artículos.');
+                        void this.router.navigate(['/login']);
+                        return;
+                }
 
                 this.route.paramMap
                         .pipe(takeUntilDestroyed(this.destroyRef))
@@ -98,7 +98,6 @@ export class ArticleFormComponent implements OnInit {
                                         image3: '',
                                         image4: '',
                                         image5: '',
-                                        usuarios_id: null,
                                 });
 
                                 if (articleId) {
@@ -137,8 +136,12 @@ export class ArticleFormComponent implements OnInit {
                                         image3: imageUrls[2] ?? '',
                                         image4: imageUrls[3] ?? '',
                                         image5: imageUrls[4] ?? '',
-                                        usuarios_id: article.usuarios_id ?? null,
                                 });
+
+                                if (!this.userId || article.usuarios_id !== this.userId) {
+                                        alert('No tienes permisos para editar este artículo.');
+                                        void this.router.navigate(['/user-sell', this.userId ?? '']);
+                                }
                         },
                         error: (error) => {
                                 console.error('Error al cargar artículo para editar:', error);
@@ -192,7 +195,7 @@ export class ArticleFormComponent implements OnInit {
                         return;
                 }
 
-                this.articleService.createArticle(articlePayload, this.userId).subscribe({
+                this.articleService.createArticle(articlePayload).subscribe({
                         next: () => this.router.navigate(['/user-sell', this.userId!]),
                         error: (error) => {
                                 console.error('Error al crear el artículo:', error);

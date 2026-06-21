@@ -1,6 +1,6 @@
 <div class="py-5">
   <div class="container-max-width">
-    @if (!isAdminViewing) {
+    @if (canManageArticles) {
     <div class="card rounded-4 border-0 shadow-sm mb-4">
       <div class="card-body py-4 px-4">
         <div
@@ -61,7 +61,7 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
       @for (article of currentPageArticles(); track article.id) {
       <div class="col">
-        <app-product-card [article]="article" [showActions]="true" (editClicked)="onEdit(article)"
+        <app-product-card [article]="article" [showActions]="canManageArticles" (editClicked)="onEdit(article)"
           (deleteClicked)="onDelete(article)"></app-product-card>
       </div>
       }
