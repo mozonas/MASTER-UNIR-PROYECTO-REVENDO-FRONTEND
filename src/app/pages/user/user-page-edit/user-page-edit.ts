@@ -1,13 +1,13 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, NgZone, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
 import { Usuario } from '../../../interfaces/user.interface';
-// mog 140620226 -> edición usuario como admin
-import { ActivatedRoute } from '@angular/router';
 
+// Importamos PlaceKit Autocomplete
+import placekitAutocomplete from '@placekit/autocomplete-js';
 
 @Component({
   selector: 'app-user-page-edit',
@@ -16,28 +16,38 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './user-page-edit.html',
   styleUrls: ['./user-page-edit.css']
 })
-export class UserPageEditComponent implements OnInit {
+export class UserPageEditComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
+  private route = inject(ActivatedRoute);
+  private ngZone = inject(NgZone);
 
   isLoaded: boolean = false;
   editForm!: FormGroup;
   currentUser!: Usuario;
 
-  // Guardará el archivo binario seleccionado
   fileSelected: File | null = null;
-  // Guardará la URL en base64 para previsualizar la foto al instante
   fotoPreview: string | null = null;
+  userIdParaEditar: number | null = null;
 
- ngOnInit(): void {
-  this.initForm();
-  this.resolverUserId();   // ✔ primero obtenemos el ID correcto
-  this.cargarDatosUsuario(); // ✔ ahora sí podemos cargar datos
-}
+  // Instancia para limpiar el plugin
+  private pkInstance: any = null;
 
+  ngOnInit(): void {
+    this.initForm();
+    this.resolverUserId();
+    this.cargarDatosUsuario();
+  }
+
+  ngOnDestroy(): void {
+    // Limpieza de la instancia al destruir el componente
+    if (this.pkInstance && typeof this.pkInstance.destroy === 'function') {
+      this.pkInstance.destroy();
+    }
+  }
 
   private initForm(): void {
     this.editForm = this.fb.group({
@@ -45,7 +55,7 @@ export class UserPageEditComponent implements OnInit {
       apellidos: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
       usuario: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_.]+$/)]],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
-      foto: [null], // Aquí se guardará el string que viene del backend
+      foto: [null],
       perfil: ['USUARIO', [Validators.required]],
       fecha_nacimiento: [null],
       direccion: ['', [Validators.maxLength(200)]],
@@ -53,10 +63,16 @@ export class UserPageEditComponent implements OnInit {
     });
   }
 
-  private cargarDatosUsuario(): void {
-    //const userIdParaEditar = this.authService.getUserId();
-    //this.userService.getPerfilUsuario(this.userIdParaEditar)
+  private resolverUserId(): void {
+    const idRuta = this.route.snapshot.paramMap.get('id');
+    if (idRuta) {
+      this.userIdParaEditar = Number(idRuta);
+    } else {
+      this.userIdParaEditar = this.authService.getUserId();
+    }
+  }
 
+  private cargarDatosUsuario(): void {
     const userIdParaEditar = this.userIdParaEditar;
     if (!userIdParaEditar) {
       console.error('❌ No se encontró un ID de usuario válido en la sesión actual.');
@@ -90,19 +106,61 @@ export class UserPageEditComponent implements OnInit {
 
           this.isLoaded = true;
           this.cdr.detectChanges();
+
+          // Un pequeño timeout para dar tiempo a que la directiva estructural (ej: *ngIf="isLoaded") dibuje el input en el DOM
+          setTimeout(() => {
+            this.initPlaceKit();
+          }, 50);
         }
       },
       error: (err) => console.error('❌ Error al recuperar los datos del usuario:', err)
     });
   }
 
-  // 📸 Captura el archivo binario y genera la previsualización en pantalla
+  private initPlaceKit(): void {
+    const inputDireccion = document.getElementById('direccion') as HTMLInputElement;
+
+    if (inputDireccion && !this.pkInstance) {
+      this.pkInstance = placekitAutocomplete('pk_FzdoduYQyIfq0FaY+Ez9KCtgoITLWkpJT6UuNRw5z+U=', {
+        target: inputDireccion,
+        countries: ['es'],
+        maxResults: 5,
+      });
+
+      this.pkInstance.on('pick', (value: string, item: any) => {
+        this.ngZone.run(() => {
+          // 1. Extraemos de forma segura los metadatos desglosados de PlaceKit
+          const calleYNumero = item.name || value; // Ej: "Calle Gema, 4"
+          const codigoPostal = item.zipcode && item.zipcode.length > 0 ? item.zipcode[0] : ''; // Ej: "41015"
+          const localidad = item.city || ''; // Ej: "Sevilla"
+          const pais = item.country || 'España'; // Ej: "España"
+
+          // 2. Construimos una cadena de texto postal perfecta e inequívoca
+          let direccionCompleta = `${calleYNumero}`;
+          if (codigoPostal || localidad) {
+            direccionCompleta += `, ${codigoPostal} ${localidad}`.trim();
+          }
+          direccionCompleta += `, ${pais}`;
+
+          // Limpiamos espacios extraños o comas repetidas si algún dato faltase
+          direccionCompleta = direccionCompleta.replace(/,\s*,/g, ',').trim();
+
+          // 3. Insertamos el valor formateado completo en el Formulario Reactivo
+          this.editForm.patchValue({
+            direccion: direccionCompleta
+          });
+
+          this.editForm.get('direccion')?.markAsDirty();
+          this.editForm.get('direccion')?.markAsTouched();
+        });
+      });
+    }
+  }
+
   onFileChange(event: any): void {
     const file = event.target.files[0];
     if (file) {
       this.fileSelected = file;
-
-      // FileReader nos ayuda a renderizar la imagen antes de subirla al backend
       const reader = new FileReader();
       reader.onload = () => {
         this.fotoPreview = reader.result as string;
@@ -124,8 +182,6 @@ export class UserPageEditComponent implements OnInit {
     }
 
     const formValues = this.editForm.value;
-
-    // 📦 Importante: Usamos FormData para empaquetar archivos binarios y textos juntos
     const formData = new FormData();
     formData.append('nombre', formValues.nombre);
     formData.append('apellidos', formValues.apellidos);
@@ -140,20 +196,16 @@ export class UserPageEditComponent implements OnInit {
     formData.append('descripcion', formValues.descripcion || '');
     formData.append('password', (this.currentUser as any).password || '');
 
-    // Si seleccionó una foto nueva, adjuntamos el archivo binario real
     if (this.fileSelected) {
       formData.append('foto', this.fileSelected, this.fileSelected.name);
     }
 
-    console.log('🚀 Enviando FormData con archivo Multer al backend...');
-
-    // Cast FormData to any/Partial<Usuario> to satisfy the service typing when sending multipart data
     this.userService.updatePerfilUsuario(this.currentUser.id, formData as unknown as Partial<Usuario>).subscribe({
       next: (response) => {
         if (this.route.snapshot.paramMap.get('id')) {
-        this.router.navigate(['/admin/users']);   // ← admin vuelve al listado
+          this.router.navigate(['/admin/users']);
         } else {
-          this.router.navigate(['/user-info']);      // ← usuario normal vuelve a su perfil
+          this.router.navigate(['/user-info']);
         }
       },
       error: (err) => {
@@ -163,29 +215,11 @@ export class UserPageEditComponent implements OnInit {
     });
   }
 
-  // mog 14062026 -> cambiado para que si editas como admin, vuelva al listado de usuarios, y si editas como usuario normal, vuelva a tu perfil
-onCancelar(): void {
-  if (this.route.snapshot.paramMap.get('id')) {
-    this.router.navigate(['/admin/users']);   // ← volver al listado admin
-  } else {
-    this.router.navigate(['/user-info']);      // ← volver al perfil normal
+  onCancelar(): void {
+    if (this.route.snapshot.paramMap.get('id')) {
+      this.router.navigate(['/admin/users']);
+    } else {
+      this.router.navigate(['/user-info']);
+    }
   }
-}
-
-
-  //mog 14062026 -< gestion de usuario como admin
-  private route = inject(ActivatedRoute);
-
-  userIdParaEditar: number | null = null;
-
-  private resolverUserId(): void {
-  const idRuta = this.route.snapshot.paramMap.get('id');
-
-  if (idRuta) {
-    this.userIdParaEditar = Number(idRuta);   // ← modo admin
-  } else {
-    this.userIdParaEditar = this.authService.getUserId();  // ← modo usuario normal
-  }
-  }
-
 }

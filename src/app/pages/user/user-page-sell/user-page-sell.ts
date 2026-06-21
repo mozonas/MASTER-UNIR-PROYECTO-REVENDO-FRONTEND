@@ -20,6 +20,9 @@ export class UserPageSell implements OnInit {
 
   articles = this.articleService.Articles;
 
+  isAdminViewing: boolean = false;
+
+
   selectedFilter = signal<'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'>('all');
   currentPage = signal(1);
   pageSize = 6;
@@ -48,6 +51,21 @@ export class UserPageSell implements OnInit {
 
   ngOnInit(): void {
     this.loadArticles();
+
+    let userIdParaCargar: number | null = null;
+
+    // 1. Intentamos obtener el ID desde los parámetros de la URL (ruta de Admin)
+    const idFromRoute = this.route.snapshot.paramMap.get('id');
+
+    if (idFromRoute) {
+      userIdParaCargar = Number(idFromRoute);
+      this.isAdminViewing = true; // El admin está auditando un perfil ajeno
+      console.log(`📋 Modo Admin: Visualizando usuario desde URL con ID: ${userIdParaCargar}`);
+    } else {
+      // 2. Si no hay ID en la URL, mantenemos tu comportamiento original (Perfil propio del usuario logueado)
+      userIdParaCargar = this.authService.getUserId();
+      console.log(`👤 Modo Usuario: Visualizando perfil propio con ID: ${userIdParaCargar}`);
+    }
   }
 
   private loadArticles(): void {
