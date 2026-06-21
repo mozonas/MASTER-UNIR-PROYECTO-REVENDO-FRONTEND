@@ -1,57 +1,84 @@
-/* Contenedor principal interno */
-.sidebar-wrapper {
+/*SIDEBAR*/
+/* Fondo general */
+.sidebar,
+#sidebarMenu,
+.offcanvas-body {
   background-color: #8cd86a;
   color: #ffffff;
-  overflow-x: hidden;
-  overflow-y: auto;
 }
 
-/* Enlaces base */
-.sidebar-wrapper .nav-link {
-  color: rgba(255, 255, 255, 0.9);
+.sidebar {
+  border: none;
+  position: fixed;
+  top: 90px;
+  bottom: 0;
+  left: 0;
+  width: 250px;
+  background-color: #8cd86a;
+  color: #fff;
+  border: none;
+}
+
+.sidebar,
+#sidebarMenu,
+.offcanvas-body {
+  overflow-x: hidden;
+}
+
+/* Enlaces */
+.sidebar .nav-link,
+#sidebarMenu .nav-link {
+  color: #ffffff;
   font-weight: 500;
   white-space: nowrap;
-  padding: 0.5rem 1rem;
-  transition: background-color 0.2s ease;
+  /* evita que el texto rompa y genere scroll */
+  padding-right: 1rem;
+  padding-left: 1rem;
 }
 
-/* Estados */
-.sidebar-wrapper .nav-link:hover {
+/* Hover más oscuro */
+.sidebar .nav-link:hover,
+#sidebarMenu .nav-link:hover {
   background-color: #5eaa47;
   color: #ffffff;
 }
 
-.sidebar-wrapper .nav-link.active {
+/* Activo */
+.sidebar .nav-link.active,
+#sidebarMenu .nav-link.active {
   background-color: #6fbf54;
   color: #ffffff;
   font-weight: 700;
 }
 
-/* Iconos globales del sidebar */
-.sidebar-wrapper svg,
-.sidebar-wrapper .dropdown-arrow img {
+/* Iconos blancos y tamaño fijo */
+.sidebar svg,
+#sidebarMenu svg {
   filter: brightness(0) invert(1);
   width: 16px;
   height: 16px;
   flex-shrink: 0;
 }
 
-/* Animación y rotación de la flecha */
+/* Títulos del sidebar */
+.sidebar-heading {
+  color: #ffff;
+}
+
 .dropdown-arrow {
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   align-items: center;
 }
 
 .dropdown-arrow img {
-  transition: transform 0.2s ease;
-}
-
-.dropdown-arrow img.rotated {
-  transform: rotate(180deg);
-  /* Rota la flecha elegantemente hacia arriba cuando se abre */
+  filter: brightness(0) invert(1);
+  height: 16px;
+  width: 16px;
 }
 
 .listado {
   list-style: none;
+  padding-left: 0;
+  margin-left: 0;
 }

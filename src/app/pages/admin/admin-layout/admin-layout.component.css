@@ -1,5 +1,10 @@
 .component-view {
+  margin-left: 250px;
+  padding: 1rem;
   overflow-y: auto;
-  transition: margin-left 0.3s ease, width 0.3s ease;
-  /* El alto se hereda del min-vh-100 del padre, puedes limitarlo si lo deseas */
+
 }
+
+
+
+

@@ -19,7 +19,7 @@ const GRUPOS_CONFIG: { label: string; ids: number[] }[] = [
 
 @Component({
   selector: 'app-header-menu',
-  imports: [RouterLink, CommonModule, AsideComponent],
+  imports: [RouterLink, CommonModule],
   templateUrl: './header-menu.component.html',
   styleUrl: './header-menu.component.css',
 })
