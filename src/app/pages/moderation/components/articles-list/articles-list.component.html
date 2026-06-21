@@ -23,9 +23,11 @@
     </div>
 
     <app-articles-history-table
-      [historyData]="articlesHistory()"
-      (viewDetail)="goToDetail($event)">
+      [historyData]="articlesHistory()">
     </app-articles-history-table>
+      <!-- Desactivar la funcion de ir al detalle de articulos reportados
+      (viewDetail)="goToDetail($event)"> 
+      -->
   </section>
 
 </div>
