@@ -1,0 +1,34 @@
+<div class="container mt-4 mt4-moderator g-0">
+  
+  <main class="card shadow-sm border-0 rounded overflow-hidden mb-4 w-100 bg-white">
+
+    <div class="card-header py-3">
+      <h2 class="h6 mb-0 text-white fw-bold text-uppercase">
+        💬 Incidencias de mensajería pendientes
+      </h2>
+    </div>
+    
+    <app-chats-pending-table 
+      [pendingData]="pendingChats()" 
+      (viewDetail)="goToDetail($event)">
+    </app-chats-pending-table>
+  </main>
+
+  <section class="card shadow-sm border-0 rounded overflow-hidden mb-5 w-100 bg-white">
+
+    <div class="card-header py-3">
+      <h2 class="h6 mb-0 text-white fw-bold text-uppercase">
+        📜 Historial de chats moderados
+      </h2>
+    </div>
+    
+    <app-chats-history-table 
+      [historyData]="chatsHistory()">
+      </app-chats-history-table>
+      <!--
+      (viewDetail)="goToDetail($event)">
+      -->
+  </section>
+
+</div>
+

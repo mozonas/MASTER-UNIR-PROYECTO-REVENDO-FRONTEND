@@ -1,50 +1,21 @@
+/* Tu color verde exacto y fuente personalizada */
 .app-footer {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  background-color: rgba(122, 168, 76, 0.88);
-  color: #ffffff;
-  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  background-color: rgba(122, 168, 76, 0.88) !important;
   font-size: 0.88rem;
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  z-index: 10;
 }
 
-.footer-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.footer-right {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.footer-link {
-  color: #ffffff;
-  text-decoration: none;
-  opacity: 0.95;
+/* Efecto hover suave para los enlaces */
+.opacity-75 {
+  opacity: 0.85;
   transition: opacity 0.2s ease;
 }
 
-.footer-link:hover {
-  opacity: 1;
+.opacity-100-hover:hover {
+  opacity: 1 !important;
 }
 
-.footer-separator {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-@media (min-width: 640px) {
-  .footer-content {
-    flex-direction: row;
-  }
+/* Asegura que el contenido de la web no se esconda detrás del footer fijo */
+body {
+  padding-bottom: 60px;
+  /* Ajusta según el alto real de tu footer */
 }

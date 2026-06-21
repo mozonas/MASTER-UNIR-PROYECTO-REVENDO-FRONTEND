@@ -32,7 +32,7 @@
           </a>
           <ul class="dropdown-menu dropdown-menu-end text-small shadow">
             <li><a class="dropdown-item" href="#">Perfil</a></li>
-            <li><a class="dropdown-item" href="#">Cerrar sesión</a></li>
+            <li><a class="dropdown-item" (click)="logout()" style="cursor: pointer;">Salir</a></li>
           </ul>
         </div>
       </div>
@@ -40,7 +40,7 @@
       @else{
       @if (mostrarMenu) {
       <!-- BARRA DE BÚSQUEDA + AVATAR -->
-      <div class="d-flex align-items-center justify-content-between gap-4">
+      <div class="d-flex align-items-center justify-content-between gap-4" style="grid-column: 2">
         <!-- Barra busqueda -->
         <div class="input-group mb-3 mt-3">
           <div class="input-group-prepend">
@@ -69,60 +69,35 @@
         </div>
       </div>
       <!-- NAV -->
-      <nav class="py-2 bg-body page-nav">
+      <nav class="py-2 bg-body page-nav" style="grid-column: 1 / -1">
         <div class="container d-flex flex-wrap">
           <ul class="nav w-100 justify-content-between gap-2">
             <!-- Todas las categorías -->
-            <li class="nav-item dropdown flex-fill text-center">
-              <a class="nav-link link-body-emphasis px-3" href="#" data-bs-toggle="dropdown">
+            <li class="nav-item flex-fill text-center">
+              <a class="nav-link link-body-emphasis px-3" [routerLink]="['/home']">
                 Todas las categorías
               </a>
             </li>
-            <!-- Categoría 1 -->
-            <li class="nav-item dropdown flex-fill text-center">
-              <a class="nav-link dropdown-toggle link-body-emphasis px-2" href="#" data-bs-toggle="dropdown">
-                Moda y accesorios
-              </a>
-              <ul class="dropdown-menu w-100 text-center">
-                <li><a class="dropdown-item" href="#">Calzado</a></li>
-                <li><a class="dropdown-item" href="#">Ropa</a></li>
-                <li><a class="dropdown-item" href="#">Joyería</a></li>
-              </ul>
-            </li>
-            <!-- Categoría 2 -->
-            <li class="nav-item dropdown flex-fill text-center">
-              <a class="nav-link dropdown-toggle link-body-emphasis px-2" href="#" data-bs-toggle="dropdown">
-                Electrónica
-              </a>
-              <ul class="dropdown-menu w-100 text-center">
-                <li><a class="dropdown-item" href="#">Telefonía</a></li>
-                <li><a class="dropdown-item" href="#">Informática</a></li>
-                <li><a class="dropdown-item" href="#">Audio</a></li>
-              </ul>
-            </li>
-            <!-- Categoría 3 -->
-            <li class="nav-item dropdown flex-fill text-center">
-              <a class="nav-link dropdown-toggle link-body-emphasis px-2" href="#" data-bs-toggle="dropdown">
-                Hogar y muebles
-              </a>
-              <ul class="dropdown-menu w-100 text-center">
-                <li><a class="dropdown-item" href="#">Muebles</a></li>
-                <li><a class="dropdown-item" href="#">Decoración</a></li>
-                <li><a class="dropdown-item" href="#">Electrodomésticos</a></li>
-              </ul>
-            </li>
-            <!-- Categoría 4 -->
-            <li class="nav-item dropdown flex-fill text-center">
-              <a class="nav-link dropdown-toggle link-body-emphasis px-2" href="#" data-bs-toggle="dropdown">
-                Ocio y deportes
-              </a>
-              <ul class="dropdown-menu w-100 text-center">
-                <li><a class="dropdown-item" href="#">Bicicletas</a></li>
-                <li><a class="dropdown-item" href="#">Material deportivo</a></li>
-                <li><a class="dropdown-item" href="#">Instrumentos musicales</a></li>
-                <li><a class="dropdown-item" href="#">Juguetes</a></li>
-              </ul>
-            </li>
+            <!-- Grupos dinámicos desde BD -->
+            @for (grupo of gruposCategorias(); track grupo.label) {
+              <li class="nav-item dropdown flex-fill text-center">
+                <a class="nav-link dropdown-toggle link-body-emphasis px-2" role="button"
+                  [routerLink]="['/home']" [queryParams]="{ categoria: grupo.ids.join(','), nombre: grupo.label }">
+                  {{ grupo.label }}
+                </a>
+                @if (grupo.subcategorias.length > 0) {
+                  <ul class="dropdown-menu w-100 text-center">
+                    @for (cat of grupo.subcategorias; track cat.id) {
+                      <li>
+                        <a class="dropdown-item" [routerLink]="['/home']" [queryParams]="{ categoria: cat.id }">
+                          {{ cat.nombre }}
+                        </a>
+                      </li>
+                    }
+                  </ul>
+                }
+              </li>
+            }
           </ul>
         </div>
       </nav>

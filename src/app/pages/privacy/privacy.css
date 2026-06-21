@@ -1,0 +1,115 @@
+/* Contenedor e Identidad */
+.revendo-legal-card {
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    position: relative;
+    background-color: #ffffff;
+    /* Corregido 'paper' a un blanco limpio */
+}
+
+.revendo-accent-bar {
+    height: 5px;
+    width: 100%;
+    background: linear-gradient(90deg, var(--revendo-primary), #34d399);
+}
+
+/* Micro-Tipografía */
+.tracking-tight {
+    letter-spacing: -0.025em;
+}
+
+.tracking-wider {
+    letter-spacing: 0.06em;
+}
+
+.text-emerald {
+    color: var(--revendo-primary);
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+/* Badges Personalizados */
+.revendo-badge {
+    background-color: var(--revendo-bg-badge) !important;
+    color: var(--revendo-primary-dark) !important;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+.revendo-code-badge {
+    color: var(--revendo-primary-dark) !important;
+    background-color: var(--revendo-bg-badge);
+    padding: 0.35rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    display: inline-block;
+    border: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+/* Estructura de Secciones */
+.legal-section {
+    display: flex;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+}
+
+.section-number {
+    font-family: monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--revendo-primary);
+    background-color: var(--revendo-bg-badge);
+    height: 32px;
+    width: 32px;
+    min-width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.section-body p {
+    font-size: 0.95rem;
+    color: var(--text-muted-dark);
+    text-align: justify;
+}
+
+/* Comportamiento de la barra lateral (Desktop vs Mobile) */
+@media (min-width: 768px) {
+    .revendo-sidebar {
+        position: sticky;
+        top: 2.5rem;
+        height: max-content;
+    }
+
+    .match-sidebar-border {
+        border-right: 1px solid rgba(0, 0, 0, 0.08);
+        padding-right: 1.5rem;
+        height: 100%;
+        min-height: 120px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .match-sidebar-border {
+        border-bottom: 1px dashed rgba(0, 0, 0, 0.1) !important;
+        padding-bottom: 1rem !important;
+    }
+
+    .section-body p {
+        text-align: left;
+    }
+}
+
+.tracking-tighter {
+    letter-spacing: -0.04em;
+}
+
+.fw-black {
+    font-weight: 900;
+}
+
+.color-brand {
+    color: rgba(122, 168, 76, 0.88);
+}

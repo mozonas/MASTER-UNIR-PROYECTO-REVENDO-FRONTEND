@@ -1,13 +1,15 @@
 .component-view {
-  margin-top: 138px;      
   margin-left: 250px;    
   padding: 1rem;
   width: calc(100% - 250px);
-  height: calc(100vh - 138px);
+  /* height: calc(100vh - 138px); */
   overflow-y: auto;
+  background-color: #f8f9fa;
+  transition: margin-left 0.3s ease, width 0.3s ease;
   z-index:20;
 
 }
+
 
 
 

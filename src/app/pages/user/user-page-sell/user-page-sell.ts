@@ -1,98 +1,122 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { ProductService } from '../../../services/product.service';
-import { Product } from '../../../interfaces/product.interface';
-import { FooterComponent } from '../../../shared/footer/footer.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ArticleService } from '../../../services/article.service';
+import { AuthService } from '../../../services/auth.service';
+import { iArticle } from '../../../interfaces/article.interface';
+import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 
 @Component({
   selector: 'app-user-page-sell',
-  // imports: [CommonModule, FooterComponent],
-  imports: [CommonModule],
+  imports: [CommonModule, ProductCardComponent],
   templateUrl: './user-page-sell.html',
   styleUrls: ['./user-page-sell.css'],
 })
-export class UserPageSell {
-  private productService = inject(ProductService);
+export class UserPageSell implements OnInit {
+  private articleService = inject(ArticleService);
+  private authService = inject(AuthService);
+  private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  products = this.productService.products;
+  articles = this.articleService.Articles;
 
-  selectedFilter = signal<'all' | 'available' | 'sold' | 'reported'>('all');
+  isAdminViewing: boolean = false;
+
+
+  selectedFilter = signal<'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'>('all');
   currentPage = signal(1);
   pageSize = 6;
 
-  filteredProducts = computed(() => {
+  filteredArticles = computed(() => {
     const filter = this.selectedFilter();
-    const allProducts = this.products();
-    if (filter === 'all') return allProducts;
-    return allProducts.filter(p => p.status === filter);
+    const all = this.articles();
+    if (filter === 'all') return all;
+    return all.filter(a => a.estadoVenta === filter);
   });
 
   pageCount = computed(() => {
-    return Math.max(1, Math.ceil(this.filteredProducts().length / this.pageSize));
+    return Math.max(1, Math.ceil(this.filteredArticles().length / this.pageSize));
   });
 
   pageNumbers = computed(() => {
     return Array.from({ length: this.pageCount() }, (_, index) => index + 1);
   });
 
-  currentPageProducts = computed(() => {
+  private currentPageRawArticles = computed(() => {
     const start = (this.currentPage() - 1) * this.pageSize;
-    return this.filteredProducts().slice(start, start + this.pageSize);
+    return this.filteredArticles().slice(start, start + this.pageSize);
   });
 
-  setFilter(filter: 'all' | 'available' | 'sold' | 'reported') {
+  currentPageArticles = computed<iArticle[]>(() => this.currentPageRawArticles());
+
+  ngOnInit(): void {
+    this.loadArticles();
+
+    let userIdParaCargar: number | null = null;
+
+    // 1. Intentamos obtener el ID desde los parámetros de la URL (ruta de Admin)
+    const idFromRoute = this.route.snapshot.paramMap.get('id');
+
+    if (idFromRoute) {
+      userIdParaCargar = Number(idFromRoute);
+      this.isAdminViewing = true; // El admin está auditando un perfil ajeno
+      console.log(`📋 Modo Admin: Visualizando usuario desde URL con ID: ${userIdParaCargar}`);
+    } else {
+      // 2. Si no hay ID en la URL, mantenemos tu comportamiento original (Perfil propio del usuario logueado)
+      userIdParaCargar = this.authService.getUserId();
+      console.log(`👤 Modo Usuario: Visualizando perfil propio con ID: ${userIdParaCargar}`);
+    }
+  }
+
+  private loadArticles(): void {
+    const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
+    const userId = routeUserId ?? this.authService.getUserId();
+
+    if (!userId) {
+      console.error('No se pudo obtener el ID de usuario para cargar los artículos.');
+      return;
+    }
+
+    this.articleService.getAllUserArticles(userId).subscribe({
+      error: (error) => console.error('Error al cargar artículos:', error),
+    });
+  }
+
+  setFilter(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO') {
     this.selectedFilter.set(filter);
     this.currentPage.set(1);
   }
 
   setPage(page: number) {
-    if (page < 1 || page > this.pageCount()) {
-      return;
-    }
+    if (page < 1 || page > this.pageCount()) return;
     this.currentPage.set(page);
   }
 
-  editProduct(product: Product) {
-    console.log('Editar producto:', product);
-    // TODO: Navegar a la vista de edición de artículo cuando esté disponible
-    alert(`Editar producto: ${product.title}\n(Placeholder - Vista de edición aún no implementada)`);
+  onEdit(article: iArticle): void {
+    const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
+    const userId = routeUserId ?? this.authService.getUserId();
+    void this.router.navigate(['/article-form', article.id], { queryParams: { userId } });
   }
 
-  addNewProduct() {
-    console.log('Agregar nuevo producto');
-    // TODO: Navegar a la vista de crear nuevo artículo cuando esté disponible
-    alert('Crear nuevo artículo\n(Placeholder - Vista de creación aún no implementada)');
-  }
-
-  deleteProduct(product: Product) {
-    const confirmed = confirm(`¿Está seguro de que desea eliminar "${product.title}"? Esta acción no se puede deshacer.`);
-    
+  onDelete(article: iArticle): void {
+    const confirmed = confirm(`¿Está seguro de que desea eliminar "${article.titulo}"? Esta acción no se puede deshacer.`);
     if (confirmed) {
-      this.productService.deleteProduct(product.id);
-      this.currentPage.set(Math.min(this.currentPage(), this.pageCount()));
-      console.log('Producto eliminado:', product.title);
+      this.articleService.deleteArticle(article.id).subscribe({
+        next: () => this.currentPage.set(Math.min(this.currentPage(), this.pageCount())),
+        error: (error) => console.error('Error al eliminar artículo:', error),
+      });
     }
   }
 
-  getStatusBadgeClass(status: string): string {
-    return status === 'sold' ? 'badge-danger' : status === 'reported' ? 'badge-warning' : 'badge-success';
+  addNewArticle() {
+    const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
+    const userId = routeUserId ?? this.authService.getUserId();
+    void this.router.navigate(['/article-form'], { queryParams: { userId } });
   }
 
-  getStatusText(status: string): string {
-    switch (status) {
-      case 'sold':
-        return 'Vendido';
-      case 'reported':
-        return 'Reportado';
-      default:
-        return 'Disponible';
-    }
-  }
-
-  getFilterCount(filter: 'all' | 'available' | 'sold' | 'reported'): number {
-    if (filter === 'all') return this.products().length;
-    return this.products().filter(p => p.status === filter).length;
+  getFilterCount(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'): number {
+    const all = this.articles();
+    if (filter === 'all') return all.length;
+    return all.filter(a => a.estadoVenta === filter).length;
   }
 }

@@ -1,23 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, inject, NgZone } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-//02062026
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
-import { inject } from '@angular/core';
-import { HeaderMenuComponent } from "../../../shared/headers/header-menu/header-menu.component";
 
+import placekitAutocomplete from '@placekit/autocomplete-js';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [FormsModule, CommonModule, HeaderMenuComponent],
+  imports: [FormsModule, CommonModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
-export class SignupComponent {
+export class SignupComponent implements AfterViewInit, OnDestroy {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private ngZone = inject(NgZone);
 
   formData = {
     nombre: '',
@@ -25,39 +24,83 @@ export class SignupComponent {
     email: '',
     usuario: '',
     password: '',
-    foto:  null as string | null, 
+    foto: null as string | null,
     fecha_nacimiento: '',
     direccion: ''
   };
-  // no entiendo cómo queréis mandar un blog a la bbdd , en la nndd la columna foto es string, no un blob, así que no sé si queréis mandar la foto como base64 o qué, pero de momento lo dejo así, como string, y luego ya se verá cómo se manda la foto al backend
-  // lo que hay que mandar es un string con la ruta de la foto, o un string con el nombre de la foto, o un string con el contenido de la foto en base64, o algo así, pero no un blob, porque en la bbdd la columna foto es string, no blob. De momento lo dejo como string, y luego ya se verá cómo se manda la foto al backend.
- /*
-  onFileChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.formData.foto = input.files[0];
+
+  private pkInstance: any = null;
+
+  ngAfterViewInit(): void {
+    this.initPlaceKit();
+  }
+
+  ngOnDestroy(): void {
+    if (this.pkInstance && typeof this.pkInstance.destroy === 'function') {
+      this.pkInstance.destroy();
     }
   }
-*/
-  onSubmit() {
 
-   console.log('Enviando signup:', this.formData);
+  private initPlaceKit(): void {
+    const inputDireccion = document.getElementById('direccion') as HTMLInputElement;
+
+    if (inputDireccion && !this.pkInstance) {
+      this.pkInstance = placekitAutocomplete('pk_FzdoduYQyIfq0FaY+Ez9KCtgoITLWkpJT6UuNRw5z+U=', {
+        target: inputDireccion,
+        countries: ['es'],
+        maxResults: 5,
+      });
+
+      this.pkInstance.on('pick', (value: string, item: any) => {
+        this.ngZone.run(() => {
+          // 1. Extraemos los metadatos desglosados de PlaceKit
+          const calleYNumero = item.name || value;
+          const codigoPostal = item.zipcode && item.zipcode.length > 0 ? item.zipcode[0] : '';
+          const localidad = item.city || '';
+          const pais = item.country || 'España';
+
+          // 2. Construimos la cadena de texto larga e inequívoca
+          let direccionCompleta = `${calleYNumero}`;
+          if (codigoPostal || localidad) {
+            direccionCompleta += `, ${codigoPostal} ${localidad}`.trim();
+          }
+          direccionCompleta += `, ${pais}`;
+          direccionCompleta = direccionCompleta.replace(/,\s*,/g, ',').trim();
+
+          // 3. Usamos setTimeout para ganarle la carrera a los eventos internos de PlaceKit
+          setTimeout(() => {
+            // Escribimos el valor formateado completo directamente en el cuadro de texto
+            inputDireccion.value = direccionCompleta;
+
+            // Sincronizamos nuestro objeto de datos
+            this.formData.direccion = direccionCompleta;
+
+            // Despierta a Angular avisándole de que el valor definitivo ya está en el input
+            inputDireccion.dispatchEvent(new Event('input', { bubbles: true }));
+            inputDireccion.dispatchEvent(new Event('change', { bubbles: true }));
+          }, 0);
+        });
+      });
+    }
+  }
+
+  onSubmit() {
+    // Antes de enviar los datos, aseguramos que formData lleve lo que se ve en la caja de texto
+    const inputDireccion = document.getElementById('direccion') as HTMLInputElement;
+    if (inputDireccion && inputDireccion.value) {
+      this.formData.direccion = inputDireccion.value;
+    }
+
+    console.log('Enviando signup verificado:', this.formData);
 
     this.authService.signup(this.formData).subscribe({
       next: (resp) => {
-        console.log('Signup OK:', resp);
         alert('Usuario creado correctamente');
-        // Redirigir al login
         this.router.navigate(['/login']);
       },
       error: (err) => {
         console.error('Error en signup:', err);
-
-        console.log('➡️ err.error:', err.error);
-        console.log('➡️ err.error.errors:', err.error?.errors);
-        console.log('➡️ err.error.message:', err.error?.message);
-
-        alert('Error al crear usuario');
+        alert('Error al crear usuario. Verifica los campos e inténtalo de nuevo.');
       }
     });
   }
