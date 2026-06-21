@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { AsideComponent } from '../../../shared/aside/aside.component';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-admin-layout',
-  imports: [RouterOutlet, AsideComponent],
+  imports: [RouterOutlet],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.css',
 })

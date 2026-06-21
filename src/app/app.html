@@ -1,17 +1,31 @@
-@if (authService.isLogged()) {
-    <app-header-menu></app-header-menu>
-}
+<body class="bg-light pagebody d-flex flex-column min-vh-100">
 
-<body class="bg-light">
-    <div class="container-fluid">
+    <!-- HEADER -->
+    @if (authService.isLogged()) {
+    <header class="container-fluid">
         <div class="row">
-            <main class="col-12 p-4 mb-5">
-                <router-outlet></router-outlet>
-            </main>
+            <div class="col-12 px-0">
+                <app-header-menu></app-header-menu>
+            </div>
         </div>
-    </div>
-</body>
+    </header>
+    }
 
-@if (authService.isLogged()) {
-    <app-footer></app-footer>
-}
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="container-fluid flex-grow-1">
+        <div class="row">
+            <div class="col-12 p-4 mb-5">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    @if (authService.isLogged()) {
+    <footer class="mt-auto">
+        <app-footer></app-footer>
+    </footer>
+    }
+
+</body>
