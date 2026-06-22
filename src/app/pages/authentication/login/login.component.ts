@@ -5,11 +5,10 @@ import { inject } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import {signal} from '@angular/core';
 import { Router } from '@angular/router';
-import { HeaderMenuComponent } from "../../../shared/headers/header-menu/header-menu.component";
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, HeaderMenuComponent],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
@@ -27,6 +26,16 @@ export class LoginComponent {
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   });
+
+  // DEV ONLY — eliminar antes de producción
+  devLogin() {
+    const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+      .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+    const payload = btoa(JSON.stringify({ perfil: 'USUARIO', userId: 45, username: 'TestUser' }))
+      .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+    sessionStorage.setItem('token', `${header}.${payload}.dev_fake_sig`);
+    this.router.navigate(['/user-info']);
+  }
 
   onSubmit() {
     if (this.form.invalid) return;
@@ -53,11 +62,11 @@ export class LoginComponent {
           break;
         //redireccionar al dashboard de moderador
         case 'MODERADOR':
-          this.router.navigate(['/moderador']);
+          this.router.navigate(['/moderation/panel']); //VCB - ruta modificada para redirigir a la pantalla principal de moderacion
           break;
         //redireccionar a la página de usuario que se decida, yo lo redireccionaría al listado de productos a vender
         default:
-          this.router.navigate(['/user-info']);
+          this.router.navigate(['/home']);
           break;
       }
       },

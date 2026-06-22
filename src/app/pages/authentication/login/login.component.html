@@ -1,5 +1,3 @@
-<app-header-menu [mostrarMenu]="false"></app-header-menu>
-
 <div class="login-wrapper">
 
 
@@ -33,5 +31,10 @@
       }
 
     </form>
+
+    <!-- DEV ONLY — eliminar antes de producción -->
+    <button type="button" (click)="devLogin()" style="margin-top:12px;background:#888;color:#fff;border:none;padding:8px 16px;cursor:pointer;width:100%;">
+      [DEV] Entrar como TestUser
+    </button>
   </div>
 </div>

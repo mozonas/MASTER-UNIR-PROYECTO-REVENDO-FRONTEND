@@ -1,1 +1,17 @@
-<router-outlet></router-outlet>
+@if (authService.isLogged()) {
+    <app-header-menu></app-header-menu>
+}
+
+<body class="bg-light">
+    <div class="container-fluid">
+        <div class="row">
+            <main class="col-12 p-4 mb-5">
+                <router-outlet></router-outlet>
+            </main>
+        </div>
+    </div>
+</body>
+
+@if (authService.isLogged()) {
+    <app-footer></app-footer>
+}

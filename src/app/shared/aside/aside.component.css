@@ -6,6 +6,7 @@
   background-color: #8cd86a;
   color: #ffffff;
 }
+/*
 .sidebar {
   border: none;
   position: fixed;
@@ -16,7 +17,14 @@
   background-color: #8cd86a;
   color: #fff;
   border: none;
+}*/
+
+.sidebar {
+  position: relative;
+  width: 250px;
+  z-index: 10;
 }
+
 .sidebar,
 #sidebarMenu,
 .offcanvas-body {

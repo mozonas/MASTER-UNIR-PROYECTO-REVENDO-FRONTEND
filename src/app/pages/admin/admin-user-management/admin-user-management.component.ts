@@ -1,8 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminUserService } from '../../../services/admin/admin-user.service';
-import { UserPageEditComponent } from '../../user/user-page-edit/user-page-edit';
-import {FormsModule} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-admin-user-management',
@@ -24,7 +23,7 @@ export class AdminUserManagementComponent implements OnInit {
     private adminUserService: AdminUserService,
     private cdr: ChangeDetectorRef,
     private router: Router   // ← AÑADIDO
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -40,6 +39,19 @@ export class AdminUserManagementComponent implements OnInit {
       },
       error: (err) => console.error('Error cargando usuarios:', err)
     });
+  }
+
+  // -------------------------
+  // ACCIONES DE LOS ICONOS
+  // -------------------------
+
+  // Nuevo método para redirigir a la información del usuario
+  onViewInfo(id: number) {
+    this.router.navigate(['/admin/users/info', id]);
+  }
+
+  onEdit(id: number) {
+    this.router.navigate(['/admin/users/editar', id]);
   }
 
   nextPage(): void {
@@ -64,10 +76,6 @@ export class AdminUserManagementComponent implements OnInit {
   // ACCIONES DE LOS ICONOS
   // -------------------------
 
-  onEdit(id: number) {
-    this.router.navigate(['/admin/users/editar', id]);
-  }
-
 
   onDelete(id: number) {
     if (!confirm('¿Seguro que quieres eliminar este usuario?')) return;
@@ -85,75 +93,75 @@ export class AdminUserManagementComponent implements OnInit {
 
     this.adminUserService.toggleBlockUser(user.id, newState).subscribe({
       next: () => {
-       this.loadUsers();
+        this.loadUsers();
       },
       error: (err) => console.error(err)
     });
   }
 
   //filtros
-    // =========================
-//   BUSCAR POR ID (único)
-// =========================
-searchById() {
-  if (!this.searchId.trim()) {
-    this.loadUsers();   // si está vacío → carga todo
-    return;
+  // =========================
+  //   BUSCAR POR ID (único)
+  // =========================
+  searchById() {
+    if (!this.searchId.trim()) {
+      this.loadUsers();   // si está vacío → carga todo
+      return;
+    }
+    // limpiar otros filtros
+    this.searchUsername = '';
+    this.searchEmail = '';
+
+    this.adminUserService.searchById(this.searchId).subscribe({
+      next: (res) => {
+        // el backend devuelve un único usuario
+        this.users = res.user ? [res.user] : [];
+      },
+      error: (err) => console.error(err)
+    });
   }
-  // limpiar otros filtros
-  this.searchUsername = '';
-  this.searchEmail = '';
-
-  this.adminUserService.searchById(this.searchId).subscribe({
-    next: (res) => {
-      // el backend devuelve un único usuario
-      this.users = res.user ? [res.user] : [];
-    },
-    error: (err) => console.error(err)
-  });
-}
 
 
-// =============================
-//   BUSCAR POR USERNAME (único)
-// =============================
-searchByUsername() {
-  if (!this.searchUsername.trim()) {
-    this.loadUsers();
-    return;
+  // =============================
+  //   BUSCAR POR USERNAME (único)
+  // =============================
+  searchByUsername() {
+    if (!this.searchUsername.trim()) {
+      this.loadUsers();
+      return;
+    }
+    // limpiar otros filtros
+    this.searchId = '';
+    this.searchEmail = '';
+
+    this.adminUserService.searchByUsername(this.searchUsername).subscribe({
+      next: (res) => {
+        this.users = res.user ? [res.user] : [];
+      },
+      error: (err) => console.error(err)
+    });
   }
-  // limpiar otros filtros
-  this.searchId = '';
-  this.searchEmail = '';
-
-  this.adminUserService.searchByUsername(this.searchUsername).subscribe({
-    next: (res) => {
-      this.users = res.user ? [res.user] : [];
-    },
-    error: (err) => console.error(err)
-  });
-}
 
 
-// =========================
-//   BUSCAR POR EMAIL (único)
-// =========================
-searchByEmail() {
-  if (!this.searchEmail.trim()) {
-    this.loadUsers();
-    return;
+  // =========================
+  //   BUSCAR POR EMAIL (único)
+  // =========================
+  searchByEmail() {
+    if (!this.searchEmail.trim()) {
+      this.loadUsers();
+      return;
+    }
+    // limpiar otros filtros
+    this.searchId = '';
+    this.searchUsername = '';
+
+    this.adminUserService.searchByEmail(this.searchEmail).subscribe({
+      next: (res) => {
+        this.users = res.user ? [res.user] : [];
+      },
+      error: (err) => console.error(err)
+    });
   }
-  // limpiar otros filtros
-  this.searchId = '';
-  this.searchUsername = '';
-
-  this.adminUserService.searchByEmail(this.searchEmail).subscribe({
-    next: (res) => {
-      this.users = res.user ? [res.user] : [];
-    },
-    error: (err) => console.error(err)
-  });
-}
 
 
 
