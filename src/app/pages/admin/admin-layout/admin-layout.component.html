@@ -1,0 +1,19 @@
+<aside>
+
+  <!-- Menú ADMIN -->
+  <app-aside></app-aside>
+
+  <!-- Menú MODERADOR -->
+  <app-sidebar
+    title="Moderación"
+    [options]="moderatorOptions"
+    (optionSelected)="handleModeratorNav($event)">
+  </app-sidebar>
+
+</aside>
+
+<section class="component-view">
+  <article>
+    <router-outlet></router-outlet>
+  </article>
+</section>

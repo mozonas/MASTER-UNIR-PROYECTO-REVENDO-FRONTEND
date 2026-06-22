@@ -1,0 +1,30 @@
+
+.custom-table th {
+  color: var(--gray-700);
+  font-weight: 600;
+  background-color: var(--gray-100);
+  border-bottom: 2px solid var(--gray-200);
+  padding: 12px 8px;
+}
+
+.custom-table td {
+  color: var(--gray-900);
+  border-bottom: 1px solid var(--gray-200);
+  padding: 12px 8px;
+}
+
+.text-danger-reason {
+  color: var(--semantic-error);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  max-width: 500px;
+}
+
+.col-caso { width: 15%; }
+.col-usuario { width: 30%; }
+.col-motivo { width: 41%; }
+.col-acciones { width: 14%; }
+

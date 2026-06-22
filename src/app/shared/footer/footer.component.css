@@ -1,0 +1,21 @@
+/* Tu color verde exacto y fuente personalizada */
+.app-footer {
+  background-color: rgba(122, 168, 76, 0.88) !important;
+  font-size: 0.88rem;
+}
+
+/* Efecto hover suave para los enlaces */
+.opacity-75 {
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+.opacity-100-hover:hover {
+  opacity: 1 !important;
+}
+
+/* Asegura que el contenido de la web no se esconda detrás del footer fijo */
+body {
+  padding-bottom: 60px;
+  /* Ajusta según el alto real de tu footer */
+}

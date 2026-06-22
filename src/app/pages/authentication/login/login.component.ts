@@ -1,0 +1,82 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { inject } from '@angular/core';
+import { AuthService } from '../../../services/auth.service';
+import {signal} from '@angular/core';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-login',
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css',
+})
+
+export class LoginComponent {
+  private router = inject(Router);
+
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+
+  loading = signal(false);
+  errorMessage = signal('');
+
+  form = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required],
+  });
+
+  // DEV ONLY — eliminar antes de producción
+  devLogin() {
+    const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+      .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+    const payload = btoa(JSON.stringify({ perfil: 'USUARIO', userId: 45, username: 'TestUser' }))
+      .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+    sessionStorage.setItem('token', `${header}.${payload}.dev_fake_sig`);
+    this.router.navigate(['/user-info']);
+  }
+
+  onSubmit() {
+    if (this.form.invalid) return;
+
+    this.loading.set(true);
+    this.errorMessage.set('');
+
+    const { email, password } = this.form.value;
+
+    this.authService.login(email!, password!).subscribe({
+      next: (resp) => {
+        console.log('LOGIN OK =>', resp);
+        this.loading.set(false);
+        sessionStorage.setItem('token', resp.token);
+        // Obtener rol desde el token
+      const role = this.authService.getUserRole();
+
+      console.log('ROL DECODIFICADO =>', role);
+              // Redirección según rol
+      switch (role) {
+        //redireccionar al dashboard del administrador
+        case 'ADMIN':
+          this.router.navigate(['/admin']);
+          break;
+        //redireccionar al dashboard de moderador
+        case 'MODERADOR':
+          this.router.navigate(['/moderation/panel']); //VCB - ruta modificada para redirigir a la pantalla principal de moderacion
+          break;
+        //redireccionar a la página de usuario que se decida, yo lo redireccionaría al listado de productos a vender
+        default:
+          this.router.navigate(['/home']);
+          break;
+      }
+      },
+      error: (err) => {
+        console.error('LOGIN ERROR =>', err);
+        this.loading.set(false);
+        this.errorMessage.set('Credenciales incorrectas');
+      }
+    });
+  }
+
+  
+}

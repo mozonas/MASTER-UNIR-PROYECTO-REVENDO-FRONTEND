@@ -1,0 +1,28 @@
+.tracking-wider {
+        letter-spacing: 0.05em;
+}
+
+.fs-7 {
+        font-size: 0.85rem !important;
+}
+
+.btn-primary {
+        background-color: #6ab03b !important;
+        border-color: #6ab03b !important;
+}
+
+.btn-primary:hover {
+        background-color: #4e8a2f !important;
+        border-color: #4e8a2f !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+        border-color: #6ab03b;
+        box-shadow: 0 0 0 0.25rem rgba(106, 176, 59, 0.15);
+}
+
+textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+}
