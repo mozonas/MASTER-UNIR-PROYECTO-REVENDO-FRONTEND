@@ -1,10 +1,9 @@
 import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-import { Article } from '../../models/article.model';
 import { AuthService } from '../../../services/auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
-import { iArticle } from '../../../interfaces/article.interface';
+import { Article } from '../../../interfaces/article.interface';
 
 @Component({
   selector: 'app-product-card',
@@ -18,7 +17,7 @@ export class ProductCardComponent {
 
   isAdminViewing: boolean = false;
 
-  @Input({ required: true }) article!: iArticle;
+  @Input({ required: true }) article!: Article;
   @Input() showActions = false;
   @Output() editClicked = new EventEmitter<Article>();
   @Output() deleteClicked = new EventEmitter<Article>();
@@ -49,7 +48,7 @@ export class ProductCardComponent {
     return this.article.estadoVenta === 'VENDIDO';
   }
 
-  viewArticle(article: iArticle) {
+  viewArticle(article: Article) {
     console.log('Ver artículo:', this.article.id);
     this.router.navigate(['/article-detail', this.article.id]);
   }

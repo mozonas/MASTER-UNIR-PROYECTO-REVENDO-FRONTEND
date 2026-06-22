@@ -2,7 +2,7 @@ import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { iArticle } from '../interfaces/article.interface';
+import { Article } from '../interfaces/article.interface';
 
 export interface ArticleUpsertPayload {
   titulo: string;
@@ -30,9 +30,9 @@ export class ArticleService {
   private apiUrl = 'http://localhost:3000/api';
   private backendUrl = 'http://localhost:3000';
 
-  Articles = signal<iArticle[]>([]);
+  Articles = signal<Article[]>([]);
 
-  getArticleById(id: string): Observable<iArticle | undefined> {
+  getArticleById(id: string): Observable<Article | undefined> {
     return this.http.get<any>(`${this.apiUrl}/article/${id}`).pipe(
       map(response => {
         const rawArticle = Array.isArray(response?.data)
@@ -43,7 +43,7 @@ export class ArticleService {
     );
   }
 
-  getUserArticleForEdit(id: string): Observable<iArticle | undefined> {
+  getUserArticleForEdit(id: string): Observable<Article | undefined> {
     return this.http.get<any>(`${this.apiUrl}/user-sell/article/${id}`).pipe(
       map(response => {
         const rawArticle = response?.data ?? response?.article ?? response;
@@ -52,12 +52,12 @@ export class ArticleService {
     );
   }
 
-  getAllUserArticles(userId?: number | null, estado: string = 'all'): Observable<iArticle[]> {
+  getAllUserArticles(userId?: number | null, estado: string = 'all'): Observable<Article[]> {
     const baseUrl = `${this.apiUrl}/user-sell`;
     const url = userId ? `${baseUrl}/${userId}` : baseUrl;
     const params = estado && estado !== 'all' ? new HttpParams({ fromObject: { estado } }) : undefined;
 
-    return this.http.get<iArticle[] | { data?: any[]; articles?: any[] }>(url, params ? { params } : {}).pipe(
+    return this.http.get<Article[] | { data?: any[]; articles?: any[] }>(url, params ? { params } : {}).pipe(
       tap(raw => console.log('RAW userarticles response:', raw)),
       map(response => this.normalizeArticlesResponse(response)),
       tap(respuesta => {
@@ -68,7 +68,7 @@ export class ArticleService {
   }
 
   // Añade esto dentro de tu ArticleService
-  getAllPublicArticles(): Observable<iArticle[]> {
+  getAllPublicArticles(): Observable<Article[]> {
     return this.http.get<any>(`${this.apiUrl}/articles`).pipe(
       map(response => this.normalizeArticlesResponse(response))
     );
@@ -91,11 +91,11 @@ export class ArticleService {
     );
   }
 
-  findLoadedArticleById(id: number | string): iArticle | undefined {
+  findLoadedArticleById(id: number | string): Article | undefined {
     return this.Articles().find((article) => article.id === String(id));
   }
 
-  getArticleImageUrls(article: Pick<iArticle, 'image' | 'fotos'>): string[] {
+  getArticleImageUrls(article: Pick<Article, 'image' | 'fotos'>): string[] {
     const primary = this.resolveImageUrl(article.image, '');
     const gallery = (article.fotos ?? [])
       .map((foto) => this.resolveImageUrl(foto.url, ''))
@@ -129,7 +129,7 @@ export class ArticleService {
     return this.getArticleEnums();
   }
 
-  private normalizeArticlesResponse(response: any): iArticle[] {
+  private normalizeArticlesResponse(response: any): Article[] {
     const rawArticles: any[] = Array.isArray(response?.data)
       ? response.data
       : Array.isArray(response?.articles)
@@ -140,16 +140,16 @@ export class ArticleService {
 
     return rawArticles
       .map(articulo => this.mapRawArticleToIArticle(articulo))
-      .filter((article): article is iArticle => !!article);
+      .filter((article): article is Article => !!article);
   }
 
-  private mapRawArticleToIArticle(articulo: any): iArticle | undefined {
+  private mapRawArticleToIArticle(articulo: any): Article | undefined {
     if (!articulo || typeof articulo !== 'object') {
       return undefined;
     }
 
     const estadoRaw = (articulo.estadoVenta ?? '').toString().toUpperCase();
-    let estadoVenta: iArticle['estadoVenta'] = 'DISPONIBLE';
+    let estadoVenta: Article['estadoVenta'] = 'DISPONIBLE';
     if (estadoRaw === 'VENDIDO') {
       estadoVenta = 'VENDIDO';
     } else if (estadoRaw === 'RESERVADO') {
@@ -190,7 +190,7 @@ export class ArticleService {
           apellidos: articulo.seller.apellidos ? String(articulo.seller.apellidos) : undefined,
         }
         : undefined,
-    } as iArticle;
+    } as Article;
   }
 
   private normalizeImagePath(value: unknown): string | null {

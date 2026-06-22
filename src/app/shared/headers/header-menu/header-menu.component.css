@@ -5,15 +5,8 @@
   font-family: 'Geologica', sans-serif;
 }
 
-body {
-  margin: 0;
-}
-
 .page-header {
   width: 100%;
-  top: 0;
-  position: sticky;
-  z-index: 1000;
   background: #fff;
 }
 

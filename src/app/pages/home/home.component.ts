@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
 import { FilterHomeService } from '../../services/filterHome.service';
 import { ArticleService } from '../../services/article.service';
-import { iArticle } from '../../interfaces/article.interface';
+import { Article } from '../../interfaces/article.interface';
 
 @Component({
   selector: 'app-home',
@@ -17,7 +17,7 @@ export class HomeComponent implements OnInit {
   private filterHomeService = inject(FilterHomeService);
   private articleService = inject(ArticleService);
 
-  allArticles = signal<iArticle[]>([]);
+  allArticles = signal<Article[]>([]);
   categoriaIds = signal<number[] | null>(null);
   tituloCategoria = signal<string | null>(null);
   loading = signal(true);
@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
 
   filters = this.filterHomeService.filters;
   categories = this.filterHomeService.categories;
-  results = signal<iArticle[]>([]);
+  results = signal<Article[]>([]);
 
   articles = computed(() => {
     const ids = this.categoriaIds();

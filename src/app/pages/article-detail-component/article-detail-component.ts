@@ -5,7 +5,7 @@ import { ArticleService } from '../../services/article.service';
 import { ModerationService } from '../../services/moderation.service';
 import { AuthService } from '../../services/auth.service';
 import { DetailSeller } from "../../shared/detail-seller/detail-seller";
-import { iArticle } from '../../interfaces/article.interface';
+import { Article } from '../../interfaces/article.interface';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
@@ -17,7 +17,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 export class ArticleDetailComponent {
   modalOpen = false;
   selectedImage: string | null = null;
-  article = signal<iArticle | null>(null);
+  article = signal<Article | null>(null);
   private route = inject(ActivatedRoute);
   private articlesService = inject(ArticleService);
   private authService = inject(AuthService);

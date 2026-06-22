@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { AuthService } from '../../../services/auth.service';
-import { iArticle } from '../../../interfaces/article.interface';
+import { Article } from '../../../interfaces/article.interface';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 
 @Component({
@@ -47,7 +47,7 @@ export class UserPageSell implements OnInit {
     return this.filteredArticles().slice(start, start + this.pageSize);
   });
 
-  currentPageArticles = computed<iArticle[]>(() => this.currentPageRawArticles());
+  currentPageArticles = computed<Article[]>(() => this.currentPageRawArticles());
 
   ngOnInit(): void {
     this.loadArticles();
@@ -92,13 +92,13 @@ export class UserPageSell implements OnInit {
     this.currentPage.set(page);
   }
 
-  onEdit(article: iArticle): void {
+  onEdit(article: Article): void {
     const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
     const userId = routeUserId ?? this.authService.getUserId();
     void this.router.navigate(['/article-form', article.id], { queryParams: { userId } });
   }
 
-  onDelete(article: iArticle): void {
+  onDelete(article: Article): void {
     const confirmed = confirm(`¿Está seguro de que desea eliminar "${article.titulo}"? Esta acción no se puede deshacer.`);
     if (confirmed) {
       this.articleService.deleteArticle(article.id).subscribe({

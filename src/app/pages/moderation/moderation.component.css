@@ -1,9 +1,6 @@
-
-main {
-  min-height: vh -100vh;
+.component-view {
+  margin-left: 250px;
+  padding: 1rem;
   overflow-y: auto;
+
 }
-
-
-
-
