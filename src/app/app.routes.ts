@@ -40,6 +40,7 @@ import { roleGuard } from './guards/role.guard';
 
 //17062026 mog componente error404
 import { Error404Component } from './pages/error-404/error-404';
+import { AdminActivityComponent } from './pages/admin/admin-activity/admin-activity.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'welcome' },
@@ -62,25 +63,24 @@ export const routes: Routes = [
       { path: 'users', component: AdminUserManagementComponent },
       { path: 'categories', component: AdminCategoryManagementComponent },
 
-      // 👇 ESTA LÍNEA HACE QUE USERS SE CARGUE POR DEFECTO
+      // Rutas del moderador dentro del admin
+      { path: 'moderacion/panel', component: ModerationDashboardComponent },
+      { path: 'moderacion/articulos', component: ArticlesListComponent },
+      { path: 'moderacion/articulos/detalle/:id', component: ArticleReportDetailComponent },
+      { path: 'moderacion/chat', component: ChatsListComponent },
+
+      // Rutas nuevas de develop
+      { path: 'activity/:range', component: AdminActivityComponent },
       { path: '', redirectTo: 'users', pathMatch: 'full' },
-      // prueba para editar usuario desde admin
-      {
-        path: 'users/info/:id',
-        component: UserPageInfoComponent
-      },
-      {
-        path: 'users/editar/:id',
-        component: UserPageEditComponent
-      },
-
-
+      { path: 'users/info/:id', component: UserPageInfoComponent },
+      { path: 'users/editar/:id', component: UserPageEditComponent }
     ]
   },
 
     // Directorios sección Moderación
   { path: 'moderation', 
     component: ModerationComponent,
+    canActivate: [roleGuard(['MODERADOR'])], //VCB - añadir proteccion del rol
     children: [
       { path: '', redirectTo: 'panel', pathMatch: 'full' },
       { path: 'panel', component: ModerationDashboardComponent },
