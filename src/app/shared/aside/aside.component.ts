@@ -18,9 +18,10 @@ export class AsideComponent {
 
   actividadOpen = false;
 
-  desplegarMenu(){
-    this.actividadOpen = !this.actividadOpen;
+  desplegarMenu():void {
+  this.actividadOpen = !this.actividadOpen;
   }
+
 
 
 }

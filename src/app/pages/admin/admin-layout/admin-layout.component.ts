@@ -7,6 +7,7 @@ import { AsideComponent } from "../../../shared/aside/aside.component";
   imports: [RouterOutlet, AsideComponent],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.css',
+  
 })
 export class AdminLayoutComponent {
 
