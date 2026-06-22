@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../services/article.service';
 import { ModerationService } from '../../services/moderation.service';
@@ -24,6 +24,9 @@ export class ArticleDetailComponent {
   private router = inject(Router);
   private moderationService = inject(ModerationService);
   private sanitizer = inject(DomSanitizer);
+
+  private location = inject(Location);
+
 
   mostrarModalReporte = signal(false);
   motivoReporte = signal('');
@@ -139,6 +142,10 @@ export class ArticleDetailComponent {
     return value.startsWith('data:image/')
       ? this.sanitizer.bypassSecurityTrustUrl(value)
       : value;
+  }
+
+  onBack(): void {
+    this.location.back();
   }
 
 }

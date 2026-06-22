@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
@@ -7,6 +7,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Usuario } from '../../../interfaces/user.interface';
 import { UserPageSell } from '../user-page-sell/user-page-sell';
 import { DetailSeller } from "../../../shared/detail-seller/detail-seller";
+
 
 @Component({
   selector: 'app-user-page-info',
@@ -23,6 +24,9 @@ export class UserPageInfoComponent implements OnInit {
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
   private sanitizer = inject(DomSanitizer);
+
+  private location = inject(Location); 
+
 
   isLoaded: boolean = false;
   mapUrl: SafeResourceUrl | null = null;
@@ -208,11 +212,7 @@ export class UserPageInfoComponent implements OnInit {
     this.router.navigate(['/user-edit']);
   }
 
-    onCancelar(): void {
-    if (this.route.snapshot.paramMap.get('id')) {
-      this.router.navigate(['/admin/users']);
-    } else {
-      this.router.navigate(['/user-info']);
-    }
+  onBack(): void {
+    this.location.back();
   }
 }
