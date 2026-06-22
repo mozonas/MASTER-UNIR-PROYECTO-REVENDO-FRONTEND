@@ -15,9 +15,11 @@
       <div class="conversacion-item"
            [class.activa]="conversacionActiva?.articulos_id === conv.articulos_id"
            (click)="seleccionarConversacion(conv)">
-        <img [src]="'/images/' + conv.foto" alt="avatar" class="conv-avatar"/>
+        <img [src]="'/images/' + conv.foto" 
+             (error)="onImageError($event)"
+             alt="avatar" class="conv-avatar"/>
         <div class="conv-info">
-          <span class="conv-nombre">{{ conv.nombre }}</span>
+          <span class="conv-nombre">{{ conv.usuario }}</span>
           <span class="conv-articulo">{{ conv.titulo }}</span>
           <span class="conv-ultimo">{{ conv.ultimo_mensaje }}</span>
         </div>
@@ -29,9 +31,11 @@
 
     @if (conversacionActiva) {
       <div class="chat-header">
-        <img [src]="'/images/' + conversacionActiva.foto" alt="avatar" class="conv-avatar"/>
+        <img [src]="'/images/' + conversacionActiva.foto" 
+             (error)="onImageError($event)"
+             alt="avatar" class="conv-avatar"/>
         <div>
-          <span class="conv-nombre">{{ conversacionActiva.nombre }}</span>
+          <span class="conv-nombre">{{ conversacionActiva.usuario }}</span>
           <span class="conv-articulo">{{ conversacionActiva.titulo }}</span>
         </div>
       </div>

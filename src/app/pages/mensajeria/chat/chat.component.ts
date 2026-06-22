@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { inject } from '@angular/core';
@@ -12,15 +12,14 @@ interface Mensaje {
   created_at: string;
   usuarios_id: number;
   articulos_id: number;
-  nombre: string;
-  apellidos: string;
+  usuario: string;
   foto: string;
 }
 
 interface Conversacion {
   articulos_id: number;
   titulo: string;
-  nombre: string;
+  usuario: string;
   foto: string;
   ultimo_mensaje: string;
   fecha_ultimo_mensaje: string;
@@ -33,10 +32,11 @@ interface Conversacion {
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
 
   private chatService = inject(ChatService);
   private authService = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
 
   usuarioActualId: number = 0;
 
@@ -46,15 +46,37 @@ export class ChatComponent implements OnInit {
   nuevoMensaje: string = '';
   busqueda: string = '';
 
+  private pollingMensajes: any;
+  private pollingConversaciones: any;
+
   ngOnInit() {
     this.usuarioActualId = this.authService.getUserId() || 0;
     this.cargarConversaciones();
+
+    this.pollingConversaciones = setInterval(() => {
+      this.cargarConversaciones();
+    }, 5000);
+  }
+
+  ngOnDestroy() {
+    if (this.pollingMensajes) clearInterval(this.pollingMensajes);
+    if (this.pollingConversaciones) clearInterval(this.pollingConversaciones);
+    // Resetear el contador al salir del chat
+    this.chatService.setMensajesNoLeidos(0);
   }
 
   cargarConversaciones() {
     this.chatService.getConversacionesPorUsuario(this.usuarioActualId).subscribe({
       next: (data) => {
         this.conversaciones = data;
+
+        // Calculamos el total de mensajes no leídos y lo compartimos con el FAB
+        const totalNoLeidos = data.reduce((acc: number, conv: any) => {
+          return acc + (conv.mensajes_no_leidos || 0);
+        }, 0);
+        this.chatService.setMensajesNoLeidos(totalNoLeidos);
+
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error al cargar conversaciones:', err);
@@ -66,16 +88,27 @@ export class ChatComponent implements OnInit {
     if (!this.busqueda.trim()) return this.conversaciones;
     const texto = this.busqueda.toLowerCase();
     return this.conversaciones.filter(c =>
-      c.nombre.toLowerCase().includes(texto) ||
+      c.usuario.toLowerCase().includes(texto) ||
       c.titulo.toLowerCase().includes(texto)
     );
   }
 
   seleccionarConversacion(conv: Conversacion) {
     this.conversacionActiva = conv;
-    this.chatService.getMensajesPorArticulo(conv.articulos_id).subscribe({
+    this.cargarMensajes(conv.articulos_id);
+
+    if (this.pollingMensajes) clearInterval(this.pollingMensajes);
+
+    this.pollingMensajes = setInterval(() => {
+      this.cargarMensajes(conv.articulos_id);
+    }, 3000);
+  }
+
+  cargarMensajes(articuloId: number) {
+    this.chatService.getMensajesPorArticulo(articuloId).subscribe({
       next: (data) => {
         this.mensajesActivos = data;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error al cargar mensajes:', err);
@@ -120,7 +153,7 @@ export class ChatComponent implements OnInit {
       next: () => {
         this.nuevoMensaje = '';
         if (this.conversacionActiva) {
-          this.seleccionarConversacion(this.conversacionActiva);
+          this.cargarMensajes(this.conversacionActiva.articulos_id);
         }
       },
       error: (err) => {
@@ -133,5 +166,10 @@ export class ChatComponent implements OnInit {
     if (event.key === 'Enter') {
       this.enviarMensaje();
     }
+  }
+
+  onImageError(event: Event) {
+    const img = event.target as HTMLImageElement;
+    img.src = '/images/avatar_usuario.png';
   }
 }

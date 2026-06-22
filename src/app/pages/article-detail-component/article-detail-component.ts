@@ -140,5 +140,11 @@ export class ArticleDetailComponent {
       ? this.sanitizer.bypassSecurityTrustUrl(value)
       : value;
   }
+  
+  contactarVendedor() {
+    const articulo = this.article();
+    if (!articulo) return;
+    this.router.navigate(['/chat'], { queryParams: { articuloId: articulo.id } });
+  }
 
 }
