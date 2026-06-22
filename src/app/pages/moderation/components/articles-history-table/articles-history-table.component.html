@@ -9,7 +9,9 @@
         <th class="col-resolucion">Resolución</th>
         <th class="col-articulo">Artículo</th>
         <th class="col-motivo">Motivo del Reporte</th>
+        <!-- VCB - desactivar columna acciones
         <th class="col-acciones text-center">Acciones</th>
+        --> 
       </tr>
     </thead>
     <tbody>
@@ -33,17 +35,18 @@
               {{ history.motivo }}
             </span>
           </td>
-          
+          <!-- VCB - Desactivar botón de vista detalle de los articulos reportados gestionados
           <td class="text-center">
             <app-action-button 
               [itemId]="history.id" 
               (actionTriggered)="viewDetail.emit($event)">
             </app-action-button>
           </td>
+          -->
         </tr>
       } @empty {
         <tr>
-          <td colspan="6" class="text-center py-4 text-muted">
+          <td colspan="5" class="text-center py-4 text-muted"> <!-- VCB - excluir la columna de acciones -->
             No se encontraron registros en el historial.
           </td>
         </tr>

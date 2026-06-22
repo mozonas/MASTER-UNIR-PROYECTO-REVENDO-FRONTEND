@@ -1,9 +1,12 @@
 .component-view {
   padding: 1rem;
-  width: 100%;
-  height: calc(100vh - 138px);
+  width: calc(100% - 250px);
   overflow-y: auto;
+  background-color: #f8f9fa;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  z-index: 20;
 }
+
 
 
 .moderator-embed {
@@ -18,5 +21,6 @@
   height: calc(100vh - 138px);
   overflow: hidden;
 }
+
 
 

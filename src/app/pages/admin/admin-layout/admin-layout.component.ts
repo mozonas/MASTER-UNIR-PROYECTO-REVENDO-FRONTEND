@@ -16,6 +16,7 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './admin-layout.component.html',
   styleUrls: ['./admin-layout.component.css']
 })
+
 export class AdminLayoutComponent {
 
   private router = inject(Router);

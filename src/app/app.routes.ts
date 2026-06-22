@@ -40,6 +40,7 @@ import { roleGuard } from './guards/role.guard';
 
 //17062026 mog componente error404
 import { Error404Component } from './pages/error-404/error-404';
+import { AdminActivityComponent } from './pages/admin/admin-activity/admin-activity.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'welcome' },
@@ -54,28 +55,32 @@ export const routes: Routes = [
   { path: 'article-form/:id', component: ArticleFormComponent, canActivate: [authGuard] },
   { path: 'article-detail/:id', component: ArticleDetailComponent },
   {
-  path: 'admin',
-  component: AdminLayoutComponent,
-  canActivate: [roleGuard(['ADMIN'])],
-  children: [
-    { path: 'dashboard', component: AdminDashboardComponent },
-    { path: 'users', component: AdminUserManagementComponent },
-    { path: 'categories', component: AdminCategoryManagementComponent },
+    path: 'admin',
+    component: AdminLayoutComponent,
+    canActivate: [roleGuard(['ADMIN'])],
+    children: [
+      { path: 'dashboard', component: AdminDashboardComponent },
+      { path: 'users', component: AdminUserManagementComponent },
+      { path: 'categories', component: AdminCategoryManagementComponent },
 
-    // Rutas del moderador dentro del admin
-    { path: 'moderacion/panel', component: ModerationDashboardComponent },
-    { path: 'moderacion/articulos', component: ArticlesListComponent },
-    { path: 'moderacion/articulos/detalle/:id', component: ArticleReportDetailComponent },
-    { path: 'moderacion/chat', component: ChatsListComponent },
+      // Rutas del moderador dentro del admin
+      { path: 'moderacion/panel', component: ModerationDashboardComponent },
+      { path: 'moderacion/articulos', component: ArticlesListComponent },
+      { path: 'moderacion/articulos/detalle/:id', component: ArticleReportDetailComponent },
+      { path: 'moderacion/chat', component: ChatsListComponent },
 
-    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-    { path: 'users/editar/:id', component: UserPageEditComponent }
-  ]
-},
+      // Rutas nuevas de develop
+      { path: 'activity/:range', component: AdminActivityComponent },
+      { path: '', redirectTo: 'users', pathMatch: 'full' },
+      { path: 'users/info/:id', component: UserPageInfoComponent },
+      { path: 'users/editar/:id', component: UserPageEditComponent }
+    ]
+  },
 
-  // Directorios sección Moderación
+    // Directorios sección Moderación
   { path: 'moderation', 
     component: ModerationComponent,
+    canActivate: [roleGuard(['MODERADOR'])], //VCB - añadir proteccion del rol
     children: [
       { path: '', redirectTo: 'panel', pathMatch: 'full' },
       { path: 'panel', component: ModerationDashboardComponent },
@@ -85,9 +90,6 @@ export const routes: Routes = [
     ]
   },
 
-
- 
-  
 
   // A medida que se vayan creando los componentes de cada página, se irán añadiendo aquí con su correspondiente path y guard si es necesario
   //Habrá incluso rutas para cada rol, por ejemplo, /admin, /moderador, /usuario, etc. y se protegerán con el guard correspondiente para cada rol

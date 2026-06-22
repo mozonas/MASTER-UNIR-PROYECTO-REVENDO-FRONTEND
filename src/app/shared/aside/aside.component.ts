@@ -1,18 +1,20 @@
+
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-aside',
-  imports: [RouterLink],
+  imports: [RouterLink,RouterLinkActive],
   templateUrl: './aside.component.html',
   styleUrl: './aside.component.css',
 })
 export class AsideComponent {
-  actividadOpen = false;
+  actividadOpen: boolean = false;
 
-  desplegarMenu(){
-    this.actividadOpen = !this.actividadOpen;
+  desplegarMenu():void {
+  this.actividadOpen = !this.actividadOpen;
   }
+
 
 
 }

@@ -3,6 +3,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { iArticle } from '../interfaces/article.interface';
+import {VentasMes} from '../interfaces/ventas.interface';
+import { PubStats } from '../interfaces/pub-stats.interface';
 
 export interface ArticleUpsertPayload {
   titulo: string;
@@ -67,6 +69,13 @@ export class ArticleService {
     );
   }
 
+  // Añade esto dentro de tu ArticleService
+  getAllPublicArticles(): Observable<iArticle[]> {
+    return this.http.get<any>(`${this.apiUrl}/articles`).pipe(
+      map(response => this.normalizeArticlesResponse(response))
+    );
+  }
+
   createArticle(article: ArticleUpsertPayload, userId?: number): Observable<any> {
     const payload = userId ? { ...article, usuarios_id: userId } : article;
     return this.http.post<any>(`${this.apiUrl}/user-sell${userId ? `/${userId}` : ''}`, payload);
@@ -126,10 +135,10 @@ export class ArticleService {
     const rawArticles: any[] = Array.isArray(response?.data)
       ? response.data
       : Array.isArray(response?.articles)
-      ? response.articles
-      : Array.isArray(response)
-      ? response
-      : [];
+        ? response.articles
+        : Array.isArray(response)
+          ? response
+          : [];
 
     return rawArticles
       .map(articulo => this.mapRawArticleToIArticle(articulo))
@@ -170,18 +179,18 @@ export class ArticleService {
       image: this.normalizeImagePath(articulo.image ?? articulo.foto ?? articulo.url),
       fotos: Array.isArray(articulo.fotos)
         ? articulo.fotos
-            .filter((foto: any) => foto && typeof foto.url === 'string' && foto.url.trim())
-            .map((foto: any) => ({
-              url: String(foto.url).trim(),
-              nombreAlt: String(foto.nombreAlt ?? ''),
-            }))
+          .filter((foto: any) => foto && typeof foto.url === 'string' && foto.url.trim())
+          .map((foto: any) => ({
+            url: String(foto.url).trim(),
+            nombreAlt: String(foto.nombreAlt ?? ''),
+          }))
         : undefined,
       estado_reporte: articulo.estado_reporte != null ? Number(articulo.estado_reporte) : null,
       seller: articulo.seller && typeof articulo.seller === 'object'
         ? {
-            nombre: articulo.seller.nombre ? String(articulo.seller.nombre) : undefined,
-            apellidos: articulo.seller.apellidos ? String(articulo.seller.apellidos) : undefined,
-          }
+          nombre: articulo.seller.nombre ? String(articulo.seller.nombre) : undefined,
+          apellidos: articulo.seller.apellidos ? String(articulo.seller.apellidos) : undefined,
+        }
         : undefined,
     } as iArticle;
   }
@@ -211,4 +220,23 @@ export class ArticleService {
 
     return trimmed;
   }
+
+   // Artículos publicados este mes
+    getPubThisMonth():Observable <PubStats> {
+      return this.http.get<{ total: number }>(`${this.apiUrl}/article/published/this-month`);
+    }
+  
+    // Artículos publicados el mes pasado
+    getPubLastMonth(): Observable<PubStats> {
+      return this.http.get<{ total: number }>(`${this.apiUrl}/article/published/last-month`);
+    }
+  
+    // Articulos vendidos este mes
+     getVentasMensuales(month: number): Observable<VentasMes[]> {
+      return this.http.get<VentasMes[]>(`${this.apiUrl}/article/sold/${month}`);
+    }
+    // Articulos vendidos este año
+    getVentasAnuales(year:number): Observable<{mes:number;total: number}[]>  {
+      return this.http.get<{mes:number;total: number}[]>(`${this.apiUrl}/article/sold/year/${year}`);
+    }
 }

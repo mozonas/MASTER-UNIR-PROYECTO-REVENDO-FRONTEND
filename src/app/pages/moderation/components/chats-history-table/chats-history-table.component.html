@@ -8,7 +8,7 @@
         <th class="col-resolucion">Resolución</th>
         <th class="col-articulo">Usuario</th>
         <th class="col-motivo">Motivo del Reporte</th>
-        <th class="col-acciones text-center">Acciones</th>
+        <!-- <th class="col-acciones text-center">Acciones</th> -->
       </tr>
     </thead>
     <tbody>
@@ -27,12 +27,14 @@
               {{ history.motivo }}
             </span>
           </td>
+          <!--
           <td class="text-center">
             <app-action-button [itemId]="history.id" (actionTriggered)="viewDetail.emit($event)"></app-action-button>
           </td>
+          -->
         </tr>
       } @empty {
-        <tr><td colspan="6" class="text-center py-4 text-muted">No se encontraron incidencias de mensajería registradas en el historial.</td></tr>
+        <tr><td colspan="5" class="text-center py-4 text-muted">No se encontraron incidencias de mensajería registradas en el historial.</td></tr>
       }
     </tbody>
   </table>

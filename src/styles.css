@@ -1,3 +1,5 @@
+@import "@placekit/autocomplete-js/dist/placekit-autocomplete.css";
+
 @font-face {
   font-family: 'Geologica';
   src: url('/fonts/Geologica_Auto-Bold.ttf') format('truetype');
