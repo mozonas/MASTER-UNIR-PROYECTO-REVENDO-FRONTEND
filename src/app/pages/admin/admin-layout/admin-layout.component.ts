@@ -4,7 +4,6 @@ import { AsideComponent } from '../../../shared/aside/aside.component';
 import { SidebarComponent } from '../../../shared/sidebar/sidebar.component'; 
 import { SidebarOption } from '../../../interfaces/sidebar.interface'; 
 import { RouterOutlet } from '@angular/router';
-import { AsideComponent } from "../../../shared/aside/aside.component";
 
 @Component({
   selector: 'app-admin-layout',

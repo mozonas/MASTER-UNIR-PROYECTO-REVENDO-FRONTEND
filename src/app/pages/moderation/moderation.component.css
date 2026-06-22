@@ -1,6 +1,25 @@
+:host {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: calc(100vh - 138px);
+  overflow: hidden;
+}
+
+aside {
+  width: 250px;
+  min-width: 250px;
+  max-width: 250px;
+  height: 100%;
+}
+
+/* El contenido principal se estira en el espacio restante */
 .component-view {
-  margin-left: 250px;
+  flex-grow: 1;
+  width: calc(100% - 250px);
   padding: 1rem;
   overflow-y: auto;
-
+  /* Si el contenido es largo, solo se hace scroll aquí */
+  background-color: #f8f9fa;
+  height: 100%;
 }

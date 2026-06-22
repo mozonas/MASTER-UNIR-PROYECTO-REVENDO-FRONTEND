@@ -1,6 +1,7 @@
 /* Fondo verde corporativo del contenedor */
 .custom-sidebar {
   background-color: #8cd86a;
+  height: 100%;
 }
 
 /* Opciones de estilo para los botones de navegación */

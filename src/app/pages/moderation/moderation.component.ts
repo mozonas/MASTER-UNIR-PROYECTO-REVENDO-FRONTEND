@@ -10,7 +10,7 @@ import { AsideComponent } from "../../shared/aside/aside.component";
 @Component({
   selector: 'app-moderation',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, AsideComponent],
+  imports: [CommonModule, RouterOutlet, SidebarComponent],
   templateUrl: './moderation.component.html',
   styleUrls: ['./moderation.component.css']
 })
