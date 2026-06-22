@@ -1,13 +1,26 @@
 .component-view {
-  margin-left: 250px;
   padding: 1rem;
+  width: calc(100% - 250px);
   overflow-y: auto;
   background-color: #f8f9fa;
   transition: margin-left 0.3s ease, width 0.3s ease;
-  z-index:20;
-
+  z-index: 20;
 }
 
+
+
+.moderator-embed {
+  all: unset;
+  display: block;
+  width: 100%;
+}
+
+:host {
+  display: flex;
+  flex-direction: row;
+  height: calc(100vh - 138px);
+  overflow: hidden;
+}
 
 
 

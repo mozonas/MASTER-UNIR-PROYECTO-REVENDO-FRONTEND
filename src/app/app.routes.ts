@@ -62,20 +62,18 @@ export const routes: Routes = [
       { path: 'dashboard', component: AdminDashboardComponent },
       { path: 'users', component: AdminUserManagementComponent },
       { path: 'categories', component: AdminCategoryManagementComponent },
+
+      // Rutas del moderador dentro del admin
+      { path: 'moderacion/panel', component: ModerationDashboardComponent },
+      { path: 'moderacion/articulos', component: ArticlesListComponent },
+      { path: 'moderacion/articulos/detalle/:id', component: ArticleReportDetailComponent },
+      { path: 'moderacion/chat', component: ChatsListComponent },
+
+      // Rutas nuevas de develop
       { path: 'activity/:range', component: AdminActivityComponent },
-      // 👇 ESTA LÍNEA HACE QUE USERS SE CARGUE POR DEFECTO
       { path: '', redirectTo: 'users', pathMatch: 'full' },
-      // prueba para editar usuario desde admin
-      {
-        path: 'users/info/:id',
-        component: UserPageInfoComponent
-      },
-      {
-        path: 'users/editar/:id',
-        component: UserPageEditComponent
-      },
-
-
+      { path: 'users/info/:id', component: UserPageInfoComponent },
+      { path: 'users/editar/:id', component: UserPageEditComponent }
     ]
   },
 
