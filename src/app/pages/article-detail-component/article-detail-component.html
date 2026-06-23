@@ -18,7 +18,8 @@
                             <div class="carousel-inner">
                                 @for (foto of article()?.fotos; track $index; let i = $index) {
                                 <div class="carousel-item" [class.active]="i === subindiceActivo">
-                                    <img class="altura d-block mx-auto w-auto" [src]="'http://localhost:3000/' + foto.url"
+                                    <img class="altura d-block mx-auto w-auto"
+                                        [src]="'http://localhost:3000/' + foto.url"
                                         (click)="openImageModal('http://localhost:3000/' + foto.url)"
                                         alt="Foto del artículo" style="cursor: pointer; object-fit: contain;">
                                 </div>
@@ -37,89 +38,88 @@
                 </div>
                 }
             </div>
-        </div>
-    </div>
 
-    <!-- Información -->
-    <div class="row g-4 mt-2">
+            <!-- Información -->
+            <div class="row g-4 mt-2 mb-3 px-4">
 
-        <!-- Artículo -->
-        <div class="col-lg-5">
+                <!-- Artículo -->
+                <div class="col-lg-5">
 
-            <div class="d-flex justify-content-between align-items-start">
-                <h3 class="fw-bold">
-                    {{article()?.titulo}}
-                </h3>
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h3 class="fw-bold">
+                            {{article()?.titulo}}
+                        </h3>
 
-                <button *ngIf="!estaReportado && !estaVendido" class="btn btn-outline-danger btn-sm"
-                    (click)="onReportar()">
-                    <i class="fa fa-flag me-1"></i> Reportar
-                </button>
-            </div>
-
-            <p class="text-muted">
-                {{article()?.descripcion}}
-            </p>
-
-            <p class="mb-1">
-                <strong>Estado:</strong> {{article()?.estadoProducto}}
-            </p>
-
-            <p class="mb-1">
-                <strong>Envío:</strong> {{article()?.tipoEntrega}}
-            </p>
-
-            <p>
-                <strong>Pago:</strong> {{article()?.tipoPago}}
-            </p>
-
-            <span class="badge categoria-badge">
-                {{article()?.categoria_nombre}}
-            </span>
-
-        </div>
-
-        <!-- Precio -->
-        <div class="col-lg-2 d-flex justify-content-center align-items-start">
-            <h1 class="fw-bold">
-                {{article()?.precio}}€
-            </h1>
-        </div>
-
-        <!-- Vendedor -->
-        <div class="col-lg-5">
-            <div class="card">
-                <div class="card-body">
-
-                    <!-- Información del vendedor -->
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-
-                        <div>
-                            <small class="text-muted">Vendedor/a</small>
-                            <p class="mb-0 fw-bold">
-                                {{ article()?.seller?.nombre }}
-                                {{ article()?.seller?.apellidos }}
-                            </p>
-                        </div>
-
-                        <app-detail-seller [sellerId]="article()?.usuarios_id ?? 0">
-                        </app-detail-seller>
-
-                    </div>
-
-                    <!-- Botón -->
-                    <div class="d-grid">
-                        <button class="btn btn-success">
-                            Mensaje directo
+                        <button *ngIf="!estaReportado && !estaVendido" class="btn btn-outline-danger btn-sm"
+                            (click)="onReportar()">
+                            <i class="fa fa-flag me-1"></i> Reportar
                         </button>
                     </div>
 
+                    <p class="text-muted">
+                        {{article()?.descripcion}}
+                    </p>
+
+                    <p class="mb-1">
+                        <strong>Estado:</strong> {{article()?.estadoProducto}}
+                    </p>
+
+                    <p class="mb-1">
+                        <strong>Envío:</strong> {{article()?.tipoEntrega}}
+                    </p>
+
+                    <p>
+                        <strong>Pago:</strong> {{article()?.tipoPago}}
+                    </p>
+
+                    <span class="badge categoria-badge">
+                        {{article()?.categoria_nombre}}
+                    </span>
+
+                </div>
+
+                <!-- Precio -->
+                <div class="col-lg-2 d-flex justify-content-center align-items-start">
+                    <h1 class="fw-bold">
+                        {{article()?.precio}}€
+                    </h1>
+                </div>
+
+                <!-- Vendedor -->
+                <div class="col-lg-5">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <!-- Información del vendedor -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                                <div>
+                                    <small class="text-muted">Vendedor/a</small>
+                                    <p class="mb-0 fw-bold">
+                                        {{ article()?.seller?.nombre }}
+                                        {{ article()?.seller?.apellidos }}
+                                    </p>
+                                </div>
+
+                                <app-detail-seller [sellerId]="article()?.usuarios_id ?? 0">
+                                </app-detail-seller>
+
+                            </div>
+
+                            <!-- Botón -->
+                            <div class="d-grid">
+                                <button class="btn btn-success">
+                                    Mensaje directo
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 
 <!-- Modal -->
 <div class="modal modal-dialog-centered fade" tabindex="-1" role="dialog" [ngClass]="{ show: modalOpen }"
