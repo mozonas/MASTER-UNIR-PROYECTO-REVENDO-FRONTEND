@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
+import { ArticleCardComponent } from '../../shared/components/article-card/article-card.component';
 import { FilterHomeService } from '../../services/filterHome.service';
 import { ArticleService } from '../../services/article.service';
 import { iArticle } from '../../interfaces/article.interface';
@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, ProductCardComponent],
+  imports: [CommonModule, ArticleCardComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
