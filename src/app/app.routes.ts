@@ -52,7 +52,7 @@ export const routes: Routes = [
   { path: 'user-edit', component: UserPageEditComponent, canActivate: [authGuard] },
   { path: 'article-form', component: ArticleFormComponent, canActivate: [authGuard] },
   { path: 'article-form/:id', component: ArticleFormComponent, canActivate: [authGuard] },
-  { path: 'article-detail/:id', component: ArticleDetailComponent },
+  { path: 'article-detail/:id', component: ArticleDetailComponent, canActivate: [authGuard] },
   { path: 'user-sell/:id', component: UserPageSell, canActivate: [authGuard] },
   {
     path: 'admin',

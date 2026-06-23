@@ -19,13 +19,13 @@ import { DetailSeller } from "../../../shared/detail-seller/detail-seller";
 
 export class UserPageInfoComponent implements OnInit {
   private router = inject(Router);
-  private route = inject(ActivatedRoute); // 👈 Inyectamos la ruta activa
+  private route = inject(ActivatedRoute);
   private userService = inject(UserService);
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
   private sanitizer = inject(DomSanitizer);
 
-  private location = inject(Location); 
+  private location = inject(Location);
 
 
   isLoaded: boolean = false;
@@ -213,6 +213,12 @@ export class UserPageInfoComponent implements OnInit {
   }
 
   onBack(): void {
-    this.location.back();
+    // Si es el admin auditando, lo devolvemos a la lista de usuarios del panel de control
+    if (this.isAdminViewing) {
+      this.router.navigate(['/admin/users']);
+    } else {
+      // Si es un usuario normal, lo mandamos al Home o al Hub principal
+      this.router.navigate(['/home']);
+    }
   }
 }
