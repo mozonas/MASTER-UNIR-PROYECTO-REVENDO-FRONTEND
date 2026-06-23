@@ -24,7 +24,7 @@ export class ArticleFormComponent implements OnInit {
         articleForm!: FormGroup;
         isEditing = false;
         currentArticleId: string | null = null;
-        userId: number | null = null;
+        currentUserId: number | null = null;
         submitted = false;
         activeErrorField: string | null = null;
 
@@ -69,14 +69,9 @@ export class ArticleFormComponent implements OnInit {
                         image3: [''],
                         image4: [''],
                         image5: [''],
-                        usuarios_id: [null],
                 });
 
-                this.route.queryParamMap
-                        .pipe(takeUntilDestroyed(this.destroyRef))
-                        .subscribe((queryParams) => {
-                                this.userId = Number(queryParams.get('userId')) || this.authService.getUserId();
-                        });
+                this.currentUserId = this.authService.getUserId();
 
                 this.route.paramMap
                         .pipe(takeUntilDestroyed(this.destroyRef))
@@ -98,7 +93,6 @@ export class ArticleFormComponent implements OnInit {
                                         image3: '',
                                         image4: '',
                                         image5: '',
-                                        usuarios_id: null,
                                 });
 
                                 if (articleId) {
@@ -137,7 +131,6 @@ export class ArticleFormComponent implements OnInit {
                                         image3: imageUrls[2] ?? '',
                                         image4: imageUrls[3] ?? '',
                                         image5: imageUrls[4] ?? '',
-                                        usuarios_id: article.usuarios_id ?? null,
                                 });
                         },
                         error: (error) => {
@@ -147,7 +140,7 @@ export class ArticleFormComponent implements OnInit {
         }
 
         onSubmit(): void {
-                if (!this.userId) {
+                if (!this.currentUserId) {
                         alert('No se pudo identificar al usuario para guardar el artículo.');
                         return;
                 }
@@ -180,10 +173,11 @@ export class ArticleFormComponent implements OnInit {
                         tipoPago: formValue.tipoPago,
                         categorias_id: formValue.categorias_id,
                         images,
+                        usuarios_id: this.currentUserId,
                 };
                 if (this.isEditing && this.currentArticleId) {
                         this.articleService.updateArticle(this.currentArticleId, articlePayload).subscribe({
-                                next: () => this.router.navigate(['/user-sell', this.userId!]),
+                                next: () => this.router.navigate(['/user-info']),
                                 error: (error) => {
                                         console.error('Error al actualizar el artículo:', error);
                                         alert(error?.error?.message || 'No se pudo guardar el artículo. Intente de nuevo.');
@@ -192,8 +186,8 @@ export class ArticleFormComponent implements OnInit {
                         return;
                 }
 
-                this.articleService.createArticle(articlePayload, this.userId).subscribe({
-                        next: () => this.router.navigate(['/user-sell', this.userId!]),
+                this.articleService.createArticle(articlePayload).subscribe({
+                        next: () => this.router.navigate(['/user-info']),
                         error: (error) => {
                                 console.error('Error al crear el artículo:', error);
                                 alert(error?.error?.message || 'No se pudo crear el artículo. Intente de nuevo.');
@@ -222,10 +216,6 @@ export class ArticleFormComponent implements OnInit {
         }
 
         cancel(): void {
-                if (this.userId) {
-                        this.router.navigate(['/user-sell', this.userId]);
-                } else {
-                        this.router.navigate(['/home']);
-                }
+                void this.router.navigate(['/user-info']);
         }
 }
