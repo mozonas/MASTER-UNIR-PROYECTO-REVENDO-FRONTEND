@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
@@ -18,9 +18,15 @@ export class UserPageSell implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
+  sellerId = input<number | null>(null);
+  adminView = input<boolean>(false);
+
   articles = this.articleService.Articles;
 
+  loggedUserId: number | null = null;
+  resolvedUserId: number | null = null;
   isAdminViewing: boolean = false;
+  canManageArticles: boolean = false;
 
 
   selectedFilter = signal<'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'>('all');
@@ -50,33 +56,26 @@ export class UserPageSell implements OnInit {
   currentPageArticles = computed<iArticle[]>(() => this.currentPageRawArticles());
 
   ngOnInit(): void {
-    this.loadArticles();
+    this.loggedUserId = this.authService.getUserId();
 
-    let userIdParaCargar: number | null = null;
-
-    // 1. Intentamos obtener el ID desde los parámetros de la URL (ruta de Admin)
-    const idFromRoute = this.route.snapshot.paramMap.get('id');
-
-    if (idFromRoute) {
-      userIdParaCargar = Number(idFromRoute);
-      this.isAdminViewing = true; // El admin está auditando un perfil ajeno
-      console.log(`📋 Modo Admin: Visualizando usuario desde URL con ID: ${userIdParaCargar}`);
-    } else {
-      // 2. Si no hay ID en la URL, mantenemos tu comportamiento original (Perfil propio del usuario logueado)
-      userIdParaCargar = this.authService.getUserId();
-      console.log(`👤 Modo Usuario: Visualizando perfil propio con ID: ${userIdParaCargar}`);
-    }
-  }
-
-  private loadArticles(): void {
     const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
-    const userId = routeUserId ?? this.authService.getUserId();
+    this.resolvedUserId = this.sellerId() ?? routeUserId ?? this.loggedUserId;
 
-    if (!userId) {
+    this.isAdminViewing =
+      this.adminView() ||
+      (!!this.resolvedUserId && !!this.loggedUserId && this.resolvedUserId !== this.loggedUserId);
+    this.canManageArticles =
+      !!this.loggedUserId && !!this.resolvedUserId && this.loggedUserId === this.resolvedUserId;
+
+    if (!this.resolvedUserId) {
       console.error('No se pudo obtener el ID de usuario para cargar los artículos.');
       return;
     }
 
+    this.loadArticles(this.resolvedUserId);
+  }
+
+  private loadArticles(userId: number): void {
     this.articleService.getAllUserArticles(userId).subscribe({
       error: (error) => console.error('Error al cargar artículos:', error),
     });
@@ -93,12 +92,20 @@ export class UserPageSell implements OnInit {
   }
 
   onEdit(article: iArticle): void {
-    const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
-    const userId = routeUserId ?? this.authService.getUserId();
-    void this.router.navigate(['/article-form', article.id], { queryParams: { userId } });
+    if (!this.canManageArticles || !this.loggedUserId) {
+      alert('Solo puedes editar tus propios artículos.');
+      return;
+    }
+
+    void this.router.navigate(['/article-form', article.id]);
   }
 
   onDelete(article: iArticle): void {
+    if (!this.canManageArticles || !this.loggedUserId) {
+      alert('Solo puedes eliminar tus propios artículos.');
+      return;
+    }
+
     const confirmed = confirm(`¿Está seguro de que desea eliminar "${article.titulo}"? Esta acción no se puede deshacer.`);
     if (confirmed) {
       this.articleService.deleteArticle(article.id).subscribe({
@@ -109,9 +116,12 @@ export class UserPageSell implements OnInit {
   }
 
   addNewArticle() {
-    const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
-    const userId = routeUserId ?? this.authService.getUserId();
-    void this.router.navigate(['/article-form'], { queryParams: { userId } });
+    if (!this.canManageArticles || !this.loggedUserId) {
+      alert('Solo puedes crear artículos en tu propio perfil.');
+      return;
+    }
+
+    void this.router.navigate(['/article-form']);
   }
 
   getFilterCount(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'): number {
