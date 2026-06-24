@@ -102,8 +102,7 @@ export class HomeComponent implements OnInit {
     // CARGA INICIAL (Ahora utilizando tu servicio)
     this.articleService.getAllPublicArticles().subscribe({
       next: (articulosMapeados) => {
-        const noVendidos = articulosMapeados.filter(a => a.estadoVenta !== 'VENDIDO');
-        this.allArticles.set(noVendidos);
+        this.allArticles.set(articulosMapeados);
         this.results.set(this.articles());
         this.loading.set(false);
       },
@@ -188,9 +187,8 @@ export class HomeComponent implements OnInit {
         const mapped = Array.isArray(resp?.data)
           ? resp.data.map((a: any) => (this.articleService as any).mapRawArticleToIArticle(a)).filter(Boolean)
           : [];
-        const noVendidos = mapped.filter((a: iArticle) => a.estadoVenta !== 'VENDIDO');
 
-        this.results.set(noVendidos);
+        this.results.set(mapped);
         this.loading.set(false);
       },
       error: () => this.loading.set(false)
