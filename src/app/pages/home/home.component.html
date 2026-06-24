@@ -5,7 +5,7 @@
   <!-- ===================================== -->
   <div class="home-header">
 
-    @if (hasActiveFilters()) {
+   <!--  @if (hasActiveFilters()) {
       <h1 class="home-title">Resultados filtrados</h1>
     }
     @else if (categoriaIds()?.length) {
@@ -13,7 +13,18 @@
     }
     @else {
       <h1 class="home-title">Artículos</h1>
+    } -->
+
+    @if (categoriaIds()?.length) {
+      <h1 class="home-title">{{ tituloCategoria() }}</h1>
     }
+    @else if (hasActiveFilters()) {
+      <h1 class="home-title">Resultados filtrados</h1>
+    }
+    @else {
+      <h1 class="home-title">Artículos</h1>
+    }
+
 
     @if (!loading()) {
       <span class="home-count">{{ results().length }} artículos</span>
@@ -141,7 +152,7 @@
   <!-- ===================================== -->
   <div class="products-grid">
     @for (article of results(); track article.id) {
-      <app-product-card [article]="article" />
+      <app-article-card [article]="article" />
     }
   </div>
 
