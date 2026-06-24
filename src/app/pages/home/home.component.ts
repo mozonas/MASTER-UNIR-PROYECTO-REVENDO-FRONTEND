@@ -116,7 +116,8 @@ export class HomeComponent implements OnInit {
   }
 
   addNewArticle() {
-    alert('Crear nuevo artículo\n(Placeholder)');
+    this.router.navigate(['/article-form']);
+    
   }
 
   // ============================================================
