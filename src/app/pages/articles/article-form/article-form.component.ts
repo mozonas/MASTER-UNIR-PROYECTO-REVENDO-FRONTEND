@@ -188,17 +188,18 @@ export class ArticleFormComponent implements OnInit {
                 this.activeErrorField = this.getFirstInvalidField();
 
                 if (this.articleForm.invalid || this.activeErrorField) {
-                        
-                        if(this.activeErrorField){
+                        if (this.activeErrorField) {
                                 const targetField = this.formFields().find(field =>
                                         field.nativeElement.getAttribute('formControlName') === this.activeErrorField
                                 );
-                                if(targetField){
+                                if (targetField) {
                                         const element = targetField.nativeElement;
-                                        element.scrollIntoView({behavior:'smooth', block:'center'})
-                                        element.focus();
-                                }
+                                        const scrollOffset = 120;
+                                        const top = element.getBoundingClientRect().top + window.scrollY - scrollOffset;
 
+                                        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+                                        element.focus({ preventScroll: true });
+                                }
                         }
                         return;
                 }
