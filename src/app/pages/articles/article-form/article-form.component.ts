@@ -24,6 +24,9 @@ export class ArticleFormComponent implements OnInit {
         currentArticleId: string | null = null;
         submitted = false;
         activeErrorField: string | null = null;
+        selectedImageFiles = signal<File[]>([]);
+        existingImageUrls = signal<string[]>([]);
+        private readonly maxImages = 5;
 
         tipoEntregaOptions = signal<string[]>([]);
         tipoPagoOptions = signal<string[]>([]);
@@ -39,7 +42,7 @@ export class ArticleFormComponent implements OnInit {
                 'tipoEntrega',
                 'tipoPago',
                 'estadoProducto',
-                'image1',
+                'imageFiles',
         ] as const;
 
         ngOnInit(): void {
@@ -63,11 +66,7 @@ export class ArticleFormComponent implements OnInit {
                         tipoEntrega: ['', Validators.required],
                         tipoPago: ['', Validators.required],
                         categorias_id: ['', [Validators.required]],
-                        image1: ['', [Validators.required]],
-                        image2: [''],
-                        image3: [''],
-                        image4: [''],
-                        image5: [''],
+                        imageFiles: [null, [Validators.required]],
                 });
                 this.route.paramMap
                         .pipe(takeUntilDestroyed(this.destroyRef))
@@ -84,25 +83,23 @@ export class ArticleFormComponent implements OnInit {
                                         tipoEntrega: '',
                                         tipoPago: '',
                                         categorias_id: '',
-                                        image1: '',
-                                        image2: '',
-                                        image3: '',
-                                        image4: '',
-                                        image5: '',
+                                        imageFiles: null,
                                 });
+                                this.selectedImageFiles.set([]);
+                                this.existingImageUrls.set([]);
 
                                 if (articleId) {
                                         this.isEditing = true;
-                                        this.articleForm.get('image1')?.clearValidators();
-                                        this.articleForm.get('image1')?.updateValueAndValidity({ emitEvent: false });
+                                        this.articleForm.get('imageFiles')?.clearValidators();
+                                        this.articleForm.get('imageFiles')?.updateValueAndValidity({ emitEvent: false });
                                         this.currentArticleId = articleId;
                                         this.loadArticle(articleId);
                                         return;
                                 }
 
                                 this.isEditing = false;
-                                this.articleForm.get('image1')?.setValidators([Validators.required]);
-                                this.articleForm.get('image1')?.updateValueAndValidity({ emitEvent: false });
+                                this.articleForm.get('imageFiles')?.setValidators([Validators.required]);
+                                this.articleForm.get('imageFiles')?.updateValueAndValidity({ emitEvent: false });
                                 this.currentArticleId = null;
                         });
         }
@@ -114,6 +111,7 @@ export class ArticleFormComponent implements OnInit {
                                         return;
                                 }
                                 const imageUrls = article.fotos?.map((foto) => foto.url).slice(0, 5) ?? [];
+                                this.existingImageUrls.set(imageUrls.length ? imageUrls : (article.image ? [article.image] : []));
                                 this.articleForm.patchValue({
                                         titulo: article.titulo,
                                         descripcion: article.descripcion,
@@ -122,17 +120,71 @@ export class ArticleFormComponent implements OnInit {
                                         tipoEntrega: article.tipoEntrega,
                                         tipoPago: article.tipoPago,
                                         categorias_id: article.categorias_id ?? '',
-                                        image1: imageUrls[0] ?? article.image ?? '',
-                                        image2: imageUrls[1] ?? '',
-                                        image3: imageUrls[2] ?? '',
-                                        image4: imageUrls[3] ?? '',
-                                        image5: imageUrls[4] ?? '',
+                                        imageFiles: null,
                                 });
                         },
                         error: (error) => {
                                 console.error('Error al cargar artículo para editar:', error);
                         }
                 });
+        }
+
+        onImagesSelected(event: Event): void {
+                const input = event.target as HTMLInputElement;
+                const files = Array.from(input.files ?? []);
+
+                if (files.length === 0) {
+                        this.selectedImageFiles.set([]);
+                        this.articleForm.get('imageFiles')?.setValue(null);
+                        return;
+                }
+
+                const validImageFiles = files.filter((file) => this.isAllowedImageFile(file));
+                const invalidFiles = files.filter((file) => !this.isAllowedImageFile(file));
+
+                if (invalidFiles.length > 0) {
+                        alert('Solo se permiten archivos de imagen (jpg, jpeg, png, webp, gif, bmp, svg).');
+                }
+
+                const limitedFiles = validImageFiles.slice(0, this.maxImages);
+                if (validImageFiles.length > this.maxImages) {
+                        alert(`Solo se permiten ${this.maxImages} imágenes como máximo.`);
+                }
+
+                this.selectedImageFiles.set(limitedFiles);
+                this.articleForm.get('imageFiles')?.setValue(limitedFiles.length ? limitedFiles : null);
+        }
+
+        clearSelectedImages(): void {
+                this.selectedImageFiles.set([]);
+                this.articleForm.get('imageFiles')?.setValue(null);
+        }
+
+        private isAllowedImageFile(file: File): boolean {
+                if (file.type.startsWith('image/')) {
+                        return true;
+                }
+
+                return /\.(jpg|jpeg|png|webp|gif|bmp|svg)$/i.test(file.name);
+        }
+
+        private buildFormData(): FormData {
+                const formValue = this.articleForm.value;
+                const formData = new FormData();
+
+                formData.append('titulo', String(formValue.titulo ?? ''));
+                formData.append('descripcion', String(formValue.descripcion ?? ''));
+                formData.append('precio', String(formValue.precio ?? ''));
+                formData.append('estadoProducto', String(formValue.estadoProducto ?? ''));
+                formData.append('tipoEntrega', String(formValue.tipoEntrega ?? ''));
+                formData.append('tipoPago', String(formValue.tipoPago ?? ''));
+                formData.append('categorias_id', String(formValue.categorias_id ?? ''));
+
+                for (const file of this.selectedImageFiles()) {
+                        formData.append('images', file, file.name);
+                }
+
+                return formData;
         }
 
         onSubmit(): void {
@@ -155,28 +207,7 @@ export class ArticleFormComponent implements OnInit {
                         return;
                 }
 
-                const formValue = this.articleForm.value;
-                const images = [
-                        formValue.image1,
-                        formValue.image2,
-                        formValue.image3,
-                        formValue.image4,
-                        formValue.image5,
-                ]
-                        .map((url: string | null | undefined) => (url ?? '').trim())
-                        .filter((url: string) => !!url)
-                        .slice(0, 5);
-
-                const articlePayload = {
-                        titulo: formValue.titulo,
-                        descripcion: formValue.descripcion,
-                        precio: formValue.precio,
-                        estadoProducto: formValue.estadoProducto,
-                        tipoEntrega: formValue.tipoEntrega,
-                        tipoPago: formValue.tipoPago,
-                        categorias_id: formValue.categorias_id,
-                        images,
-                };
+                const articlePayload = this.buildFormData();
                 if (this.isEditing && this.currentArticleId) {
                         this.articleService.updateArticle(this.currentArticleId, articlePayload).subscribe({
                                 next: () => this.router.navigate(['/user-info']),

@@ -14,7 +14,6 @@ export interface ArticleUpsertPayload {
   tipoEntrega: string;
   tipoPago: string;
   categorias_id: number | string;
-  images?: string[];
 }
 
 export interface ArticleEnumsPayload {
@@ -69,19 +68,18 @@ export class ArticleService {
     );
   }
 
-  // Añade esto dentro de tu ArticleService
   getAllPublicArticles(): Observable<iArticle[]> {
     return this.http.get<any>(`${this.apiUrl}/articles`).pipe(
       map(response => this.normalizeArticlesResponse(response))
     );
   }
 
-  createArticle(article: ArticleUpsertPayload): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/user-sell`, article);
+  createArticle(formData: FormData): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/user-sell`, formData);
   }
 
-  updateArticle(id: string, updatedArticle: Partial<ArticleUpsertPayload>): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/user-sell/${id}`, updatedArticle);
+  updateArticle(id: string, formData: FormData): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/user-sell/${id}`, formData);
   }
 
   deleteArticle(id: string): Observable<any> {

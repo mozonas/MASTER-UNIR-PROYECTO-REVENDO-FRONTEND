@@ -90,32 +90,45 @@
                                 </div>
 
                                 <div class="col-12">
-                                        <label for="image1" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">URL de imagen 1 (obligatoria)</label>
-                                        <input #formField id="image1" type="text" formControlName="image1" class="form-control p-2.5 rounded-3" placeholder="https://..." [class.is-invalid]="isControlInvalid('image1')">
-                                        @if (isControlInvalid('image1')) {
-                                        <div class="invalid-feedback">La primera imagen es obligatoria.</div>
+                                        <label for="imageFiles" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">
+                                                Imágenes del artículo (máximo 5)
+                                        </label>
+                                        <input #formField id="imageFiles" type="file" formControlName="imageFiles" class="form-control p-2.5 rounded-3"
+                                                accept="image/*,.jpg,.jpeg,.png,.webp,.gif,.bmp,.svg" multiple (change)="onImagesSelected($event)"
+                                                [class.is-invalid]="isControlInvalid('imageFiles')">
+                                        @if (isControlInvalid('imageFiles')) {
+                                        <div class="invalid-feedback">Debes seleccionar al menos una imagen.</div>
                                         }
+                                        <small class="text-muted d-block mt-1">Formatos permitidos: jpg, jpeg, png, webp, gif, bmp, svg.</small>
                                 </div>
 
+                                @if (selectedImageFiles().length > 0) {
                                 <div class="col-12">
-                                        <label for="image2" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">URL de imagen 2 (opcional)</label>
-                                        <input id="image2" type="text" formControlName="image2" class="form-control p-2.5 rounded-3" placeholder="https://...">
+                                        <div class="border rounded-3 p-3 bg-light">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <strong>Imágenes seleccionadas ({{ selectedImageFiles().length }})</strong>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="clearSelectedImages()">Limpiar selección</button>
+                                                </div>
+                                                <ul class="mb-0 ps-3">
+                                                        @for (file of selectedImageFiles(); track file.name + '-' + file.size) {
+                                                        <li>{{ file.name }}</li>
+                                                        }
+                                                </ul>
+                                        </div>
                                 </div>
-
+                                } @else if (isEditing && existingImageUrls().length > 0) {
                                 <div class="col-12">
-                                        <label for="image3" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">URL de imagen 3 (opcional)</label>
-                                        <input id="image3" type="text" formControlName="image3" class="form-control p-2.5 rounded-3" placeholder="https://...">
+                                        <div class="border rounded-3 p-3 bg-light">
+                                                <strong class="d-block mb-2">Imágenes actuales</strong>
+                                                <ul class="mb-0 ps-3">
+                                                        @for (url of existingImageUrls(); track url) {
+                                                        <li>{{ url }}</li>
+                                                        }
+                                                </ul>
+                                                <small class="text-muted d-block mt-2">Selecciona nuevas imágenes solo si quieres reemplazarlas.</small>
+                                        </div>
                                 </div>
-
-                                <div class="col-12">
-                                        <label for="image4" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">URL de imagen 4 (opcional)</label>
-                                        <input id="image4" type="text" formControlName="image4" class="form-control p-2.5 rounded-3" placeholder="https://...">
-                                </div>
-
-                                <div class="col-12">
-                                        <label for="image5" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">URL de imagen 5 (opcional)</label>
-                                        <input id="image5" type="text" formControlName="image5" class="form-control p-2.5 rounded-3" placeholder="https://...">
-                                </div>
+                                }
 
                                 <div class="col-12 mt-2 border-top pt-4 d-flex justify-content-end gap-3">
                                         <button type="button" class="btn btn-light px-4 fw-semibold border" (click)="goBack()">Cancelar</button>
