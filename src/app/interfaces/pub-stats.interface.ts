@@ -1,3 +1,5 @@
 export interface PubStats {
-    total:number
+  thisMonth: number;
+  lastMonth: number;
+  difference: number;
 }
