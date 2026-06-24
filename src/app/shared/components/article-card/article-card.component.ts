@@ -6,12 +6,12 @@ import { Router } from '@angular/router';
 import { Article } from '../../../interfaces/article.interface';
 
 @Component({
-  selector: 'app-product-card',
+  selector: 'app-article-card',
   imports: [CurrencyPipe],
-  templateUrl: './product-card.component.html',
-  styleUrl: './product-card.component.css',
+  templateUrl: './article-card.component.html',
+  styleUrl: './article-card.component.css',
 })
-export class ProductCardComponent {
+export class ArticleCardComponent {
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
 

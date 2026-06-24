@@ -1,14 +1,15 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
+import { ArticleCardComponent } from '../../shared/components/article-card/article-card.component';
 import { FilterHomeService } from '../../services/filterHome.service';
 import { ArticleService } from '../../services/article.service';
 import { Article } from '../../interfaces/article.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, ProductCardComponent],
+  imports: [CommonModule, ArticleCardComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
@@ -16,6 +17,7 @@ export class HomeComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private filterHomeService = inject(FilterHomeService);
   private articleService = inject(ArticleService);
+  private router = inject(Router);
 
   allArticles = signal<Article[]>([]);
   categoriaIds = signal<number[] | null>(null);
@@ -48,16 +50,54 @@ export class HomeComponent implements OnInit {
   });
 
   ngOnInit(): void {
+
     // 1) Escuchar cambios en la URL
-    this.route.queryParamMap.subscribe(params => {
+/*     this.route.queryParamMap.subscribe(params => {
       const cat = params.get('categoria');
       this.categoriaIds.set(cat ? cat.split(',').map(Number) : null);
-      this.tituloCategoria.set(params.get('nombre'));
+
+      // Obtener el nombre real desde categories()
+      if (cat) {
+        const id = Number(cat);
+        const catObj = this.categories().find(c => c.id === id);
+        this.tituloCategoria.set(catObj?.nombre ?? null);
+      } else {
+        this.tituloCategoria.set(null);
+      }
+
+      if (this.allArticles().length > 0) {
+        this.results.set(this.articles());
+      }
+    }); */
+
+    this.route.queryParamMap.subscribe(params => {
+      const cat = params.get('categoria');
+      const nombreParam = params.get('nombre'); // <-- puede venir "Moda y accesorios"
+
+      this.categoriaIds.set(cat ? cat.split(',').map(Number) : null);
+
+      if (cat) {
+        // 1) Si llega nombre en la URL → usarlo
+        if (nombreParam) {
+          this.tituloCategoria.set(decodeURIComponent(nombreParam));
+        } 
+        else {
+          // 2) Si NO llega nombre → obtenerlo desde categories()
+          const id = Number(cat);
+          const catObj = this.categories().find(c => c.id === id);
+          this.tituloCategoria.set(catObj?.nombre ?? null);
+        }
+      } 
+      else {
+        // 3) Sin categoría → null
+        this.tituloCategoria.set(null);
+      }
 
       if (this.allArticles().length > 0) {
         this.results.set(this.articles());
       }
     });
+
 
     // CARGA INICIAL (Ahora utilizando tu servicio)
     this.articleService.getAllPublicArticles().subscribe({
@@ -76,7 +116,8 @@ export class HomeComponent implements OnInit {
   }
 
   addNewArticle() {
-    alert('Crear nuevo artículo\n(Placeholder)');
+    this.router.navigate(['/article-form']);
+    
   }
 
   // ============================================================
@@ -118,8 +159,13 @@ export class HomeComponent implements OnInit {
     this.executeSearch();
   }
 
+/*   resetFilters() {
+    this.filterHomeService.resetFilters();
+    this.results.set(this.allArticles());
+  } */
   resetFilters() {
     this.filterHomeService.resetFilters();
+    this.router.navigate(['/home']); // sin params
     this.results.set(this.allArticles());
   }
 
@@ -127,6 +173,11 @@ export class HomeComponent implements OnInit {
   //   LLAMADA CENTRAL AL BUSCADOR
   // ============================================================
   private executeSearch() {
+    this.router.navigate([], {
+    relativeTo: this.route,
+    queryParams: {},
+    replaceUrl: true
+    });
     this.loading.set(true);
 
     this.filterHomeService.searchArticles().subscribe({

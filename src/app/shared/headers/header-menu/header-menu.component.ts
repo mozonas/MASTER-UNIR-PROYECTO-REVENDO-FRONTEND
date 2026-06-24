@@ -10,11 +10,11 @@ interface GrupoCategoria { label: string; ids: number[]; subcategorias: Categori
 
 // Agrupación visual: los IDs vienen de SELECT id, nombre FROM categorias
 const GRUPOS_CONFIG: { label: string; ids: number[] }[] = [
-  { label: 'Electrónica',       ids: [1, 2, 3, 4, 5] },          // Móviles, Tablets, Ordenadores, Consolas, Televisores
-  { label: 'Hogar y muebles',   ids: [6, 7, 11, 20] },           // Muebles, Electrodomésticos, Jardín, Bricolaje
+  { label: 'Electrónica', ids: [1, 2, 3, 4, 5] },          // Móviles, Tablets, Ordenadores, Consolas, Televisores
+  { label: 'Hogar y muebles', ids: [6, 7, 11, 20] },           // Muebles, Electrodomésticos, Jardín, Bricolaje
   { label: 'Moda y accesorios', ids: [8, 9, 10] },               // Ropa, Calzado, Accesorios
-  { label: 'Ocio y deportes',   ids: [14, 17, 18, 19] },         // Instrumentos, Libros y ocio, Coleccionismo, Deporte y aire libre
-  { label: 'Motor y familia',   ids: [12, 13, 15, 16] },         // Bebés, Mascotas, Coches, Motos
+  { label: 'Ocio y deportes', ids: [14, 17, 18, 19] },         // Instrumentos, Libros y ocio, Coleccionismo, Deporte y aire libre
+  { label: 'Motor y familia', ids: [12, 13, 15, 16] },         // Bebés, Mascotas, Coches, Motos
 ];
 
 @Component({
@@ -58,5 +58,9 @@ export class HeaderMenuComponent implements OnInit {
   logout(): void {
     sessionStorage.removeItem('token');
     this.router.navigate(['/']);
+  }
+
+  openNewArticle() {
+    this.router.navigate(['/article-form']);
   }
 }
