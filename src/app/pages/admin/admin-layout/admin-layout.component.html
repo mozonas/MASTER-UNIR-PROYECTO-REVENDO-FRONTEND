@@ -4,12 +4,13 @@
   <app-aside></app-aside>
 
   <!-- Menú MODERADOR -->
-  <app-sidebar
-    title="Moderación"
-    [options]="moderatorOptions"
-    (optionSelected)="handleModeratorNav($event)">
-  </app-sidebar>
-
+  <div class="contenedor-moderacion">
+    <app-sidebar
+      title="Moderación"
+      [options]="moderatorOptions"
+      (optionSelected)="handleModeratorNav($event)">
+    </app-sidebar>
+  </div>
 </aside>
 
 <section class="component-view">
