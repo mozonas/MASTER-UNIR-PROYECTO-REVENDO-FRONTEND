@@ -1,82 +1,61 @@
-<div class="home-container">
+<div class="home-container container-fluid px-3 px-md-4 py-4">
 
   <!-- ===================================== -->
   <!--              CABECERA                 -->
   <!-- ===================================== -->
-  <div class="home-header">
+  <div class="home-header d-flex mb-4 row">
 
-   <!--  @if (hasActiveFilters()) {
-      <h1 class="home-title">Resultados filtrados</h1>
-    }
-    @else if (categoriaIds()?.length) {
-      <h1 class="home-title">{{ tituloCategoria() }}</h1>
-    }
-    @else {
-      <h1 class="home-title">Artículos</h1>
-    } -->
-
-    @if (categoriaIds()?.length) {
-      <h1 class="home-title">{{ tituloCategoria() }}</h1>
-    }
-    @else if (hasActiveFilters()) {
-      <h1 class="home-title">Resultados filtrados</h1>
-    }
-    @else {
-      <h1 class="home-title">Artículos</h1>
-    }
-
-
-    @if (!loading()) {
-      <span class="home-count">{{ results().length }} artículos</span>
-    }
-
-    <button class="btn btn-success btn-lg shadow-sm home-new-article-btn" (click)="addNewArticle()">
+    <button class="btn btn-success btn-lg shadow-sm home-new-article-btn col-12 col-lg-2" (click)="addNewArticle()">
       <i class="bi bi-plus-lg me-2"></i> Nuevo Artículo
     </button>
 
-  </div>
+    <div class="d-flex align-items-baseline gap-2 flex-wrap col-12 col-lg-10">
+      @if (categoriaIds()?.length) {
+      <h1 class="home-title h2 mb-0">{{ tituloCategoria() }}</h1>
+      }
+      @else if (hasActiveFilters()) {
+      <h1 class="home-title h2 mb-0">Resultados filtrados</h1>
+      }
+      @else {
+      <h1 class="home-title h2 mb-0">Artículos</h1>
+      }
 
+      @if (!loading()) {
+      <span class="home-count text-muted small">({{ results().length }} artículos)</span>
+      }
+    </div>
+
+  </div>
 
   <!-- ===================================== -->
   <!--                FILTROS                -->
   <!-- ===================================== -->
-  <div class="home-filters d-flex flex-nowrap gap-3 overflow-auto pb-2 mb-4">
+  <!-- Usamos un grid que pasa de 1 columna en móvil a múltiples columnas en pantallas grandes -->
+  <div class="home-filters row g-3 mb-4">
 
     <!-- Buscador -->
-    <div class="d-flex flex-column">
+    <div class="col-12 col-md-4 col-lg-3">
       <label class="small text-muted mb-1">Buscar</label>
-      <input
-        type="text"
-        class="form-control"
-        style="width: 200px"
-        placeholder="Buscar artículos..."
-        [value]="filters().texto"
+      <input type="text" class="form-control w-100" placeholder="Buscar artículos..." [value]="filters().texto"
         (input)="onSearchTextChange($any($event.target).value)" />
     </div>
 
     <!-- Categoría -->
-    <div class="d-flex flex-column">
+    <div class="col-6 col-md-3 col-lg-2">
       <label class="small text-muted mb-1">Categoría</label>
-      <select
-        class="form-select"
-        style="width: 180px"
-        [value]="filters().categoria"
+      <select class="form-select w-100" [value]="filters().categoria"
         (change)="onCategoryChange($any($event.target).value)">
         <option value="">Todas</option>
         @for (cat of categories(); track cat.id) {
-          <option [value]="cat.id">{{ cat.nombre }}</option>
+        <option [value]="cat.id">{{ cat.nombre }}</option>
         }
       </select>
     </div>
 
     <!-- Estado -->
-    <div class="d-flex flex-column">
+    <div class="col-6 col-md-3 col-lg-2">
       <label class="small text-muted mb-1">Estado</label>
-      <select
-        class="form-select"
-        style="width: 160px"
-        [value]="filters().estado"
-        (change)="onEstadoChange($any($event.target).value)">
+      <select class="form-select w-100" [value]="filters().estado" (change)="onEstadoChange($any($event.target).value)">
         <option value="">Todos</option>
         <option value="Sin usar">Sin usar</option>
         <option value="En buen estado">En buen estado</option>
@@ -86,73 +65,46 @@
     </div>
 
     <!-- Precio mínimo -->
-    <div class="d-flex flex-column">
-      <label class="small text-muted mb-1">Precio mín.</label>
-      <input
-        type="number"
-        class="form-control"
-        style="width: 120px"
-        placeholder="Mín."
-        [value]="filters().min"
+    <div class="col-6 col-sm-4 col-md-2 col-lg-1">
+      <label class="small text-muted mb-1">Mín.</label>
+      <input type="number" class="form-control w-100" placeholder="0" [value]="filters().min"
         (input)="onMinPriceChange($any($event.target).value)" />
     </div>
 
     <!-- Precio máximo -->
-    <div class="d-flex flex-column">
-      <label class="small text-muted mb-1">Precio máx.</label>
-      <input
-        type="number"
-        class="form-control"
-        style="width: 120px"
-        placeholder="Máx."
-        [value]="filters().max"
+    <div class="col-6 col-sm-4 col-md-2 col-lg-1">
+      <label class="small text-muted mb-1">Máx.</label>
+      <input type="number" class="form-control w-100" placeholder="Max" [value]="filters().max"
         (input)="onMaxPriceChange($any($event.target).value)" />
     </div>
 
     <!-- Ordenación -->
-    <div class="d-flex flex-column">
+    <div class="col-12 col-sm-4 col-md-3 col-lg-2">
       <label class="small text-muted mb-1">Ordenar por</label>
-      <select
-        class="form-select"
-        style="width: 160px"
-        [value]="filters().orden"
-        (change)="onOrdenChange($any($event.target).value)">
+      <select class="form-select w-100" [value]="filters().orden" (change)="onOrdenChange($any($event.target).value)">
         <option value="recientes">Más recientes</option>
         <option value="precio_asc">Precio ↑</option>
         <option value="precio_desc">Precio ↓</option>
       </select>
     </div>
 
-    <!-- Localización -->
-    <div class="d-flex flex-column">
-      <label class="small text-muted mb-1">Localización</label>
-      <input
-        type="text"
-        class="form-control"
-        style="width: 160px"
-        placeholder="Localización"
-        [value]="filters().localizacion"
-        (input)="onLocationChange($any($event.target).value)" />
-    </div>
-
     <!-- Reset -->
-    <div class="d-flex flex-column justify-content-end">
-      <button
-        class="btn btn-outline-secondary"
-        (click)="resetFilters()">
+    <div class="col-12 col-lg-1 d-flex align-items-end">
+      <button class="btn btn-outline-secondary w-100" (click)="resetFilters()">
         Limpiar
       </button>
     </div>
 
   </div>
 
+  <hr class="text-muted opacity-25 my-4">
 
   <!-- ===================================== -->
   <!--           GRID DE PRODUCTOS           -->
   <!-- ===================================== -->
-  <div class="products-grid">
+  <div class="products-grid pt-5">
     @for (article of results(); track article.id) {
-      <app-article-card [article]="article" />
+    <app-article-card [article]="article" />
     }
   </div>
 
