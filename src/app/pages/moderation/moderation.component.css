@@ -1,9 +1,13 @@
 :host {
   display: flex;
   flex-direction: row;
-  width: 100%;
-  height: calc(100vh - 138px);
-  overflow: hidden;
+  position: fixed;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  box-sizing: border-box;
+  overflow: hidden !important;
 }
 
 aside {
@@ -11,15 +15,27 @@ aside {
   min-width: 250px;
   max-width: 250px;
   height: 100%;
+  background-color: #8cd86a;
+  flex-shrink: 0;
+  overflow: hidden !important;
 }
 
-/* El contenido principal se estira en el espacio restante */
 .component-view {
   flex-grow: 1;
   width: calc(100% - 250px);
-  padding: 1rem;
+  padding: 1.5rem;
   overflow-y: auto;
-  /* Si el contenido es largo, solo se hace scroll aquí */
   background-color: #f8f9fa;
   height: 100%;
+  box-sizing: border-box;
+  padding-bottom: 200px;
+}
+
+aside ::ng-deep {
+  .custom-sidebar {
+    height: 100% !important;
+    overflow: hidden !important;
+    background-color: transparent !important;
+    padding-bottom: 0 !important;
+  }
 }

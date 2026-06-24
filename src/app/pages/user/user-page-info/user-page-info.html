@@ -34,9 +34,14 @@
             </p>
 
             <div class="d-flex justify-content-center mt-3">
-              @if (!isAdminViewing) {
-              <button class="btn btn-outline-secondary btn-sm px-3 rounded-pill fw-semibold" (click)="irAEditar()"> <i
-                  class="fa fa-pencil me-1"></i>Editar mi Perfil</button>
+              @if (isAdminViewing) {
+              <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-pill fw-semibold" (click)="irAEditar()">
+                <i class="fa fa-edit me-1"></i> Modificar Perfil
+              </button>
+              } @else {
+              <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-pill fw-semibold" (click)="irAEditar()">
+                <i class="fa fa-pencil me-1"></i> Editar mi Perfil
+              </button>
               }
             </div>
           </div>
@@ -90,7 +95,7 @@
       </button>
     </nav>
 
-    <main class="animate-fade-in">
+    <section class="animate-fade-in">
 
       @if (activeTab === 'productos') {
       <div>
@@ -146,7 +151,7 @@
       </div>
       }
 
-    </main>
+    </section>
 
   </div>
 </div>

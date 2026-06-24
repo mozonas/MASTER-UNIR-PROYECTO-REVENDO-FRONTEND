@@ -5,7 +5,7 @@ import { SidebarComponent } from "../sidebar/sidebar.component";
 
 @Component({
   selector: 'app-aside',
-  imports: [RouterLink, SidebarComponent],
+  imports: [RouterLink],
   templateUrl: './aside.component.html',
   styleUrl: './aside.component.css',
 })
@@ -18,8 +18,8 @@ export class AsideComponent {
 
   actividadOpen = false;
 
-  desplegarMenu():void {
-  this.actividadOpen = !this.actividadOpen;
+  desplegarMenu(): void {
+    this.actividadOpen = !this.actividadOpen;
   }
 
 

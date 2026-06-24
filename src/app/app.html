@@ -1,31 +1,21 @@
-<body class="bg-light pagebody d-flex flex-column min-vh-100">
+<section class="bg-light d-flex flex-column min-vh-100">
 
-    <!-- HEADER -->
     @if (authService.isLogged()) {
-    <header class="container-fluid sticky-top bg-white shadow-sm">
-        <div class="row">
-            <div>
-                <app-header-menu></app-header-menu>
-            </div>
-        </div>
-    </header>
+        <app-header-menu></app-header-menu>
     }
 
-
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="container-fluid flex-grow-1">
+    <section class="container-fluid flex-grow-1 app-main">
         <div class="row">
             <div class="mb-5">
                 <router-outlet></router-outlet>
             </div>
         </div>
-    </main>
+    </section>
 
-    <!-- FOOTER -->
     @if (authService.isLogged()) {
     <footer class="mt-auto">
         <app-footer></app-footer>
     </footer>
     }
 
-</body>
+</section>

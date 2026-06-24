@@ -1,13 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@300;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@300;600;700&display=swap');
+
+
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background-color: #fff;
+  width: 100%;
+}
+
+header {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
 
 * {
   box-sizing: border-box;
   font-family: 'Geologica', sans-serif;
-}
-
-.page-header {
-  width: 100%;
-  background: #fff;
 }
 
 .logo-container {
@@ -15,27 +25,24 @@
   align-items: center;
   justify-content: flex-start;
   gap: 8px;
-  /* Un poco más de espacio entre el icono y el texto */
 }
 
 .texto-marca {
-  font-size: 2em;
+  font-size: 2rem;
   font-weight: 300;
 }
 
-/* Formateo de textos de administración */
 .texto-admin p:first-child {
-  font-size: 1.2rem;
-  /* Reducido un poco para que no rompa el diseño */
+  font-size: 1.1rem;
   font-weight: 600;
 }
 
-.texto-admin p:last-child {
-  font-size: 0.85rem;
-}
-
-/* Estilo activo personalizado para los elementos del menú */
 .dropdown-item:active {
   background-color: #8cd86a !important;
   color: #fff !important;
+}
+
+.page-nav .nav-link {
+  display: inline-block;
+  width: 100%;
 }

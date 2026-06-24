@@ -209,7 +209,13 @@ export class UserPageInfoComponent implements OnInit {
   }
 
   irAEditar(): void {
-    this.router.navigate(['/user-edit']);
+    if (this.isAdminViewing) {
+      // Si el admin está auditando, pasamos el ID del usuario en la ruta para mantener el modo admin
+      this.router.navigate(['/admin/users/editar/', this.idVendedor]);
+    } else {
+      // Si es el usuario común en su propio perfil, va directo a la ruta limpia
+      this.router.navigate(['/user-edit']);
+    }
   }
 
   onBack(): void {
