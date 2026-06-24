@@ -4,7 +4,6 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ArticleService } from '../../../services/article.service';
-import { AuthService } from '../../../services/auth.service';
 
 @Component({
         selector: 'app-article-form',
@@ -16,7 +15,6 @@ import { AuthService } from '../../../services/auth.service';
 export class ArticleFormComponent implements OnInit {
         private fb = inject(FormBuilder);
         private articleService = inject(ArticleService);
-        private authService = inject(AuthService);
         private route = inject(ActivatedRoute);
         private router = inject(Router);
         private destroyRef = inject(DestroyRef);
@@ -24,7 +22,6 @@ export class ArticleFormComponent implements OnInit {
         articleForm!: FormGroup;
         isEditing = false;
         currentArticleId: string | null = null;
-        currentUserId: number | null = null;
         submitted = false;
         activeErrorField: string | null = null;
 
@@ -72,9 +69,6 @@ export class ArticleFormComponent implements OnInit {
                         image4: [''],
                         image5: [''],
                 });
-
-                this.currentUserId = this.authService.getUserId();
-
                 this.route.paramMap
                         .pipe(takeUntilDestroyed(this.destroyRef))
                         .subscribe((params) => {
@@ -142,11 +136,6 @@ export class ArticleFormComponent implements OnInit {
         }
 
         onSubmit(): void {
-                if (!this.currentUserId) {
-                        alert('No se pudo identificar al usuario para guardar el artículo.');
-                        return;
-                }
-
                 this.submitted = true;
                 this.activeErrorField = this.getFirstInvalidField();
 
@@ -187,7 +176,6 @@ export class ArticleFormComponent implements OnInit {
                         tipoPago: formValue.tipoPago,
                         categorias_id: formValue.categorias_id,
                         images,
-                        usuarios_id: this.currentUserId,
                 };
                 if (this.isEditing && this.currentArticleId) {
                         this.articleService.updateArticle(this.currentArticleId, articlePayload).subscribe({

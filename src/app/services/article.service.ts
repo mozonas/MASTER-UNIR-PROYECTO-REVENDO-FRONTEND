@@ -15,7 +15,6 @@ export interface ArticleUpsertPayload {
   tipoPago: string;
   categorias_id: number | string;
   images?: string[];
-  usuarios_id?: number;
 }
 
 export interface ArticleEnumsPayload {
