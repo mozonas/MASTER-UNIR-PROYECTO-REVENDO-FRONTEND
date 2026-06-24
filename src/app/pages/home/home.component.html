@@ -5,11 +5,11 @@
   <!-- ===================================== -->
   <div class="home-header d-flex mb-4 row">
 
-    <button class="btn btn-success btn-lg shadow-sm home-new-article-btn col-12 col-lg-2" (click)="addNewArticle()">
+    <button class="btn btn-success btn-lg shadow-sm home-new-article-btn col-12 col-md-3" (click)="addNewArticle()">
       <i class="bi bi-plus-lg me-2"></i> Nuevo Artículo
     </button>
 
-    <div class="d-flex align-items-baseline gap-2 flex-wrap col-12 col-lg-10">
+    <div class="d-flex align-items-baseline gap-2 flex-wrap col-12 col-md-9">
       @if (categoriaIds()?.length) {
       <h1 class="home-title h2 mb-0">{{ tituloCategoria() }}</h1>
       }
