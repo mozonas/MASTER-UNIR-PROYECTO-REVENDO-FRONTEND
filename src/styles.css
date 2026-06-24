@@ -12,3 +12,54 @@
   --secundary-color: #000;
   --font-primary: 700 2rem 'Geologica', sans-serif;
 }
+
+/* sidebar-moderador**/
+
+/* Elimina  paddings laterales del contenedor */
+.contenedor-moderacion .custom-sidebar {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    background-color: #8cd86a !important;
+}
+
+/* Reajuste del títulp del menú (Moderación)*/
+.contenedor-moderacion .custom-sidebar > div.d-flex {
+    padding-left: 0.50rem !important;
+    padding-right: 1.25rem !important;
+    justify-content:flex-start !important;
+    margin-bottom: 0.5rem !important; 
+    padding-bottom: 0.5 !important;   
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+.contenedor-moderacion .nav.flex-column {
+    width: 100% !important;
+}
+
+/* Ajustes de botones */
+.contenedor-moderacion .custom-sidebar .nav-link {
+    font-family: 'Geologica', sans-serif !important;
+    font-size: 0.95rem !important;
+    font-weight: 500 !important;
+    color: #ffffff !important;
+    padding-left: 0.50rem !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: 0 !important; 
+    border-radius: 0 !important; 
+    padding: 10px 1.25rem 10px 0.50rem !important; 
+}
+
+/* Hover Verde Oscuro */
+.contenedor-moderacion .custom-sidebar .nav-link:hover,
+.contenedor-moderacion .custom-sidebar .nav-link.text-dark-50:hover {
+    background-color: #5eaa47 !important;
+    color: #ffffff !important;
+}
+
+/*Estado activo modificado*/
+.contenedor-moderacion .custom-sidebar .active-custom {
+    background-color: #6fbf54 !important; 
+    color: #ffffff !important;
+    font-weight: 500 !important;
+}

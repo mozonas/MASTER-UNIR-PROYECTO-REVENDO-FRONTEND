@@ -222,15 +222,9 @@ export class ArticleService {
   }
 
    // Artículos publicados este mes
-    getPubThisMonth():Observable <PubStats> {
-      return this.http.get<{ total: number }>(`${this.apiUrl}/article/published/this-month`);
+    getPubComp():Observable <PubStats> {
+      return this.http.get<PubStats>(`${this.apiUrl}/article/published/comparison`);
     }
-  
-    // Artículos publicados el mes pasado
-    getPubLastMonth(): Observable<PubStats> {
-      return this.http.get<{ total: number }>(`${this.apiUrl}/article/published/last-month`);
-    }
-  
     // Articulos vendidos este mes
      getVentasMensuales(month: number): Observable<VentasMes[]> {
       return this.http.get<VentasMes[]>(`${this.apiUrl}/article/sold/${month}`);

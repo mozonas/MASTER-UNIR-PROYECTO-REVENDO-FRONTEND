@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, DestroyRef, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, DestroyRef, signal, viewChildren, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -32,6 +32,7 @@ export class ArticleFormComponent implements OnInit {
         tipoPagoOptions = signal<string[]>([]);
         estadoProductoOptions = signal<string[]>([]);
         categoriasOptions = signal<Array<{ id: number; nombre: string }>>([]);
+        private readonly formFields = viewChildren<ElementRef<HTMLElement>>('formField')
 
         private readonly fieldValidationOrder = [
                 'titulo',
@@ -40,6 +41,7 @@ export class ArticleFormComponent implements OnInit {
                 'categorias_id',
                 'tipoEntrega',
                 'tipoPago',
+                'estadoProducto',
                 'image1',
         ] as const;
 
@@ -60,7 +62,7 @@ export class ArticleFormComponent implements OnInit {
                         titulo: ['', [Validators.required, Validators.maxLength(120)]],
                         descripcion: ['', [Validators.required, Validators.minLength(20)]],
                         precio: [0, [Validators.required, Validators.min(1)]],
-                        estadoProducto: [''],
+                        estadoProducto: ['', Validators.required],
                         tipoEntrega: ['', Validators.required],
                         tipoPago: ['', Validators.required],
                         categorias_id: ['', [Validators.required]],
@@ -149,6 +151,18 @@ export class ArticleFormComponent implements OnInit {
                 this.activeErrorField = this.getFirstInvalidField();
 
                 if (this.articleForm.invalid || this.activeErrorField) {
+                        
+                        if(this.activeErrorField){
+                                const targetField = this.formFields().find(field =>
+                                        field.nativeElement.getAttribute('formControlName') === this.activeErrorField
+                                );
+                                if(targetField){
+                                        const element = targetField.nativeElement;
+                                        element.scrollIntoView({behavior:'smooth', block:'center'})
+                                        element.focus();
+                                }
+
+                        }
                         return;
                 }
 
