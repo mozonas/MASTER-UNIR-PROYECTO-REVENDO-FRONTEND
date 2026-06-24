@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
@@ -12,7 +12,7 @@ import { ArticleCardComponent } from '../../../shared/components/article-card/ar
   templateUrl: './user-page-sell.html',
   styleUrls: ['./user-page-sell.css'],
 })
-export class UserPageSell implements OnInit {
+export class UserPageSell implements OnInit, OnChanges {
   private articleService = inject(ArticleService);
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
@@ -51,22 +51,21 @@ export class UserPageSell implements OnInit {
 
   currentPageArticles = computed<iArticle[]>(() => this.currentPageRawArticles());
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if ('userId' in changes) {
+      const nextUserId = changes['userId'].currentValue as number | null;
+      if (nextUserId && nextUserId > 0) {
+        this.loadArticles();
+      }
+    }
+  }
+
   ngOnInit(): void {
-    this.loadArticles();
-
-    let userIdParaCargar: number | null = null;
-
-    // 1. Intentamos obtener el ID desde los parámetros de la URL (ruta de Admin)
     const idFromRoute = this.route.snapshot.paramMap.get('id');
+    this.isAdminViewing = !!idFromRoute;
 
-    if (idFromRoute) {
-      userIdParaCargar = Number(idFromRoute);
-      this.isAdminViewing = true; // El admin está auditando un perfil ajeno
-      console.log(`📋 Modo Admin: Visualizando usuario desde URL con ID: ${userIdParaCargar}`);
-    } else {
-      // 2. Si no hay ID en la URL, mantenemos tu comportamiento original (Perfil propio del usuario logueado)
-      userIdParaCargar = this.authService.getUserId();
-      console.log(`👤 Modo Usuario: Visualizando perfil propio con ID: ${userIdParaCargar}`);
+    if (!this.userId || this.userId <= 0) {
+      this.loadArticles();
     }
   }
 

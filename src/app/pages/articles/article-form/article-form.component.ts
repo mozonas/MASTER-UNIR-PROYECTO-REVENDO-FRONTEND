@@ -100,12 +100,29 @@ export class ArticleFormComponent implements OnInit {
                         });
         }
 
+        private canManageOwnerArticle(ownerId: number | null | undefined): boolean {
+                if (this.authService.getUserRole() === 'MODERADOR') {
+                        return true;
+                }
+
+                return !!this.currentUserId && !!ownerId && this.currentUserId === ownerId;
+        }
+
         private loadArticle(articleId: string): void {
                 this.articleService.getUserArticleForEdit(articleId).subscribe({
                         next: (article) => {
                                 if (!article) {
                                         return;
                                 }
+
+                                this.loadedArticleOwnerId = article.usuarios_id;
+
+                                if (!this.canManageOwnerArticle(this.loadedArticleOwnerId)) {
+                                        alert('No tienes permisos para editar este artículo.');
+                                        void this.router.navigate(['/forbidden']);
+                                        return;
+                                }
+
                                 const imageUrls = article.fotos?.map((foto) => foto.url).slice(0, 5) ?? [];
                                 this.existingImageUrls.set(imageUrls.length ? imageUrls : (article.image ? [article.image] : []));
                                 this.articleForm.patchValue({
