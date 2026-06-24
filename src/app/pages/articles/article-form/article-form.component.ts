@@ -229,7 +229,7 @@ export class ArticleFormComponent implements OnInit {
                 return null;
         }
 
-        cancel(): void {
-                void this.router.navigate(['/user-info']);
+        goBack(): void {
+        window.history.back();
         }
 }

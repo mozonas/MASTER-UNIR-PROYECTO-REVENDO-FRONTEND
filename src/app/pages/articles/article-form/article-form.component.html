@@ -7,7 +7,7 @@
                                         <h2 class="fw-bold fs-3 text-dark mb-0">{{ isEditing ? 'Editar artículo' : 'Nuevo artículo' }}</h2>
                                         <p class="text-secondary mb-0">Completa los campos para {{ isEditing ? 'actualizar' : 'crear' }} tu artículo.</p>
                                 </div>
-                                <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancel()">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" (click)="goBack()">
                                         <i class="bi bi-arrow-left me-2"></i> Volver
                                 </button>
                         </div>
@@ -117,8 +117,14 @@
                                         <input id="image5" type="text" formControlName="image5" class="form-control p-2.5 rounded-3" placeholder="https://...">
                                 </div>
 
+                                <div class="col-12 p-3 border border-warning rounded-3 bg-warning bg-opacity-10">
+                                        <label for="usuariosId" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">ID de usuario <span class="badge bg-warning text-dark ms-1">Temporal</span></label>
+                                        <input id="usuariosId" type="number" formControlName="usuarios_id" class="form-control p-2.5 rounded-3" placeholder="ID del usuario vendedor">
+                                        <small class="text-muted">Campo temporal hasta implementar la obtención automática del usuario autenticado.</small>
+                                </div>
+
                                 <div class="col-12 mt-2 border-top pt-4 d-flex justify-content-end gap-3">
-                                        <button type="button" class="btn btn-light px-4 fw-semibold border" (click)="cancel()">Cancelar</button>
+                                        <button type="button" class="btn btn-light px-4 fw-semibold border" (click)="goBack()">Cancelar</button>
                                         <button type="submit" class="btn btn-primary px-4 fw-semibold text-white">
                                                 {{ isEditing ? 'Guardar cambios' : 'Crear artículo' }}
                                         </button>
