@@ -66,7 +66,7 @@ export class ArticleFormComponent implements OnInit {
                         tipoEntrega: ['', Validators.required],
                         tipoPago: ['', Validators.required],
                         categorias_id: ['', [Validators.required]],
-                        imageFiles: [null, [Validators.required]],
+                        imageFiles: [null],
                 });
                 this.route.paramMap
                         .pipe(takeUntilDestroyed(this.destroyRef))
@@ -90,16 +90,12 @@ export class ArticleFormComponent implements OnInit {
 
                                 if (articleId) {
                                         this.isEditing = true;
-                                        this.articleForm.get('imageFiles')?.clearValidators();
-                                        this.articleForm.get('imageFiles')?.updateValueAndValidity({ emitEvent: false });
                                         this.currentArticleId = articleId;
                                         this.loadArticle(articleId);
                                         return;
                                 }
 
                                 this.isEditing = false;
-                                this.articleForm.get('imageFiles')?.setValidators([Validators.required]);
-                                this.articleForm.get('imageFiles')?.updateValueAndValidity({ emitEvent: false });
                                 this.currentArticleId = null;
                         });
         }
