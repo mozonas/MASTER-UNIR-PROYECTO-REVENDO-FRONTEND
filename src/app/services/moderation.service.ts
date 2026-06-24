@@ -59,5 +59,13 @@ export class ModerationService {
         );
     }
 
-    
+    /**
+     * Función que pide a la API los tipos de reporte
+     * @returns 
+     */
+    getReportTypes() {
+        return this.http.get(
+            `${this.apiUrl}/reports/types`
+        );
+    }
 }

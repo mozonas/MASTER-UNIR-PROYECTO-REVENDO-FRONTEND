@@ -7,11 +7,13 @@ import { AuthService } from '../../services/auth.service';
 import { DetailSeller } from "../../shared/detail-seller/detail-seller";
 import { iArticle } from '../../interfaces/article.interface';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { ReportType } from '../../interfaces/report-type';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-article-detail-component',
   standalone: true,
-  imports: [CommonModule, DetailSeller],
+  imports: [CommonModule, DetailSeller, FormsModule],
   templateUrl: './article-detail-component.html',
   styleUrl: './article-detail-component.css',
 })
@@ -19,7 +21,7 @@ export class ArticleDetailComponent {
   modalOpen = false;
   selectedImage: string | null = null;
   article = signal<iArticle | null>(null);
-  
+
   // Variable para controlar de forma manual la foto activa en el carrusel
   subindiceActivo = 0;
 
@@ -35,7 +37,9 @@ export class ArticleDetailComponent {
   enviandoReporte = signal(false);
   mensajeReporte = signal('');
   reportado = signal(false);
-  
+  listReportTypes: ReportType[] = [];
+  selectedTypeReport: ReportType | null = null;
+
   galleryImages = computed(() => {
     const currentArticle = this.article();
     return currentArticle ? this.articlesService.getArticleImageUrls(currentArticle) : [];
@@ -72,6 +76,14 @@ export class ArticleDetailComponent {
   }
 
   onReportar(): void {
+    this.moderationService.getReportTypes().subscribe({
+      next: (data: any) => {
+         this.listReportTypes = data;
+      },
+      error: () => {
+
+      }
+    });
     this.mostrarModalReporte.set(true);
     this.motivoReporte.set('');
     this.mensajeReporte.set('');
@@ -150,4 +162,13 @@ export class ArticleDetailComponent {
       ? this.sanitizer.bypassSecurityTrustUrl(value)
       : value;
   }
+
+  /**
+   * Función que captura el evento del selector de tipo de reporte
+   * @param event 
+   */
+  onSelect(event: Event) {
+  const value = (event.target as HTMLSelectElement).value;
+  console.log('Seleccionado:', value);
+}
 }
