@@ -25,6 +25,7 @@ export class ArticleFormComponent implements OnInit {
         isEditing = false;
         currentArticleId: string | null = null;
         currentUserId: number | null = null;
+        loadedArticleOwnerId: number | null = null;
         submitted = false;
         activeErrorField: string | null = null;
 
@@ -99,6 +100,7 @@ export class ArticleFormComponent implements OnInit {
 
                                 if (articleId) {
                                         this.isEditing = true;
+                                        this.loadedArticleOwnerId = null;
                                         this.articleForm.get('image1')?.clearValidators();
                                         this.articleForm.get('image1')?.updateValueAndValidity({ emitEvent: false });
                                         this.currentArticleId = articleId;
@@ -107,10 +109,19 @@ export class ArticleFormComponent implements OnInit {
                                 }
 
                                 this.isEditing = false;
+                                this.loadedArticleOwnerId = null;
                                 this.articleForm.get('image1')?.setValidators([Validators.required]);
                                 this.articleForm.get('image1')?.updateValueAndValidity({ emitEvent: false });
                                 this.currentArticleId = null;
                         });
+        }
+
+        private canManageOwnerArticle(ownerId: number | null | undefined): boolean {
+                if (this.authService.getUserRole() === 'MODERADOR') {
+                        return true;
+                }
+
+                return !!this.currentUserId && !!ownerId && this.currentUserId === ownerId;
         }
 
         private loadArticle(articleId: string): void {
@@ -119,6 +130,15 @@ export class ArticleFormComponent implements OnInit {
                                 if (!article) {
                                         return;
                                 }
+
+                                this.loadedArticleOwnerId = article.usuarios_id;
+
+                                if (!this.canManageOwnerArticle(this.loadedArticleOwnerId)) {
+                                        alert('No tienes permisos para editar este artículo.');
+                                        void this.router.navigate(['/forbidden']);
+                                        return;
+                                }
+
                                 const imageUrls = article.fotos?.map((foto) => foto.url).slice(0, 5) ?? [];
                                 this.articleForm.patchValue({
                                         titulo: article.titulo,
@@ -178,6 +198,21 @@ export class ArticleFormComponent implements OnInit {
                         .filter((url: string) => !!url)
                         .slice(0, 5);
 
+                if (this.isEditing && !this.canManageOwnerArticle(this.loadedArticleOwnerId)) {
+                        alert('No tienes permisos para editar este artículo.');
+                        void this.router.navigate(['/forbidden']);
+                        return;
+                }
+
+                const ownerUserId = this.isEditing
+                        ? this.loadedArticleOwnerId
+                        : this.currentUserId;
+
+                if (!ownerUserId) {
+                        alert('No se pudo identificar al propietario del artículo.');
+                        return;
+                }
+
                 const articlePayload = {
                         titulo: formValue.titulo,
                         descripcion: formValue.descripcion,
@@ -187,7 +222,7 @@ export class ArticleFormComponent implements OnInit {
                         tipoPago: formValue.tipoPago,
                         categorias_id: formValue.categorias_id,
                         images,
-                        usuarios_id: this.currentUserId,
+                        usuarios_id: ownerUserId,
                 };
                 if (this.isEditing && this.currentArticleId) {
                         this.articleService.updateArticle(this.currentArticleId, articlePayload).subscribe({
