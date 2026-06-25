@@ -16,7 +16,7 @@
                </div>
 
                 <!-- Carrusel -->
-                @if (article()?.fotos && article()?.fotos?.length) {
+                @if (galleryImages().length) {
                 <div class="row justify-content-center">
                     <div class="col-12 col-xl-10">
                         <div class="carousel slide altura">
@@ -29,6 +29,7 @@
                                         alt="Foto del artículo" style="cursor: pointer; object-fit: contain;">
                                 </div>
                                 }
+                                
                             </div>
                             <button class="carousel-control-prev" type="button" (click)="anteriorFoto()">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -96,6 +97,7 @@
                                     </p>
                                 </div>
 
+                                @if ((article()?.usuarios_id ?? 0) > 0) {
                                 <app-detail-seller [sellerId]="article()?.usuarios_id ?? 0">
                                 </app-detail-seller>
                             </div>
@@ -162,3 +164,4 @@
         <p class="report-modal__success" *ngIf="mensajeReporte()">{{mensajeReporte()}}</p>
     </div>
 </div>
+<!---->
