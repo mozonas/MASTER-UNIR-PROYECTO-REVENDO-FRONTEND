@@ -189,9 +189,13 @@ export class ArticleFormComponent implements OnInit {
 
                 if (this.articleForm.invalid || this.activeErrorField) {
                         if (this.activeErrorField) {
-                                const targetField = this.formFields().find(field =>
-                                        field.nativeElement.getAttribute('formControlName') === this.activeErrorField
-                                );
+                                // MODIFICADO: Ahora busca por formControlName o por tu nuevo data-field
+                                const targetField = this.formFields().find(field => {
+                                        const el = field.nativeElement;
+                                        return el.getAttribute('formControlName') === this.activeErrorField || 
+                                        el.getAttribute('data-field') === this.activeErrorField;
+                                });
+                                
                                 if (targetField) {
                                         const element = targetField.nativeElement;
                                         const scrollOffset = 120;
@@ -202,28 +206,28 @@ export class ArticleFormComponent implements OnInit {
                                 }
                         }
                         return;
-                }
+        }
 
-                const articlePayload = this.buildFormData();
-                if (this.isEditing && this.currentArticleId) {
-                        this.articleService.updateArticle(this.currentArticleId, articlePayload).subscribe({
-                                next: () => this.router.navigate(['/user-info']),
-                                error: (error) => {
-                                        console.error('Error al actualizar el artículo:', error);
-                                        alert(error?.error?.message || 'No se pudo guardar el artículo. Intente de nuevo.');
-                                }
-                        });
-                        return;
-                }
-
-                this.articleService.createArticle(articlePayload).subscribe({
+        const articlePayload = this.buildFormData();
+        if (this.isEditing && this.currentArticleId) {
+                this.articleService.updateArticle(this.currentArticleId, articlePayload).subscribe({
                         next: () => this.router.navigate(['/user-info']),
                         error: (error) => {
-                                console.error('Error al crear el artículo:', error);
-                                alert(error?.error?.message || 'No se pudo crear el artículo. Intente de nuevo.');
+                                console.error('Error al actualizar el artículo:', error);
+                                alert(error?.error?.message || 'No se pudo guardar el artículo. Intente de nuevo.');
                         }
                 });
+                return;
         }
+
+        this.articleService.createArticle(articlePayload).subscribe({
+                next: () => this.router.navigate(['/user-info']),
+                error: (error) => {
+                        console.error('Error al crear el artículo:', error);
+                        alert(error?.error?.message || 'No se pudo crear el artículo. Intente de nuevo.');
+                }
+        });
+}
 
         isControlInvalid(controlName: string): boolean {
                 if (!this.submitted || this.activeErrorField !== controlName) {
