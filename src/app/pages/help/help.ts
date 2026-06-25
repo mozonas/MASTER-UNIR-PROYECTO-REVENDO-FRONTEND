@@ -106,7 +106,7 @@ export class HelpComponent {
     }
   }
   
-  /**onContactSupport(): void {
+  onContactSupport(): void {
     console.log('Redirigiendo al canal de soporte técnico de ReVendo...');
   }
 

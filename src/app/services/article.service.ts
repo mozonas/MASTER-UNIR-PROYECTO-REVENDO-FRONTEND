@@ -37,13 +37,13 @@ export class ArticleService {
 
   Articles = signal<Article[]>([]);
 
-  getPublicArticleById(id: string): Observable<iArticle | undefined> {
+  getPublicArticleById(id: string): Observable<Article | undefined> {
     return this.getAllPublicArticles().pipe(
       map((articles) => articles.find((article) => article.id === String(id)))
     );
   }
 
-  getArticleById(id: string): Observable<iArticle | undefined> {
+  getArticleById(id: string): Observable<Article | undefined> {
     if (!this.authService.isLogged()) {
       return this.getPublicArticleById(id);
     }

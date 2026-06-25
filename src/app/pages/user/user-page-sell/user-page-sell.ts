@@ -107,7 +107,7 @@ export class UserPageSell implements OnInit, OnChanges {
     void this.router.navigate(['/article-form', article.id]);
   }
 
-  onDelete(article: iArticle): void {
+  onDelete(article: Article): void {
     if (!this.canManageArticle(article)) {
       return;
     }
@@ -125,7 +125,7 @@ export class UserPageSell implements OnInit, OnChanges {
     void this.router.navigate(['/article-form']);
   }
 
-  canManageArticle(article: iArticle): boolean {
+  canManageArticle(article: Article): boolean {
     if (this.authService.getUserRole() === 'MODERADOR') {
       return true;
     }

@@ -21,7 +21,6 @@ export class ArticleDetailComponent {
   modalOpen = false;
   selectedImage: string | null = null;
   article = signal<Article | null>(null);
-  
   // Variable para controlar de forma manual la foto activa en el carrusel
   subindiceActivo = 0;
 
@@ -165,11 +164,15 @@ export class ArticleDetailComponent {
       ? this.sanitizer.bypassSecurityTrustUrl(value)
       : value;
   }
-  
+
   contactarVendedor() {
     const articulo = this.article();
     if (!articulo) return;
     this.router.navigate(['/chat'], { queryParams: { articuloId: articulo.id } });
+  }
+
+  onBack(): void {
+    this.location.back();
   }
 
   /**
@@ -177,12 +180,9 @@ export class ArticleDetailComponent {
    * @param event 
    */
   onSelect(event: Event) {
-  const value = (event.target as HTMLSelectElement).value;
-  console.log('Seleccionado:', value);
+    const value = (event.target as HTMLSelectElement).value;
+    console.log('Seleccionado:', value);
 
-  onBack(): void {
-    this.location.back();
+
   }
-
-}
 }
