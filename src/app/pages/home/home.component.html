@@ -41,7 +41,7 @@
     </div>
 
     <!-- Categoría -->
-    <div class="col-6 col-md-3 col-lg-2">
+    <div class="col-6 col-md-4 col-lg-2">
       <label class="small text-muted mb-1">Categoría</label>
       <select class="form-select w-100" [value]="filters().categoria"
         (change)="onCategoryChange($any($event.target).value)">
@@ -53,7 +53,7 @@
     </div>
 
     <!-- Estado -->
-    <div class="col-6 col-md-3 col-lg-2">
+    <div class="col-6 col-md-4 col-lg-2">
       <label class="small text-muted mb-1">Estado</label>
       <select class="form-select w-100" [value]="filters().estado" (change)="onEstadoChange($any($event.target).value)">
         <option value="">Todos</option>
@@ -65,21 +65,21 @@
     </div>
 
     <!-- Precio mínimo -->
-    <div class="col-6 col-sm-4 col-md-2 col-lg-1">
+    <div class="col-6 col-sm-4 col-md-4 col-lg-1">
       <label class="small text-muted mb-1">Mín.</label>
       <input type="number" class="form-control w-100" placeholder="0" [value]="filters().min"
         (input)="onMinPriceChange($any($event.target).value)" />
     </div>
 
     <!-- Precio máximo -->
-    <div class="col-6 col-sm-4 col-md-2 col-lg-1">
+    <div class="col-6 col-sm-4 col-md-4 col-lg-1">
       <label class="small text-muted mb-1">Máx.</label>
       <input type="number" class="form-control w-100" placeholder="Max" [value]="filters().max"
         (input)="onMaxPriceChange($any($event.target).value)" />
     </div>
 
     <!-- Ordenación -->
-    <div class="col-12 col-sm-4 col-md-3 col-lg-2">
+    <div class="col-12 col-sm-4 col-md-4 col-lg-2">
       <label class="small text-muted mb-1">Ordenar por</label>
       <select class="form-select w-100" [value]="filters().orden" (change)="onOrdenChange($any($event.target).value)">
         <option value="recientes">Más recientes</option>
@@ -89,7 +89,7 @@
     </div>
 
     <!-- Reset -->
-    <div class="col-12 col-lg-1 d-flex align-items-end">
+    <div class="col-12 col-sm-12 col-lg-1 d-flex align-items-end">
       <button class="btn btn-outline-secondary w-100" (click)="resetFilters()">
         Limpiar
       </button>
