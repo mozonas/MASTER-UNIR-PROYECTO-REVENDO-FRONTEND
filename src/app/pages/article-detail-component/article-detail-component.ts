@@ -52,13 +52,13 @@ export class ArticleDetailComponent {
 
   // Métodos manuales para el carrusel sin depender del JS de Bootstrap
   anteriorFoto(): void {
-    const total = this.article()?.fotos?.length ?? 0;
+    const total = this.galleryImages().length;
     if (total <= 1) return;
     this.subindiceActivo = (this.subindiceActivo === 0) ? total - 1 : this.subindiceActivo - 1;
   }
 
   siguienteFoto(): void {
-    const total = this.article()?.fotos?.length ?? 0;
+    const total = this.galleryImages().length;
     if (total <= 1) return;
     this.subindiceActivo = (this.subindiceActivo === total - 1) ? 0 : this.subindiceActivo + 1;
   }

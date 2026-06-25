@@ -164,7 +164,7 @@ export class ArticleFormComponent implements OnInit {
                 return /\.(jpg|jpeg|png|webp|gif|bmp|svg)$/i.test(file.name);
         }
 
-        private buildFormData(): FormData {
+        private async buildFormData(): Promise<FormData> {
                 const formValue = this.articleForm.value;
                 const formData = new FormData();
 
@@ -176,6 +176,18 @@ export class ArticleFormComponent implements OnInit {
                 formData.append('tipoPago', String(formValue.tipoPago ?? ''));
                 formData.append('categorias_id', String(formValue.categorias_id ?? ''));
 
+                if (this.isEditing && this.existingImageUrls().length > 0) {
+                        const existingFiles = await Promise.all(
+                                this.existingImageUrls().map((imageUrl, index) => this.imageUrlToFile(imageUrl, index))
+                        );
+
+                        for (const file of existingFiles) {
+                                if (file) {
+                                        formData.append('images', file, file.name);
+                                }
+                        }
+                }
+
                 for (const file of this.selectedImageFiles()) {
                         formData.append('images', file, file.name);
                 }
@@ -183,7 +195,7 @@ export class ArticleFormComponent implements OnInit {
                 return formData;
         }
 
-        onSubmit(): void {
+        async onSubmit(): Promise<void> {
                 this.submitted = true;
                 this.activeErrorField = this.getFirstInvalidField();
 
@@ -208,7 +220,7 @@ export class ArticleFormComponent implements OnInit {
                         return;
         }
 
-        const articlePayload = this.buildFormData();
+        const articlePayload = await this.buildFormData();
         if (this.isEditing && this.currentArticleId) {
                 this.articleService.updateArticle(this.currentArticleId, articlePayload).subscribe({
                         next: () => this.router.navigate(['/user-info']),
@@ -251,5 +263,48 @@ export class ArticleFormComponent implements OnInit {
 
         goBack(): void {
         window.history.back();
+        }
+
+        private async imageUrlToFile(imageUrl: string, index: number): Promise<File | null> {
+                try {
+                        const resolvedUrl = this.articleService.resolveImageUrl(imageUrl);
+                        const response = await fetch(resolvedUrl);
+                        if (!response.ok) {
+                                return null;
+                        }
+
+                        const blob = await response.blob();
+                        const fileName = this.getFileNameFromUrl(imageUrl, index, blob.type);
+                        return new File([blob], fileName, { type: blob.type || 'image/jpeg' });
+                } catch {
+                        return null;
+                }
+        }
+
+        private getFileNameFromUrl(imageUrl: string, index: number, mimeType: string): string {
+                const lastSegment = imageUrl.split('?')[0].split('/').pop()?.trim();
+                if (lastSegment) {
+                        return lastSegment;
+                }
+
+                const extension = this.getExtensionFromMimeType(mimeType);
+                return `image-${index + 1}.${extension}`;
+        }
+
+        private getExtensionFromMimeType(mimeType: string): string {
+                switch (mimeType) {
+                        case 'image/png':
+                                return 'png';
+                        case 'image/webp':
+                                return 'webp';
+                        case 'image/gif':
+                                return 'gif';
+                        case 'image/bmp':
+                                return 'bmp';
+                        case 'image/svg+xml':
+                                return 'svg';
+                        default:
+                                return 'jpg';
+                }
         }
 }
