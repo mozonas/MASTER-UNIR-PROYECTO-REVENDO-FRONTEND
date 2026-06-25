@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ArticleService } from '../../../services/article.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
         selector: 'app-article-form',
@@ -15,6 +16,7 @@ import { ArticleService } from '../../../services/article.service';
 export class ArticleFormComponent implements OnInit {
         private fb = inject(FormBuilder);
         private articleService = inject(ArticleService);
+        private authService = inject(AuthService);
         private route = inject(ActivatedRoute);
         private router = inject(Router);
         private destroyRef = inject(DestroyRef);
@@ -44,8 +46,12 @@ export class ArticleFormComponent implements OnInit {
                 'estadoProducto',
                 'imageFiles',
         ] as const;
+        currentUserId: number | null = null;
+        loadedArticleOwnerId: number | null = null;
 
         ngOnInit(): void {
+                this.currentUserId = this.authService.getUserId();
+
                 this.articleService.getArticleEnums()
                         .pipe(takeUntilDestroyed(this.destroyRef))
                         .subscribe({
@@ -105,7 +111,7 @@ export class ArticleFormComponent implements OnInit {
                         return true;
                 }
 
-                return !!this.currentUserId && !!ownerId && this.currentUserId === ownerId;
+                return this.currentUserId !== null && ownerId !== null && ownerId !== undefined && this.currentUserId === ownerId;
         }
 
         private loadArticle(articleId: string): void {
