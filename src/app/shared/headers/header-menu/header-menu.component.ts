@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
+import { AsideComponent } from "../../aside/aside.component";
 
 interface Categoria { id: number; nombre: string; }
 interface GrupoCategoria { label: string; ids: number[]; subcategorias: Categoria[]; }

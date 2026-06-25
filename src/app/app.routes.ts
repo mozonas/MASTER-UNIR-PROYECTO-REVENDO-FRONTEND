@@ -52,10 +52,10 @@ export const routes: Routes = [
   { path: 'user-info', component: UserPageInfoComponent, canActivate: [authGuard] },
   { path: 'user-edit', component: UserPageEditComponent, canActivate: [authGuard] },
   { path: 'chat', component: ChatComponent, canActivate: [authGuard] },
-  { path: 'user-sell/:id', component: UserPageSell, /* canActivate: [authGuard]  */},
   { path: 'article-form', component: ArticleFormComponent, canActivate: [authGuard] },
   { path: 'article-form/:id', component: ArticleFormComponent, canActivate: [authGuard] },
-  { path: 'article-detail/:id', component: ArticleDetailComponent },
+  { path: 'article-detail/:id', component: ArticleDetailComponent, canActivate: [authGuard] },
+  { path: 'user-sell/:id', component: UserPageSell, canActivate: [authGuard] },
   {
     path: 'admin',
     component: AdminLayoutComponent,
@@ -79,8 +79,9 @@ export const routes: Routes = [
     ]
   },
 
-    // Directorios sección Moderación
-  { path: 'moderation', 
+  // Directorios sección Moderación
+  {
+    path: 'moderation',
     component: ModerationComponent,
     canActivate: [roleGuard(['MODERADOR'])], //VCB - añadir proteccion del rol
     children: [

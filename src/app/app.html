@@ -1,20 +1,24 @@
-@if (authService.isLogged()) {
-    <app-header-menu></app-header-menu>
-}
+<section class="bg-light d-flex flex-column min-vh-100">
 
-<body class="bg-light">
-    <div class="container-fluid">
+    @if (authService.isLogged()) {
+        <app-header-menu></app-header-menu>
+    }
+
+    <section class="container-fluid flex-grow-1 app-main">
         <div class="row">
-            <main class="col-12 p-4 mb-5">
+            <div class="mb-5">
                 <router-outlet></router-outlet>
-            </main>
+            </div>
         </div>
-    </div>
-</body>
+    </section>
 
-@if (authService.isLogged()) {
-    <app-footer></app-footer>
-}
+    @if (authService.isLogged()) {
+    <footer class="mt-auto">
+        <app-footer></app-footer>
+    </footer>
+    }
+
+</section>
 
 @if (authService.isLogged()) {
     <app-chat-fab></app-chat-fab>

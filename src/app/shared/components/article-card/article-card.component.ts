@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
-import { iArticle } from '../../../interfaces/article.interface';
+import { Article } from '../../../interfaces/article.interface';
 
 @Component({
   selector: 'app-article-card',
@@ -13,7 +13,9 @@ import { iArticle } from '../../../interfaces/article.interface';
 export class ArticleCardComponent {
   private authService = inject(AuthService);
 
-  @Input({ required: true }) article!: iArticle;
+  isAdminViewing: boolean = false;
+
+  @Input({ required: true }) article!: Article;
   @Input() showActions = false;
   @Output() editClicked = new EventEmitter<void>();
   @Output() deleteClicked = new EventEmitter<void>();
@@ -35,7 +37,7 @@ export class ArticleCardComponent {
     return this.authService.getUserId() === this.article.usuarios_id;
   }
 
-  viewArticle(article: iArticle) {
+  viewArticle(article: Article) {
     console.log('Ver artículo:', this.article.id);
     this.router.navigate(['/article-detail', this.article.id]);
   }

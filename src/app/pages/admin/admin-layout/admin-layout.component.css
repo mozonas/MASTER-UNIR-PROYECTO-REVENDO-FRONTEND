@@ -1,24 +1,48 @@
-.component-view {
-  padding: 1rem;
-  width: calc(100% - 250px);
-  overflow-y: auto;
-  background-color: #f8f9fa;
-  transition: margin-left 0.3s ease, width 0.3s ease;
-  z-index: 20;
-}
-
-.moderator-embed {
-  all: unset;
-  display: block;
-  width: 100%;
-}
-
 :host {
   display: flex;
   flex-direction: row;
-  height: calc(100vh - 138px);
+  position: fixed;
+  top: 190;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
+  box-sizing: border-box;
+  z-index: 10;
 }
 
+aside {
+  width: 250px;
+  min-width: 250px;
+  max-width: 250px;
+  background-color: #8cd86a;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
 
+.contenedor-moderacion {
+  width: 100%;
+  display: block;
+}
 
+.component-view {
+  flex-grow: 1;
+  width: calc(100% - 250px);
+  padding: 1.5rem;
+  overflow-y: auto;
+  background-color: #f8f9fa;
+  height: 100%;
+  box-sizing: border-box;
+  padding-bottom: 200px;
+}
+
+aside ::ng-deep {
+  .custom-sidebar {
+    padding-top: 0 !important;
+    background-color: transparent !important;
+    height: auto !important;
+  }
+}

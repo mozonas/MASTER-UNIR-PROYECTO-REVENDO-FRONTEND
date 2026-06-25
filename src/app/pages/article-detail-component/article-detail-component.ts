@@ -1,11 +1,11 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../services/article.service';
 import { ModerationService } from '../../services/moderation.service';
 import { AuthService } from '../../services/auth.service';
 import { DetailSeller } from "../../shared/detail-seller/detail-seller";
-import { iArticle } from '../../interfaces/article.interface';
+import { Article } from '../../interfaces/article.interface';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ReportType } from '../../interfaces//report-type.interface';
 import { FormsModule } from '@angular/forms';
@@ -20,8 +20,7 @@ import { FormsModule } from '@angular/forms';
 export class ArticleDetailComponent {
   modalOpen = false;
   selectedImage: string | null = null;
-  article = signal<iArticle | null>(null);
-
+  article = signal<Article | null>(null);
   // Variable para controlar de forma manual la foto activa en el carrusel
   subindiceActivo = 0;
 
@@ -31,6 +30,9 @@ export class ArticleDetailComponent {
   private router = inject(Router);
   private moderationService = inject(ModerationService);
   private sanitizer = inject(DomSanitizer);
+
+  private location = inject(Location);
+
 
   mostrarModalReporte = signal(false);
   motivoReporte = signal('');
@@ -162,11 +164,15 @@ export class ArticleDetailComponent {
       ? this.sanitizer.bypassSecurityTrustUrl(value)
       : value;
   }
-  
+
   contactarVendedor() {
     const articulo = this.article();
     if (!articulo) return;
     this.router.navigate(['/chat'], { queryParams: { articuloId: articulo.id } });
+  }
+
+  onBack(): void {
+    this.location.back();
   }
 
   /**
@@ -174,7 +180,9 @@ export class ArticleDetailComponent {
    * @param event 
    */
   onSelect(event: Event) {
-  const value = (event.target as HTMLSelectElement).value;
-  console.log('Seleccionado:', value);
-}
+    const value = (event.target as HTMLSelectElement).value;
+    console.log('Seleccionado:', value);
+
+
+  }
 }

@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ArticleCardComponent } from '../../shared/components/article-card/article-card.component';
 import { FilterHomeService } from '../../services/filterHome.service';
 import { ArticleService } from '../../services/article.service';
-import { iArticle } from '../../interfaces/article.interface';
+import { Article } from '../../interfaces/article.interface';
 import { Router } from '@angular/router';
 
 @Component({
@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit {
   private articleService = inject(ArticleService);
   private router = inject(Router);
 
-  allArticles = signal<iArticle[]>([]);
+  allArticles = signal<Article[]>([]);
   categoriaIds = signal<number[] | null>(null);
   tituloCategoria = signal<string | null>(null);
   loading = signal(true);
@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit {
 
   filters = this.filterHomeService.filters;
   categories = this.filterHomeService.categories;
-  results = signal<iArticle[]>([]);
+  results = signal<Article[]>([]);
 
   articles = computed(() => {
     const ids = this.categoriaIds();

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { AuthService } from '../../../services/auth.service';
-import { iArticle } from '../../../interfaces/article.interface';
+import { Article } from '../../../interfaces/article.interface';
 import { ArticleCardComponent } from '../../../shared/components/article-card/article-card.component';
 
 @Component({
@@ -49,7 +49,7 @@ export class UserPageSell implements OnInit, OnChanges {
     return this.filteredArticles().slice(start, start + this.pageSize);
   });
 
-  currentPageArticles = computed<iArticle[]>(() => this.currentPageRawArticles());
+  currentPageArticles = computed<Article[]>(() => this.currentPageRawArticles());
 
   ngOnChanges(changes: SimpleChanges): void {
     if ('userId' in changes) {
@@ -99,7 +99,7 @@ export class UserPageSell implements OnInit, OnChanges {
     this.currentPage.set(page);
   }
 
-  onEdit(article: iArticle): void {
+  onEdit(article: Article): void {
     if (!this.canManageArticle(article)) {
       return;
     }
@@ -107,7 +107,7 @@ export class UserPageSell implements OnInit, OnChanges {
     void this.router.navigate(['/article-form', article.id]);
   }
 
-  onDelete(article: iArticle): void {
+  onDelete(article: Article): void {
     if (!this.canManageArticle(article)) {
       return;
     }
@@ -125,7 +125,7 @@ export class UserPageSell implements OnInit, OnChanges {
     void this.router.navigate(['/article-form']);
   }
 
-  canManageArticle(article: iArticle): boolean {
+  canManageArticle(article: Article): boolean {
     if (this.authService.getUserRole() === 'MODERADOR') {
       return true;
     }

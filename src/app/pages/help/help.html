@@ -1,7 +1,11 @@
 <div class="container my-5" style="max-width: 1000px;">
 
+    <button type="button" (click)="onBack()" class="btn btn-outline-secondary btn-sm mb-5">
+        <i class="fa fa-arrow-left me-1"></i> Volver
+    </button>
+
     <!-- Cabecera -->
-    <header class="text-center mb-5">
+    <section class="text-center mb-5">
         <span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill px-3 py-2 mb-3 fw-semibold">
             Centro de Ayuda
         </span>
@@ -9,10 +13,10 @@
         <p class="lead text-muted mx-auto" style="max-width: 580px;">
             Todo lo que necesitas saber para comprar y vender con total confianza en ReVendo.
         </p>
-    </header>
+    </section>
 
     <!-- Rejilla de FAQs -->
-    <main class="mb-5">
+    <section class="mb-5">
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             @for (faq of faqs(); track faq.question) {
             <div class="col">
@@ -34,7 +38,7 @@
             </div>
             }
         </div>
-    </main>
+    </section>
 
     <!-- Bloque de Soporte Directo -->
     <section

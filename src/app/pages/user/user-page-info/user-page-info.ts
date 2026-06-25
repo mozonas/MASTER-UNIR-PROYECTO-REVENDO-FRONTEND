@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
@@ -7,6 +7,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Usuario } from '../../../interfaces/user.interface';
 import { UserPageSell } from '../user-page-sell/user-page-sell';
 import { DetailSeller } from "../../../shared/detail-seller/detail-seller";
+
 
 @Component({
   selector: 'app-user-page-info',
@@ -18,11 +19,14 @@ import { DetailSeller } from "../../../shared/detail-seller/detail-seller";
 
 export class UserPageInfoComponent implements OnInit {
   private router = inject(Router);
-  private route = inject(ActivatedRoute); // 👈 Inyectamos la ruta activa
+  private route = inject(ActivatedRoute);
   private userService = inject(UserService);
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
   private sanitizer = inject(DomSanitizer);
+
+  private location = inject(Location);
+
 
   isLoaded: boolean = false;
   mapUrl: SafeResourceUrl | null = null;
@@ -205,14 +209,22 @@ export class UserPageInfoComponent implements OnInit {
   }
 
   irAEditar(): void {
-    this.router.navigate(['/user-edit']);
+    if (this.isAdminViewing) {
+      // Si el admin está auditando, pasamos el ID del usuario en la ruta para mantener el modo admin
+      this.router.navigate(['/admin/users/editar/', this.idVendedor]);
+    } else {
+      // Si es el usuario común en su propio perfil, va directo a la ruta limpia
+      this.router.navigate(['/user-edit']);
+    }
   }
 
-    onCancelar(): void {
-    if (this.route.snapshot.paramMap.get('id')) {
+  onBack(): void {
+    // Si es el admin auditando, lo devolvemos a la lista de usuarios del panel de control
+    if (this.isAdminViewing) {
       this.router.navigate(['/admin/users']);
     } else {
-      this.router.navigate(['/user-info']);
+      // Si es un usuario normal, lo mandamos al Home o al Hub principal
+      this.router.navigate(['/home']);
     }
   }
 }
