@@ -7,7 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { DetailSeller } from "../../shared/detail-seller/detail-seller";
 import { iArticle } from '../../interfaces/article.interface';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { ReportType } from '../../interfaces/report-type';
+import { ReportType } from '../../interfaces//report-type.interface';
 import { FormsModule } from '@angular/forms';
 
 @Component({
