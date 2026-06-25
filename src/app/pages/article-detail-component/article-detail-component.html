@@ -16,11 +16,23 @@
                </div>
 
                 <!-- Carrusel -->
-                @if (article()?.fotos && article()?.fotos?.length) {
+                @if (galleryImages().length) {
                 <div class="row justify-content-center">
                     <div class="col-12 col-xl-10">
 
                         <div class="carousel slide altura">
+
+                            <!-- <div class="carousel-inner">
+                                @for (imageUrl of galleryImages(); track imageUrl; let i = $index) {
+                                <div class="carousel-item" [class.active]="i === subindiceActivo">
+                                    <img class="altura d-block mx-auto w-auto"
+                                        [src]="getSafeImageUrl(imageUrl)"
+                                        (click)="openImageModal(imageUrl)"
+                                        (error)="onImageError($event)"
+                                        alt="Foto del artículo" style="cursor: pointer; object-fit: contain;">
+                                </div>
+                                }
+                            </div> -->
 
                             <div class="carousel-inner">
                                 @for (foto of article()?.fotos; track $index; let i = $index) {
@@ -31,8 +43,8 @@
                                         alt="Foto del artículo" style="cursor: pointer; object-fit: contain;">
                                 </div>
                                 }
+                                
                             </div>
-
                             <button class="carousel-control-prev" type="button" (click)="anteriorFoto()">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             </button>
@@ -103,8 +115,10 @@
                                     </p>
                                 </div>
 
+                                @if ((article()?.usuarios_id ?? 0) > 0) {
                                 <app-detail-seller [sellerId]="article()?.usuarios_id ?? 0">
                                 </app-detail-seller>
+                                }
 
                             </div>
 
@@ -180,3 +194,4 @@
         <p class="report-modal__success" *ngIf="mensajeReporte()">{{mensajeReporte()}}</p>
     </div>
 </div>
+<!---->

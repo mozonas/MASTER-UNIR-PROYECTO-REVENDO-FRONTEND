@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, effect, inject, Input, input, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, inject, input, signal } from '@angular/core';
 import { UserService } from '../../services/user.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { UserService } from '../../services/user.service';
 })
 
 export class DetailSeller {
-  @Input() sellerId!: number;
+  sellerId = input<number | null>(null);
 
   private cdr = inject(ChangeDetectorRef);
   totalValoraciones: number = 0;
@@ -22,9 +22,22 @@ export class DetailSeller {
   private userService = inject(UserService);
 
 
-  ngOnInit() {
-    // Traemos de forma síncrona/paralela las estadísticas del backend
-    this.cargarEstadisticasReales(this.sellerId);
+  constructor() {
+    effect(() => {
+      const currentSellerId = this.sellerId();
+
+      if (!currentSellerId || currentSellerId <= 0) {
+        this.totalVendidos = 0;
+        this.totalValoraciones = 0;
+        this.ratingMedia = 0;
+        this.listaValoraciones = [];
+        this.isLoaded = true;
+        return;
+      }
+
+      // Cargamos estadísticas cuando ya existe una ID de vendedor válida.
+      this.cargarEstadisticasReales(currentSellerId);
+    });
   }
 
 
