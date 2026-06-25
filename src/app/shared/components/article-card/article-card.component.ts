@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
-import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { Article } from '../../../interfaces/article.interface';
 
@@ -13,32 +12,14 @@ import { Article } from '../../../interfaces/article.interface';
 })
 export class ArticleCardComponent {
   private authService = inject(AuthService);
-  private route = inject(ActivatedRoute);
 
   isAdminViewing: boolean = false;
 
   @Input({ required: true }) article!: Article;
   @Input() showActions = false;
-  @Output() editClicked = new EventEmitter<Article>();
-  @Output() deleteClicked = new EventEmitter<Article>();
+  @Output() editClicked = new EventEmitter<void>();
+  @Output() deleteClicked = new EventEmitter<void>();
   private router = inject(Router);
-
-  ngOnInit() {
-    let userIdParaCargar: number | null = null;
-
-    // 1. Intentamos obtener el ID desde los parámetros de la URL (ruta de Admin)
-    const idFromRoute = this.route.snapshot.paramMap.get('id');
-
-    if (idFromRoute) {
-      userIdParaCargar = Number(idFromRoute);
-      this.isAdminViewing = true; // El admin está auditando un perfil ajeno
-      console.log(`📋 Modo Admin: Visualizando usuario desde URL con ID: ${userIdParaCargar}`);
-    } else {
-      // 2. Si no hay ID en la URL, mantenemos tu comportamiento original (Perfil propio del usuario logueado)
-      userIdParaCargar = this.authService.getUserId();
-      console.log(`👤 Modo Usuario: Visualizando perfil propio con ID: ${userIdParaCargar}`);
-    }
-  }
 
   get estaReportado(): boolean {
     return !!this.article.estado_reporte;
@@ -46,6 +27,14 @@ export class ArticleCardComponent {
 
   get estaVendido(): boolean {
     return this.article.estadoVenta === 'VENDIDO';
+  }
+
+  get canManageArticle(): boolean {
+    if (this.authService.getUserRole() === 'MODERADOR') {
+      return true;
+    }
+
+    return this.authService.getUserId() === this.article.usuarios_id;
   }
 
   viewArticle(article: Article) {

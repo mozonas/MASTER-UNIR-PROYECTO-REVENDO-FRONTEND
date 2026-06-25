@@ -49,7 +49,29 @@
                 Nuestro equipo de soporte técnico y moderación está disponible para guiarte de forma personalizada.
             </p>
         </div>
-        <!--         <button class="btn btn-revendo btn-lg px-4 py-3 fw-semibold text-nowrap rounded-3 shadow-sm"
+
+    <!--FORMULARIO DE CONTACTO VINCULADO AL GMAIL DE REVENDO-->
+        <div class="container my-5" style="max-width: 600px;">
+            <h2 class="mb-4">Contacta con nosotros</h2>
+            <form (submit)="sendHelp($event)">
+               <input type="hidden" name="access_key" value="7d4c9aa2-49e0-4646-b399-2a5bf4262a11">
+               <div class="mb-3">
+                  <label for="nombre" class="form-label">Nombre</label>
+                  <input type="text" name="nombre" class="form-control" id="nombre" required>
+               </div>
+               <div class="mb-3">
+                  <label for="email" class="form-label">Tu Correo Electrónico</label>
+                  <input type="email" name="email" class="form-control" id="email" required>
+               </div>
+               <div class="mb-3">
+                  <label for="mensaje" class="form-label">Mensaje o Consulta</label>
+                  <textarea name="mensaje" class="form-control" id="mensaje" rows="4" required></textarea>
+               </div>
+               <button type="submit" class="btn btn-revendo w-100">Enviar Mensaje</button>
+            </form>
+        </div>
+
+<!--         <button class="btn btn-revendo btn-lg px-4 py-3 fw-semibold text-nowrap rounded-3 shadow-sm"
             (click)="onContactSupport()">
             Contactar con Soporte
         </button> -->

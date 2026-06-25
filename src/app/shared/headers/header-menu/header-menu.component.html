@@ -59,17 +59,9 @@
           <a class="nav-link link-body-emphasis px-3" [routerLink]="['/home']">
             Todas las categorías
           </a>
-        </li>
-        @for (grupo of gruposCategorias(); track grupo.label) {
-        <li class="nav-item dropdown flex-fill text-center">
-          <a class="nav-link dropdown-toggle link-body-emphasis px-2" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false" [routerLink]="['/home']"
-            [queryParams]="{ categoria: grupo.ids.join(','), nombre: grupo.label }">
-            {{ grupo.label }}
-          </a>
-          @if (grupo.subcategorias.length > 0) {
-          <ul class="dropdown-menu w-100 text-center">
-            @for (cat of grupo.subcategorias; track cat.id) {
+          <ul class="dropdown-menu dropdown-menu-end text-small shadow">
+            <li><a class="dropdown-item" (click)="openNewArticle()">Nuevo artículo</a></li>
+            <li><a class="dropdown-item" [routerLink]="['/user-info']">Ver perfil</a></li>
             <li>
               <a class="dropdown-item" [routerLink]="['/home']" [queryParams]="{ categoria: cat.id }">
                 {{ cat.nombre }}

@@ -19,3 +19,7 @@
     }
 
 </section>
+
+@if (authService.isLogged()) {
+    <app-chat-fab></app-chat-fab>
+}

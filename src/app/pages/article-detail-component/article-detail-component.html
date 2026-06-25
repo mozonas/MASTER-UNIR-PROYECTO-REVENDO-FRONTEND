@@ -6,18 +6,23 @@
         </button>
         <div class="card shadow-sm">
             <div class="card-body">
-                <!-- Estado -->
+               <div class="d-flex justify-content-between align-items-center w-100">
+                 <!-- Estado -->
                 <span class="badge estado-articulo mb-3 text-white text-uppercase fw-bold">
                     <h3>{{article()?.estadoVenta}}</h3>
                 </span>
+                @if(!estaReportado && !estaVendido){
+                <button class="btn btn-outline-danger btn-lg" (click)="onReportar()">
+                    <i class="fa fa-flag me-1"></i> Reportar
+                </button>
+                }
+               </div>
 
                 <!-- Carrusel -->
-                @if (article()?.fotos && article()?.fotos?.length) {
+                @if (galleryImages().length) {
                 <div class="row justify-content-center">
                     <div class="col-12 col-xl-10">
-
                         <div class="carousel slide altura">
-
                             <div class="carousel-inner">
                                 @for (foto of article()?.fotos; track $index; let i = $index) {
                                 <div class="carousel-item" [class.active]="i === subindiceActivo">
@@ -28,7 +33,6 @@
                                 </div>
                                 }
                             </div>
-
                             <button class="carousel-control-prev" type="button" (click)="anteriorFoto()">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             </button>
@@ -36,7 +40,6 @@
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             </button>
                         </div>
-
                     </div>
                 </div>
                 }
@@ -47,16 +50,10 @@
 
                 <!-- Artículo -->
                 <div class="col-lg-5">
-
                     <div class="d-flex justify-content-between align-items-start">
                         <h3 class="fw-bold">
                             {{article()?.titulo}}
                         </h3>
-
-                        <button *ngIf="!estaReportado && !estaVendido" class="btn btn-outline-danger btn-sm"
-                            (click)="onReportar()">
-                            <i class="fa fa-flag me-1"></i> Reportar
-                        </button>
                     </div>
 
                     <p class="text-muted">
@@ -78,7 +75,6 @@
                     <span class="badge categoria-badge">
                         {{article()?.categoria_nombre}}
                     </span>
-
                 </div>
 
                 <!-- Precio -->
@@ -95,7 +91,6 @@
 
                             <!-- Información del vendedor -->
                             <div class="d-flex justify-content-between align-items-center mb-3">
-
                                 <div>
                                     <small class="text-muted">Vendedor/a</small>
                                     <p class="mb-0 fw-bold">
@@ -104,14 +99,15 @@
                                     </p>
                                 </div>
 
+                                @if ((article()?.usuarios_id ?? 0) > 0) {
                                 <app-detail-seller [sellerId]="article()?.usuarios_id ?? 0">
                                 </app-detail-seller>
-
+                                }
                             </div>
 
                             <!-- Botón -->
                             <div class="d-grid">
-                                <button class="btn btn-success">
+                                <button class="btn btn-success" (click)="contactarVendedor()">
                                     Mensaje directo
                                 </button>
                             </div>
@@ -136,17 +132,28 @@
             <div class="modal-body">
                 <img [src]="selectedImage" class="img-fluid" />
             </div>
-
         </div>
     </div>
 </div>
-
 
 <!-- Modal de reporte -->
 <div class="report-modal-backdrop" *ngIf="mostrarModalReporte()" (click)="cerrarModalReporte()">
     <div class="report-modal" (click)="$event.stopPropagation()">
         <h5 class="report-modal__title">Reportar artículo</h5>
         <p class="report-modal__subtitle">{{article()?.titulo}}</p>
+        <div class="mb-3">
+            <label for="treporte" class="form-label">Tipo de reporte:</label>
+            <select id="treporte" class="form-select" [(ngModel)]="selectedTypeReport">
+                <option value="" disabled selected>
+                    Selecciona el tipo de reporte
+                </option>
+                @for (item of listReportTypes; track $index) {
+                <option [ngValue]="item.id">
+                    {{ item.tipo }}
+                </option>
+                }
+            </select>
+        </div>
         <textarea class="report-modal__textarea" placeholder="Describe el motivo del reporte..."
             [value]="motivoReporte()" (input)="motivoReporte.set($any($event.target).value)" rows="4"
             maxlength="500"></textarea>

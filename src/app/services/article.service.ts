@@ -1,10 +1,13 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { map, tap } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 import {VentasMes} from '../interfaces/ventas.interface';
 import { PubStats } from '../interfaces/pub-stats.interface';
 import { Article } from '../interfaces/article.interface';
+import { AuthService } from './auth.service';
 
 export interface ArticleUpsertPayload {
   titulo: string;
@@ -14,7 +17,6 @@ export interface ArticleUpsertPayload {
   tipoEntrega: string;
   tipoPago: string;
   categorias_id: number | string;
-  images?: string[];
 }
 
 export interface ArticleEnumsPayload {
@@ -29,18 +31,35 @@ export interface ArticleEnumsPayload {
 })
 export class ArticleService {
   private http = inject(HttpClient);
+  private authService = inject(AuthService);
   private apiUrl = 'http://localhost:3000/api';
   private backendUrl = 'http://localhost:3000';
 
   Articles = signal<Article[]>([]);
 
-  getArticleById(id: string): Observable<Article | undefined> {
-    return this.http.get<any>(`${this.apiUrl}/article/${id}`).pipe(
+  getPublicArticleById(id: string): Observable<iArticle | undefined> {
+    return this.getAllPublicArticles().pipe(
+      map((articles) => articles.find((article) => article.id === String(id)))
+    );
+  }
+
+  getArticleById(id: string): Observable<iArticle | undefined> {
+    if (!this.authService.isLogged()) {
+      return this.getPublicArticleById(id);
+    }
+
+    return this.http.get<any>(`${this.apiUrl}/user-sell/article/${id}`).pipe(
       map(response => {
-        const rawArticle = Array.isArray(response?.data)
-          ? response.data[0]
-          : response?.data ?? response?.article ?? response;
+        const rawArticle = response?.data ?? response?.article ?? response;
         return this.mapRawArticleToIArticle(rawArticle);
+      }),
+      catchError((error) => {
+        // Fallback para detalle público si el endpoint autenticado no responde.
+        if (error?.status === 401 || error?.status === 403 || error?.status === 404) {
+          return this.getPublicArticleById(id);
+        }
+
+        return throwError(() => error);
       })
     );
   }
@@ -76,13 +95,12 @@ export class ArticleService {
     );
   }
 
-  createArticle(article: ArticleUpsertPayload, userId?: number): Observable<any> {
-    const payload = userId ? { ...article, usuarios_id: userId } : article;
-    return this.http.post<any>(`${this.apiUrl}/user-sell${userId ? `/${userId}` : ''}`, payload);
+  createArticle(formData: FormData): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/user-sell`, formData);
   }
 
-  updateArticle(id: string, updatedArticle: Partial<ArticleUpsertPayload>): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/user-sell/${id}`, updatedArticle);
+  updateArticle(id: string, formData: FormData): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/user-sell/${id}`, formData);
   }
 
   deleteArticle(id: string): Observable<any> {

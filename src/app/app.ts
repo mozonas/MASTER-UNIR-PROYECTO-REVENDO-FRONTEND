@@ -7,14 +7,14 @@ import { AuthService } from './services/auth.service';
 
 import { FooterComponent } from "./shared/footer/footer.component";
 import { HeaderMenuComponent } from "./shared/headers/header-menu/header-menu.component";
-import { AsideComponent } from "./shared/aside/aside.component";
+import { ChatFabComponent } from "./shared/chat-fab/chat-fab.component";
 // import { AdminNavMenu } from "./shared/admin-nav-menu/admin-nav-menu";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrls: ['./app.css'],
-  imports: [RouterOutlet, FooterComponent, HeaderMenuComponent]
+  imports: [RouterOutlet, FooterComponent, HeaderMenuComponent, ChatFabComponent]
 })
 export class App implements OnInit {
   protected readonly title = signal('MASTER-UNIR-PROYECTO-REVENDO-FRONTEND');
