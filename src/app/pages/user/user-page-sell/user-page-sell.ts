@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
@@ -12,11 +12,13 @@ import { ArticleCardComponent } from '../../../shared/components/article-card/ar
   templateUrl: './user-page-sell.html',
   styleUrls: ['./user-page-sell.css'],
 })
-export class UserPageSell implements OnInit {
+export class UserPageSell implements OnInit, OnChanges {
   private articleService = inject(ArticleService);
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+
+  @Input() userId: number | null = null;
 
   articles = this.articleService.Articles;
 
@@ -49,28 +51,33 @@ export class UserPageSell implements OnInit {
 
   currentPageArticles = computed<iArticle[]>(() => this.currentPageRawArticles());
 
-  ngOnInit(): void {
-    this.loadArticles();
-
-    let userIdParaCargar: number | null = null;
-
-    // 1. Intentamos obtener el ID desde los parámetros de la URL (ruta de Admin)
-    const idFromRoute = this.route.snapshot.paramMap.get('id');
-
-    if (idFromRoute) {
-      userIdParaCargar = Number(idFromRoute);
-      this.isAdminViewing = true; // El admin está auditando un perfil ajeno
-      console.log(`📋 Modo Admin: Visualizando usuario desde URL con ID: ${userIdParaCargar}`);
-    } else {
-      // 2. Si no hay ID en la URL, mantenemos tu comportamiento original (Perfil propio del usuario logueado)
-      userIdParaCargar = this.authService.getUserId();
-      console.log(`👤 Modo Usuario: Visualizando perfil propio con ID: ${userIdParaCargar}`);
+  ngOnChanges(changes: SimpleChanges): void {
+    if ('userId' in changes) {
+      const nextUserId = changes['userId'].currentValue as number | null;
+      if (nextUserId && nextUserId > 0) {
+        this.loadArticles();
+      }
     }
   }
 
-  private loadArticles(): void {
+  ngOnInit(): void {
+    const idFromRoute = this.route.snapshot.paramMap.get('id');
+    this.isAdminViewing = !!idFromRoute;
+
+    if (!this.userId || this.userId <= 0) {
+      this.loadArticles();
+    }
+  }
+
+  private resolveUserId(): number | null {
+    const inputUserId = this.userId && this.userId > 0 ? this.userId : null;
     const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
-    const userId = routeUserId ?? this.authService.getUserId();
+
+    return inputUserId ?? routeUserId ?? this.authService.getUserId();
+  }
+
+  private loadArticles(): void {
+    const userId = this.resolveUserId();
 
     if (!userId) {
       console.error('No se pudo obtener el ID de usuario para cargar los artículos.');
@@ -93,12 +100,18 @@ export class UserPageSell implements OnInit {
   }
 
   onEdit(article: iArticle): void {
-    const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
-    const userId = routeUserId ?? this.authService.getUserId();
-    void this.router.navigate(['/article-form', article.id], { queryParams: { userId } });
+    if (!this.canManageArticle(article)) {
+      return;
+    }
+
+    void this.router.navigate(['/article-form', article.id]);
   }
 
   onDelete(article: iArticle): void {
+    if (!this.canManageArticle(article)) {
+      return;
+    }
+
     const confirmed = confirm(`¿Está seguro de que desea eliminar "${article.titulo}"? Esta acción no se puede deshacer.`);
     if (confirmed) {
       this.articleService.deleteArticle(article.id).subscribe({
@@ -109,9 +122,15 @@ export class UserPageSell implements OnInit {
   }
 
   addNewArticle() {
-    const routeUserId = Number(this.route.snapshot.paramMap.get('id')) || null;
-    const userId = routeUserId ?? this.authService.getUserId();
-    void this.router.navigate(['/article-form'], { queryParams: { userId } });
+    void this.router.navigate(['/article-form']);
+  }
+
+  canManageArticle(article: iArticle): boolean {
+    if (this.authService.getUserRole() === 'MODERADOR') {
+      return true;
+    }
+
+    return this.authService.getUserId() === article.usuarios_id;
   }
 
   getFilterCount(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'): number {

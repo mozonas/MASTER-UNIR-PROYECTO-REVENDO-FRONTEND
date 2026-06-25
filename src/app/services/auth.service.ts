@@ -50,8 +50,21 @@ export class AuthService {
 
     // Método para verificar si el usuario está autenticado
     isLogged(): boolean {
-        const token = this.getToken();
-        return token !== null && token.trim().length > 10;
+        const payload = this.getPayload();
+        if (!payload) {
+            return false;
+        }
+
+        // Si el token tiene expiración y ya ha caducado, se invalida sesión local.
+        if (typeof payload.exp === 'number') {
+            const nowInSeconds = Math.floor(Date.now() / 1000);
+            if (payload.exp <= nowInSeconds) {
+                sessionStorage.removeItem('token');
+                return false;
+            }
+        }
+
+        return true;
     }
 
 
