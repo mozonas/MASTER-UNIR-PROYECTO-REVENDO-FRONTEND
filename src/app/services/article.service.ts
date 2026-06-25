@@ -154,8 +154,6 @@ export class ArticleService {
     let estadoVenta: iArticle['estadoVenta'] = 'DISPONIBLE';
     if (estadoRaw === 'VENDIDO') {
       estadoVenta = 'VENDIDO';
-    } else if (estadoRaw === 'RESERVADO') {
-      estadoVenta = 'RESERVADO';
     } else if (estadoRaw === 'BORRADO') {
       estadoVenta = 'BORRADO';
     }
