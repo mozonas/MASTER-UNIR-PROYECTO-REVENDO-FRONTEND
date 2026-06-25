@@ -1,0 +1,61 @@
+.home-container {
+  padding: 28px 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.home-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.home-new-article-btn {
+  margin-left: auto;
+}
+
+.home-new-article-btn.btn-success {
+  background-color: #b8e986;
+  border-color: #b8e986;
+  color: #333;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.home-new-article-btn.btn-success:hover {
+  background-color: #a3d66f;
+  border-color: #a3d66f;
+  transform: scale(1.05);
+}
+
+.home-new-article-btn .bi {
+  margin-right: 0.5rem;
+}
+
+.home-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.home-count {
+  font-size: 13px;
+  color: #999;
+}
+
+.home-loading,
+.home-error {
+  text-align: center;
+  color: #999;
+  padding: 40px 0;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}

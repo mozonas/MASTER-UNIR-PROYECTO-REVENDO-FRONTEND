@@ -1,0 +1,76 @@
+<div class="chat-wrapper">
+
+  <div class="conversaciones-panel">
+    <div class="conversaciones-header">
+      <h5>Mensajes</h5>
+    </div>
+
+    <div class="buscador-wrapper">
+      <input type="text" class="form-control buscador"
+             placeholder="Buscar conversación..."
+             [(ngModel)]="busqueda"/>
+    </div>
+
+    @for (conv of conversacionesFiltradas; track conv.articulos_id) {
+      <div class="conversacion-item"
+           [class.activa]="conversacionActiva?.articulos_id === conv.articulos_id"
+           (click)="seleccionarConversacion(conv)">
+        <img [src]="'/images/' + conv.foto" 
+             (error)="onImageError($event)"
+             alt="avatar" class="conv-avatar"/>
+        <div class="conv-info">
+          <span class="conv-nombre">{{ conv.usuario }}</span>
+          <span class="conv-articulo">{{ conv.titulo }}</span>
+          <span class="conv-ultimo">{{ conv.ultimo_mensaje }}</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="chat-panel">
+
+    @if (conversacionActiva) {
+      <div class="chat-header">
+        <img [src]="'/images/' + conversacionActiva.foto" 
+             (error)="onImageError($event)"
+             alt="avatar" class="conv-avatar"/>
+        <div>
+          <span class="conv-nombre">{{ conversacionActiva.usuario }}</span>
+          <span class="conv-articulo">{{ conversacionActiva.titulo }}</span>
+        </div>
+      </div>
+
+      <div class="mensajes-container">
+        @for (mensaje of mensajesActivos; track mensaje.id) {
+          @if (mostrarFecha(mensajesActivos, $index)) {
+            <div class="fecha-separador">
+              <span>{{ etiquetaFecha(mensaje.created_at) }}</span>
+            </div>
+          }
+          <div class="mensaje" [class.mio]="esMio(mensaje)" [class.suyo]="!esMio(mensaje)">
+            <div class="mensaje-burbuja">
+              {{ mensaje.contenido }}
+              <span class="mensaje-hora">{{ horaMensaje(mensaje.created_at) }}</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="chat-input">
+        <input type="text" class="form-control"
+               placeholder="Escribe un mensaje..."
+               [(ngModel)]="nuevoMensaje"
+               (keyup)="enviarConEnter($event)"/>
+        <button class="btn btn-enviar" (click)="enviarMensaje()">
+          Enviar
+        </button>
+      </div>
+
+    } @else {
+      <div class="chat-vacio">
+        <p>Selecciona una conversación para empezar</p>
+      </div>
+    }
+
+  </div>
+</div>

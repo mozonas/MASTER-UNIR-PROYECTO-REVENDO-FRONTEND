@@ -1,0 +1,75 @@
+/*SIDEBAR*/
+/* Fondo general */
+.sidebar,
+#sidebarMenu,
+.offcanvas-body {
+  background-color: #8cd86a;
+  color: #ffffff;
+}
+
+.sidebar {
+  position: relative;
+  width: 250px;
+  z-index: 10;
+}
+
+.sidebar,
+#sidebarMenu,
+.offcanvas-body {
+  overflow-x: hidden;
+}
+
+/* Enlaces */
+.sidebar .nav-link,
+#sidebarMenu .nav-link {
+  color: #ffffff;
+  font-weight: 500;
+  white-space: nowrap; /* evita que el texto rompa y genere scroll */
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
+/* Hover más oscuro */
+.sidebar .nav-link:hover,
+#sidebarMenu .nav-link:hover {
+  background-color: #5eaa47;
+  color: #ffffff;
+}
+
+/* Activo */
+.sidebar .nav-link.active,
+#sidebarMenu .nav-link.active {
+  background-color: #6fbf54;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* Iconos blancos y tamaño fijo */
+.sidebar svg,
+#sidebarMenu svg {
+  filter: brightness(0) invert(1);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0; 
+}
+
+/* Títulos del sidebar */
+.sidebar-heading {
+  color: #ffffff;
+}
+.dropdown-arrow{
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.dropdown-arrow img {
+  filter: brightness(0) invert(1);
+  height: 16px;
+  width: 16px;
+}
+.listado{
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+

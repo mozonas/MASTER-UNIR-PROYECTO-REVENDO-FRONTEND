@@ -1,0 +1,74 @@
+<div class="container my-5" style="max-width: 1000px;">
+
+    <!-- BLOQUE 1: Sobre Nosotros -->
+    <header class="row g-4 mb-5 pb-3">
+        <div class="col-12 col-lg-10">
+            <span
+                class="badge bg-dark text-white rounded-pill px-3 py-2 mb-3 fw-bold text-uppercase tracking-wider small-badge">
+                Sobre Nosotros
+            </span>
+            <!-- Usamos display-4 que escala de forma nativa y segura en Bootstrap -->
+            <h1 class="display-4 fw-black tracking-tighter text-dark lh-sm mb-3">
+                Comprar lo usado no debería sentirse como jugar a la <span class="color-brand">lotería</span>.
+            </h1>
+            <p class="lead text-secondary fs-5 mb-0">
+                No somos otra app de segunda mano llena de ruido. Somos el espacio donde el planeta descansa y tu
+                cartera respira. Productos que ya existen, segundas oportunidades y cero dramas.
+            </p>
+        </div>
+    </header>
+
+    <!-- BLOQUE 2: El Dato Líquido -->
+    <section class="bg-light rounded-4 p-4 p-md-5 mb-5 border border-light-subtle">
+        <div class="row align-items-center g-4">
+            <div class="col-12 col-md-3 text-center text-md-start">
+                <span class="massive-number color-brand fw-black">0%</span>
+            </div>
+            <div class="col-12 col-md-9 text-center text-md-start">
+                <h3 class="h4 fw-bold text-dark mb-2">Comisiones por transferir tu dinero</h3>
+                <p class="card-text text-secondary small lh-base mb-0">
+                    Lo que vendes es tuyo de verdad. Cuando el comprador confirma que todo está perfecto, el dinero va
+                    directo a tu Monedero ReVendo y de ahí a tu banco de forma gratuita. Así de simple. El
+                    comercio circular solo funciona si es justo.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- BLOQUE 3: Contraste asimétrico -->
+    <section class="row g-4 my-5 py-2">
+        <div class="col-12 col-md-4 text-center align-items-center d-flex flex-column justify-content-center">
+            <p class="fw-bold text-uppercase tracking-widest text-muted small-badge mb-1">Por qué existimos —</p>
+            <h2 class="h3 fw-bold text-dark">Hartos del caos tradicional.</h2>
+        </div>
+        <div class="col-12 col-md-8">
+            <p class="fs-5 text-dark mb-3 lh-base fw-medium">
+                ReVendo nace de la frustración de lidiar con regateos absurdos, descripciones engañosas y la duda
+                constante de si tu paquete llegará o si tu dinero desaparecerá.
+            </p>
+            <p class="text-secondary small lh-base mb-0">
+                Queríamos una plataforma donde vender fuera tan rápido como pulsar un botón y comprar fuera tan seguro
+                como hacerlo en una tienda de lujo. Sin intermediarios extraños, sin comisiones ocultas que
+                arruinen el trato y con una interfaz limpia que respete tus ojos.
+            </p>
+        </div>
+    </section>
+
+
+    <!-- BLOQUE 4: Cierre idéntico a tu layout de soporte -->
+    <section
+        class="support-footer-gradient text-white rounded-4 p-4 p-md-5 d-flex flex-column flex-md-row align-items-center justify-content-between gap-4 shadow-sm">
+        <div class="text-center text-md-start">
+            <h2 class="display-6 fw-black tracking-tighter lh-sm mb-3">Menos plástico. Más historias.</h2>
+            <p class="text-white-80 mb-0 opacity-75 small" style="max-width: 550px;">
+                Dale una segunda oportunidad a los artículos que ya cumplieron su ciclo contigo y encuentra piezas
+                únicas.
+            </p>
+        </div>
+        <button class="btn btn-revendo btn-lg px-4 py-3 fw-semibold text-nowrap rounded-3 shadow-sm"
+            (click)="onAction()">
+            Empezar ahora
+        </button>
+    </section>
+
+</div>

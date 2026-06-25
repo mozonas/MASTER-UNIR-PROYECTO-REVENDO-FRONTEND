@@ -1,0 +1,94 @@
+<div class="filters">
+
+  <!-- Buscar por ID -->
+  <div class="filter-item">
+    <input type="text" 
+    placeholder="Buscar por id usuario" 
+    [(ngModel)]="searchId" 
+    (keyup.enter)="searchById()">
+    <button (click)="searchById()">
+      <img src="/images/lupa.png" alt="Buscar ID" />
+    </button>
+  </div>
+
+  <!-- Buscar por usuario -->
+  <div class="filter-item">
+    <input 
+    type="text" 
+    placeholder="Buscar usuario" 
+    [(ngModel)]="searchUsername" 
+    (keyup.enter)="searchByUsername()" 
+    />
+    <button (click)="searchByUsername()">
+      <img src="/images/lupa.png" alt="Buscar usuario" />
+    </button>
+  </div>
+
+  <!-- Buscar por email -->
+  <div class="filter-item">
+    <input 
+    type="text" 
+    placeholder="Buscar email" 
+    [(ngModel)]="searchEmail" 
+    (keyup.enter)="searchByEmail()" 
+    />
+    <button (click)="searchByEmail()">
+      <img src="/images/lupa.png" alt="Buscar email" />
+    </button>
+  </div>
+
+</div>
+
+
+
+
+
+<ul class="user-list">
+
+  <li class="header">
+    <span>id</span>
+    <span>nombre</span>
+    <span>apellidos</span>
+    <span>email</span>
+    <span>usuario</span>
+    <span>perfil</span>
+    <span class="actions">Acciones</span>
+  </li>
+
+  @for (u of users; track u.id) {
+  <li class="row clickable" (click)="onViewInfo(u.id)">
+    <span>{{ u.id }}</span>
+    <span>{{ u.nombre }}</span>
+    <span>{{ u.apellidos }}</span>
+    <span>{{ u.email }}</span>
+    <span>{{ u.usuario }}</span>
+    <span>{{ u.perfil }}</span>
+
+    <span class="actions" (click)="$event.stopPropagation()">
+      <button class="icon-btn edit" (click)="onEdit(u.id)">
+        <img src="/images/ico-editar.svg" alt="Editar" />
+      </button>
+
+      <button class="icon-btn delete" (click)="onDelete(u.id)">
+        <img src="/images/ico-eliminar.svg" alt="Eliminar" />
+      </button>
+
+      <button class="icon-btn block" (click)="onToggleBlock(u)">
+        <img 
+          [src]="u.isBlocked ? '/images/ico-bloquear.svg' : '/images/ico-desbloquear.svg'"
+          [alt]="u.isBlocked ? 'Bloqueado' : 'Desbloqueado'" />
+      </button>
+    </span>
+  </li>
+  }
+
+
+</ul>
+
+<div class="pagination">
+  <button (click)="prevPage()" [disabled]="page === 1">Anterior</button>
+
+  <span>Página {{ page }} de {{ totalPages }}</span>
+
+  <button (click)="nextPage()" [disabled]="page === totalPages">Siguiente</button>
+</div>

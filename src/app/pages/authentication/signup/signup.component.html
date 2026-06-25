@@ -1,34 +1,25 @@
-<div class="signin-wrapper d-flex justify-content-center align-items-center vh-100">
+<app-header-menu [mostrarMenu]="false"></app-header-menu>
+<div class="signin-wrapper d-flex">
   <div class="signin-card d-flex">
 
-    <div class="logo-section d-flex flex-column justify-content-center align-items-center">
-      <a routerLink="/home">
-        <img src="images/logo_revendo.png" alt="reVendo logo" class="logo-img"/>
-      </a>
-      <span class="brand-name">reVendo</span>
-    </div>
-
     <div class="form-section">
-      <h2 class="text-center mb-4">Registro de usuario</h2>
+      <h2 class="text-center mb-4">REGISTRO</h2>
 
       <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
 
         <div class="mb-2">
           <label class="form-label">Nombre*</label>
-          <input type="text" class="form-control form-control-sm"
-                 name="nombre" [(ngModel)]="formData.nombre" required/>
+          <input type="text" class="form-control form-control-sm" name="nombre" [(ngModel)]="formData.nombre" required />
         </div>
 
         <div class="mb-2">
           <label class="form-label">Apellidos*</label>
-          <input type="text" class="form-control form-control-sm"
-                 name="apellidos" [(ngModel)]="formData.apellidos" required/>
+          <input type="text" class="form-control form-control-sm" name="apellidos" [(ngModel)]="formData.apellidos" required />
         </div>
 
         <div class="mb-2">
           <label class="form-label">Email*</label>
-          <input type="email" class="form-control form-control-sm"
-                 name="email" [(ngModel)]="formData.email"
+          <input type="email" class="form-control form-control-sm" name="email" [(ngModel)]="formData.email"
                  required email #emailField="ngModel"/>
           @if (emailField.dirty && emailField.invalid) {
             <div class="text-danger mt-1" style="font-size: 0.75rem;">
@@ -39,21 +30,23 @@
 
         <div class="mb-2">
           <label class="form-label">Usuario*</label>
-          <input type="text" class="form-control form-control-sm"
-                 name="usuario" [(ngModel)]="formData.usuario" required/>
+          <input type="text" class="form-control form-control-sm" name="usuario" [(ngModel)]="formData.usuario" required />
         </div>
 
         <div class="mb-2">
           <label class="form-label">Contraseña*</label>
-          <input type="password" class="form-control form-control-sm"
-                 name="contrasena" [(ngModel)]="formData.contrasena" required/>
+          <input type="password" class="form-control form-control-sm" name="password" [(ngModel)]="formData.password" required />
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label">Foto</label>
+          <input type="file" class="form-control form-control-sm" />
         </div>
 
         <div class="mb-2">
           <label class="form-label">Fecha de nacimiento*</label>
-          <input type="date" class="form-control form-control-sm"
-                 name="fechaNacimiento" [(ngModel)]="formData.fechaNacimiento"
-                 required [max]="maxDate"/>
+          <input type="date" class="form-control form-control-sm" name="fecha_nacimiento"
+                 [(ngModel)]="formData.fecha_nacimiento" required [max]="maxDate"/>
           @if (esMenorDeEdad()) {
             <div class="text-danger mt-1" style="font-size: 0.75rem;">
               Debes tener al menos 18 años para registrarte.
@@ -62,9 +55,21 @@
         </div>
 
         <div class="mb-2">
-          <label class="form-label">Foto</label>
-          <input type="file" class="form-control form-control-sm"
-                 (change)="onFileChange($event)" accept="image/*"/>
+          <div class="col-12">
+            <label for="direccion" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">
+              Ubicación / Dirección*
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light text-muted"><i class="fa fa-map-marker"></i></span>
+              <input type="text" id="direccion" name="direccion" [(ngModel)]="formData.direccion"
+                #direccionInput="ngModel" class="form-control p-2.5" placeholder="Ej: Calle Gran Vía 45, Madrid, España"
+                [class.is-invalid]="direccionInput.invalid && (direccionInput.dirty || direccionInput.touched)"
+                required />
+            </div>
+            <div class="form-text text-muted fs-8 mt-1">
+              Esta dirección se utilizará de forma automática para renderizar tu mapa de localización.
+            </div>
+          </div>
         </div>
 
         <div class="text-end mt-3">

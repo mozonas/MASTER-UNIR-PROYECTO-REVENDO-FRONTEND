@@ -1,0 +1,43 @@
+<div class="container mt4-moderator g-0">
+
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-dark border-opacity-10">
+    <h1 class="h4 mb-0 text-secondary fw-normal">Gestión de Artículos</h1>
+    <button type="button" class="btn-volver" (click)="volverAlPanel()">
+      <i class="bi bi-arrow-left-short fs-4 me-1"></i> ◀ Volver al panel principal
+    </button>
+  </div>
+
+  
+  <main class="card shadow-sm border-0 rounded overflow-hidden mb-4 w-100 bg-white">
+
+    <div class="card-header py-3">
+      <h2 class="h6 mb-0 text-white fw-bold text-uppercase">
+        👗 Artículos en revisión pendientes
+      </h2>
+    </div>
+
+    <app-articles-pending-table
+      [pendingData]="pendingArticles()"
+      (viewDetail)="goToDetail($event)">
+    </app-articles-pending-table>
+  </main>
+
+  <section class="card shadow-sm border-0 rounded overflow-hidden mb-5 w-100 bg-white">
+
+    <div class="card-header py-3">
+      <h2 class="h6 mb-0 text-white fw-bold text-uppercase">
+        📜 Historial de artículos gestionados
+      </h2>
+    </div>
+
+    <app-articles-history-table
+      [historyData]="articlesHistory()">
+    </app-articles-history-table>
+      <!-- Desactivar la funcion de ir al detalle de articulos reportados
+      (viewDetail)="goToDetail($event)"> 
+      -->
+  </section>
+
+</div>
+
+

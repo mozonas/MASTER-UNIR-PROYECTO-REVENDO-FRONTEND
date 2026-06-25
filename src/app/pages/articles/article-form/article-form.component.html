@@ -1,0 +1,135 @@
+<div class="bg-light py-5 min-vh-100">
+        <div class="container" style="max-width: 800px;">
+                <div class="card border-light rounded-4 shadow-sm p-4 p-md-5">
+                        <div class="d-flex justify-content-between align-items-start mb-4 gap-3">
+                                <div>
+                                        <span class="text-uppercase text-muted fs-7 tracking-wider">Artículo</span>
+                                        <h2 class="fw-bold fs-3 text-dark mb-0">{{ isEditing ? 'Editar artículo' : 'Nuevo artículo' }}</h2>
+                                        <p class="text-secondary mb-0">Completa los campos para {{ isEditing ? 'actualizar' : 'crear' }} tu artículo.</p>
+                                </div>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancel()">
+                                        <i class="bi bi-arrow-left me-2"></i> Volver
+                                </button>
+                        </div>
+
+                        <form [formGroup]="articleForm" (ngSubmit)="onSubmit()" class="row g-4">
+                                <div class="col-12">
+                                        <label for="titulo" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Título</label>
+                                        <input #formField id="titulo" type="text" formControlName="titulo" class="form-control p-2.5 rounded-3" [class.is-invalid]="isControlInvalid('titulo')">
+                                        @if (isControlInvalid('titulo')) {
+                                        <div class="invalid-feedback">El título es obligatorio y debe tener como máximo 120 caracteres.</div>
+                                        }
+                                </div>
+
+                                <div class="col-12">
+                                        <label for="precio" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Precio (€)</label>
+                                        <input #formField id="precio" type="number" min="1" formControlName="precio" class="form-control p-2.5 rounded-3" [class.is-invalid]="isControlInvalid('precio')">
+                                        @if (isControlInvalid('precio')) {
+                                        <div class="invalid-feedback">Introduce un precio válido mayor que 0.</div>
+                                        }
+                                </div>
+
+                                <div class="col-12">
+                                        <label for="descripcion" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Descripción</label>
+                                        <textarea #formField id="descripcion" rows="5" formControlName="descripcion" class="form-control p-2.5 rounded-3" [class.is-invalid]="isControlInvalid('descripcion')"></textarea>
+                                        @if (isControlInvalid('descripcion')) {
+                                        <div class="invalid-feedback">La descripción es obligatoria y debe tener al menos 20 caracteres.</div>
+                                        }
+                                </div>
+
+                                <div class="col-12">
+                                        <label for="categoria" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Categoría</label>
+                                        <select #formField id="categoria" formControlName="categorias_id" class="form-select p-2.5 rounded-3" [class.is-invalid]="isControlInvalid('categorias_id')">
+                                                <option value="" disabled>Selecciona una categoría</option>
+                                                @for (categoria of categoriasOptions(); track categoria.id) {
+                                                        <option [value]="categoria.id">{{ categoria.nombre }}</option>
+                                                }
+                                        </select>
+                                        @if (isControlInvalid('categorias_id')) {
+                                        <div class="invalid-feedback">Selecciona una categoría.</div>
+                                        }
+                                </div>
+
+                                <div class="col-12">
+                                        <label for="tipoEntrega" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Tipo de entrega</label>
+                                        <select #formField id="tipoEntrega" formControlName="tipoEntrega" class="form-select p-2.5 rounded-3" [class.is-invalid]="isControlInvalid('tipoEntrega')">
+                                                <option value="" disabled>Selecciona un tipo de entrega</option>
+                                                @for (opcion of tipoEntregaOptions(); track opcion) {
+                                                        <option [value]="opcion">{{ opcion }}</option>
+                                                }
+                                        </select>
+                                        @if (isControlInvalid('tipoEntrega')) {
+                                        <div class="invalid-feedback">Selecciona un tipo de entrega.</div>
+                                        }
+                                </div>
+
+                                <div class="col-12">
+                                        <label for="tipoPago" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Tipo de pago</label>
+                                        <select #formField id="tipoPago" formControlName="tipoPago" class="form-select p-2.5 rounded-3" [class.is-invalid]="isControlInvalid('tipoPago')">
+                                                <option value="" disabled>Selecciona un tipo de pago</option>
+                                                @for (opcion of tipoPagoOptions(); track opcion) {
+                                                        <option [value]="opcion">{{ opcion }}</option>
+                                                }
+                                        </select>
+                                        @if (isControlInvalid('tipoPago')) {
+                                        <div class="invalid-feedback">Selecciona un tipo de pago.</div>
+                                        }
+                                </div>
+
+                                <div class="col-12">
+                                        <label for="estadoProducto" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">Estado del producto</label>
+                                        <select #formField id="estadoProducto" formControlName="estadoProducto" class="form-select p-2.5 rounded-3" [class.is-invalid]="isControlInvalid('estadoProducto')">
+                                                <option value="" disabled>Selecciona el estado del producto</option>
+                                                @for (opcion of estadoProductoOptions(); track opcion) {
+                                                        <option [value]="opcion">{{ opcion }}</option>
+                                                }
+                                        </select>
+                                         @if (isControlInvalid('estadoProducto')) {
+                                        <div class="invalid-feedback">Selecciona el estado del producto.</div>
+                                        }
+                                </div>
+
+                                <div class="col-12">
+                                        <label for="image1" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">URL de imagen 1 (obligatoria)</label>
+                                        <input #formField id="image1" type="text" formControlName="image1" class="form-control p-2.5 rounded-3" placeholder="https://..." [class.is-invalid]="isControlInvalid('image1')">
+                                        @if (isControlInvalid('image1')) {
+                                        <div class="invalid-feedback">La primera imagen es obligatoria.</div>
+                                        }
+                                </div>
+
+                                <div class="col-12">
+                                        <label for="image2" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">URL de imagen 2 (opcional)</label>
+                                        <input id="image2" type="text" formControlName="image2" class="form-control p-2.5 rounded-3" placeholder="https://...">
+                                </div>
+
+                                <div class="col-12">
+                                        <label for="image3" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">URL de imagen 3 (opcional)</label>
+                                        <input id="image3" type="text" formControlName="image3" class="form-control p-2.5 rounded-3" placeholder="https://...">
+                                </div>
+
+                                <div class="col-12">
+                                        <label for="image4" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">URL de imagen 4 (opcional)</label>
+                                        <input id="image4" type="text" formControlName="image4" class="form-control p-2.5 rounded-3" placeholder="https://...">
+                                </div>
+
+                                <div class="col-12">
+                                        <label for="image5" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">URL de imagen 5 (opcional)</label>
+                                        <input id="image5" type="text" formControlName="image5" class="form-control p-2.5 rounded-3" placeholder="https://...">
+                                </div>
+
+                                <div class="col-12 p-3 border border-warning rounded-3 bg-warning bg-opacity-10">
+                                        <label for="usuariosId" class="form-label fw-bold text-dark fs-7 text-uppercase tracking-wider">ID de usuario <span class="badge bg-warning text-dark ms-1">Temporal</span></label>
+                                        <input id="usuariosId" type="number" formControlName="usuarios_id" class="form-control p-2.5 rounded-3" placeholder="ID del usuario vendedor">
+                                        <small class="text-muted">Campo temporal hasta implementar la obtención automática del usuario autenticado.</small>
+                                </div>
+
+                                <div class="col-12 mt-2 border-top pt-4 d-flex justify-content-end gap-3">
+                                        <button type="button" class="btn btn-light px-4 fw-semibold border" (click)="cancel()">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary px-4 fw-semibold text-white">
+                                                {{ isEditing ? 'Guardar cambios' : 'Crear artículo' }}
+                                        </button>
+                                </div>
+                        </form>
+                </div>
+        </div>
+</div>

@@ -1,0 +1,16 @@
+.error-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;   /* centra vertical */
+  align-items: center;       /* centra horizontal */
+  height: 100vh;             /* ocupa toda la pantalla */
+  padding: 20px;
+  text-align: center;
+}
+
+.error-img {
+  height: 80vh;              /* 80% del alto de la pantalla */
+  width: auto;               /* mantiene proporción */
+  object-fit: contain;       /* evita deformaciones */
+  max-width: 100%;           /* no se sale del ancho */
+}
