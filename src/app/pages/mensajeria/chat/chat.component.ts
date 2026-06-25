@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ChatService } from '../../../services/chat.service';
 import { AuthService } from '../../../services/auth.service';
 
@@ -37,8 +38,10 @@ export class ChatComponent implements OnInit, OnDestroy {
   private chatService = inject(ChatService);
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
+  private route = inject(ActivatedRoute);
 
   usuarioActualId: number = 0;
+  articuloIdDesdeUrl: number | null = null;
 
   conversaciones: Conversacion[] = [];
   conversacionActiva: Conversacion | null = null;
@@ -51,6 +54,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.usuarioActualId = this.authService.getUserId() || 0;
+    this.articuloIdDesdeUrl = Number(this.route.snapshot.queryParamMap.get('articuloId')) || null;
     this.cargarConversaciones();
 
     this.pollingConversaciones = setInterval(() => {
@@ -61,20 +65,53 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.pollingMensajes) clearInterval(this.pollingMensajes);
     if (this.pollingConversaciones) clearInterval(this.pollingConversaciones);
-    // Resetear el contador al salir del chat
     this.chatService.setMensajesNoLeidos(0);
   }
 
   cargarConversaciones() {
     this.chatService.getConversacionesPorUsuario(this.usuarioActualId).subscribe({
       next: (data) => {
-        this.conversaciones = data;
+        if (this.conversacionActiva && !data.some((c: any) => c.articulos_id === this.conversacionActiva?.articulos_id)) {
+          this.conversaciones = [...data, this.conversacionActiva];
+        } else {
+          this.conversaciones = data;
+        }
 
-        // Calculamos el total de mensajes no leídos y lo compartimos con el FAB
         const totalNoLeidos = data.reduce((acc: number, conv: any) => {
           return acc + (conv.mensajes_no_leidos || 0);
         }, 0);
         this.chatService.setMensajesNoLeidos(totalNoLeidos);
+
+        if (this.articuloIdDesdeUrl) {
+          const articuloId = this.articuloIdDesdeUrl;
+          const convExistente = this.conversaciones.find(c => c.articulos_id === articuloId);
+          if (convExistente) {
+            this.seleccionarConversacion(convExistente);
+            this.articuloIdDesdeUrl = null;
+          } else {
+            this.chatService.getArticuloPorId(articuloId).subscribe({
+              next: (resp) => {
+                const articulo = resp.data;
+                const convTemporal: Conversacion = {
+                  articulos_id: articuloId,
+                  titulo: articulo.titulo || '',
+                  usuario: articulo.seller?.usuario || '',
+                  foto: articulo.seller?.foto || '',
+                  ultimo_mensaje: '',
+                  fecha_ultimo_mensaje: ''
+                };
+                this.conversaciones = [...this.conversaciones, convTemporal];
+                this.seleccionarConversacion(convTemporal);
+                this.articuloIdDesdeUrl = null;
+                this.cdr.detectChanges();
+              },
+              error: (err) => {
+                console.error('Error al obtener artículo:', err);
+                this.articuloIdDesdeUrl = null;
+              }
+            });
+          }
+        }
 
         this.cdr.detectChanges();
       },

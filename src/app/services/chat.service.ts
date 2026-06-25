@@ -34,4 +34,8 @@ export class ChatService {
     return this.http.delete<any>(`${this.apiUrl}/${mensajeId}`);
   }
 
+  getArticuloPorId(articuloId: number): Observable<any> {
+    return this.http.get<any>(`http://localhost:3000/api/articles/${articuloId}`);
+  }
+
 }
