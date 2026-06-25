@@ -4,11 +4,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { AuthService } from '../../../services/auth.service';
 import { iArticle } from '../../../interfaces/article.interface';
-import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
+import { ArticleCardComponent } from '../../../shared/components/article-card/article-card.component';
 
 @Component({
   selector: 'app-user-page-sell',
-  imports: [CommonModule, ProductCardComponent],
+  imports: [CommonModule, ArticleCardComponent],
   templateUrl: './user-page-sell.html',
   styleUrls: ['./user-page-sell.css'],
 })

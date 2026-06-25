@@ -11,6 +11,7 @@ import { ArticleDetailComponent } from './pages/article-detail-component/article
 import { AdminLayoutComponent } from './pages/admin/admin-layout/admin-layout.component';
 import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 import { ChatComponent } from './pages/mensajeria/chat/chat.component';
+import { ForbiddenComponent } from './pages/forbidden/forbidden.component';
 
 //import { roleGuard } from './guards/role.guard';
 import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.component';
@@ -128,7 +129,7 @@ export const routes: Routes = [
   { path: 'help', component: HelpComponent },
   { path: 'privacy', component: PrivacyComponent },
   { path: 'terms', component: TermsComponent },
+  { path: 'forbidden', component: ForbiddenComponent },
   { path: '404', component: Error404Component },
   { path: '**', component: Error404Component } // Esta ruta debe ir al final, ya que es la ruta comodín para páginas no encontradas
-  
 ];

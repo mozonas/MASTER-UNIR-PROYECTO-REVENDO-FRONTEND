@@ -1,7 +1,7 @@
 <div class="product-card" [class.product-card--en-revision]="estaReportado" [class.product-card--vendido]="estaVendido"
   (click)="viewArticle(article)">
   <div class="product-card__image">
-    <!-- <img [src]="imageSrc" [alt]="article.titulo" (error)="onImageError()" /> -->
+    <img [src]="'http://localhost:3000/' + article.image" [alt]="article.titulo" />
     @if (article.categoria_nombre) {
     <span class="product-card__badge">{{ article.categoria_nombre }}</span>
     }

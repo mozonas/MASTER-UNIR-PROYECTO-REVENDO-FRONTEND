@@ -7,10 +7,13 @@ import { AuthService } from '../../services/auth.service';
 import { DetailSeller } from "../../shared/detail-seller/detail-seller";
 import { iArticle } from '../../interfaces/article.interface';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { ReportType } from '../../interfaces//report-type.interface';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-article-detail-component',
-  imports: [CommonModule, DetailSeller],
+  standalone: true,
+  imports: [CommonModule, DetailSeller, FormsModule],
   templateUrl: './article-detail-component.html',
   styleUrl: './article-detail-component.css',
 })
@@ -18,6 +21,10 @@ export class ArticleDetailComponent {
   modalOpen = false;
   selectedImage: string | null = null;
   article = signal<iArticle | null>(null);
+
+  // Variable para controlar de forma manual la foto activa en el carrusel
+  subindiceActivo = 0;
+
   private route = inject(ActivatedRoute);
   private articlesService = inject(ArticleService);
   private authService = inject(AuthService);
@@ -30,15 +37,34 @@ export class ArticleDetailComponent {
   enviandoReporte = signal(false);
   mensajeReporte = signal('');
   reportado = signal(false);
+  listReportTypes: ReportType[] = [];
+  selectedTypeReport: number = 0;
+
   galleryImages = computed(() => {
     const currentArticle = this.article();
     return currentArticle ? this.articlesService.getArticleImageUrls(currentArticle) : [];
   });
 
   constructor() {
+    // Reseteamos el índice a 0 cada vez que el artículo cambie (por si navegas entre artículos)
     effect(() => {
-      console.log('Artículo actualizado:', this.article());
+      if (this.article()) {
+        this.subindiceActivo = 0;
+      }
     });
+  }
+
+  // Métodos manuales para el carrusel sin depender del JS de Bootstrap
+  anteriorFoto(): void {
+    const total = this.article()?.fotos?.length ?? 0;
+    if (total <= 1) return;
+    this.subindiceActivo = (this.subindiceActivo === 0) ? total - 1 : this.subindiceActivo - 1;
+  }
+
+  siguienteFoto(): void {
+    const total = this.article()?.fotos?.length ?? 0;
+    if (total <= 1) return;
+    this.subindiceActivo = (this.subindiceActivo === total - 1) ? 0 : this.subindiceActivo + 1;
   }
 
   get estaReportado(): boolean {
@@ -50,6 +76,14 @@ export class ArticleDetailComponent {
   }
 
   onReportar(): void {
+    this.moderationService.getReportTypes().subscribe({
+      next: (data: any) => {
+        this.listReportTypes = data;
+      },
+      error: () => {
+
+      }
+    });
     this.mostrarModalReporte.set(true);
     this.motivoReporte.set('');
     this.mensajeReporte.set('');
@@ -69,7 +103,7 @@ export class ArticleDetailComponent {
     if (!articulo) return;
 
     this.enviandoReporte.set(true);
-    this.moderationService.reportArticle(Number(articulo.id), this.motivoReporte().trim(), usuarioId).subscribe({
+    this.moderationService.reportArticle(Number(articulo.id), this.motivoReporte().trim(), this.selectedTypeReport, usuarioId).subscribe({
       next: () => {
         this.reportado.set(true);
         this.mensajeReporte.set('Artículo reportado. Quedará en revisión por un moderador.');
@@ -89,15 +123,10 @@ export class ArticleDetailComponent {
     this.getArticleData(id);
   }
 
-  /**
-   * Función que solicita los datos de un artículo al Backend
-   * @param id id del artículo del que solicitamos los datos
-   */
   async getArticleData(id: string) {
     this.articlesService.getArticleById(id).subscribe({
       next: (data) => {
         this.article.set(data ?? null);
-
       },
       error: (err) => {
         console.error('Error cargando producto:', err);
@@ -108,18 +137,11 @@ export class ArticleDetailComponent {
     });
   }
 
-  /**
-   * Función que abre el modal que muestra la imagen del carrusel
-   * @param img 
-   */
   openImageModal(img: string) {
     this.selectedImage = img;
     this.modalOpen = true;
   }
 
-  /**
-   * Función que cierra el modal de la imagen
-   */
   closeModal() {
     this.modalOpen = false;
     this.selectedImage = null;
@@ -147,4 +169,12 @@ export class ArticleDetailComponent {
     this.router.navigate(['/chat'], { queryParams: { articuloId: articulo.id } });
   }
 
+  /**
+   * Función que captura el evento del selector de tipo de reporte
+   * @param event 
+   */
+  onSelect(event: Event) {
+  const value = (event.target as HTMLSelectElement).value;
+  console.log('Seleccionado:', value);
+}
 }

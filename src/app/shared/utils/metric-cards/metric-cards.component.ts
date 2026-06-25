@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ArticleService } from '../../../services/article.service';
 import { ModerationService } from '../../../services/moderation.service';
 import { UserService } from '../../../services/user.service';
@@ -27,32 +27,25 @@ export class MetricCardsComponent {
 
  //**Metric card comparativa publicaciones del mes actual con el anterior  */ 
   newArticles = signal(0);
-  articlesDiff = signal(0);
   lastMonth = signal(0);
-
- paintPubCard(){
-  // Publicados mes actual
-    this.articleServices.getPubThisMonth().subscribe(res=>{
-      this.newArticles.set (res.total); //obtengo total del método
-      this.calculateDiff();
-    });
-    //Publicados último mes
-    this.articleServices.getPubLastMonth().subscribe (res=>{
-      this.lastMonth.set (res.total);
-      this.calculateDiff();
-    });
-  }
-  calculateDiff(){
+  articlesDiff = computed(()=>{
     const last = this.lastMonth();
     const current = this.newArticles();
-    if (last === 0){            // si hay 0 articulos la diferencia no ro
-      this.articlesDiff.set(100);
-      return;
+    if (last===0){
+      return 100;
     }
-    // redondeo y buscar porcentaje
-    const diff = Math.round(((current - last) / last) * 100);
-    this.articlesDiff.set(diff);
-  }
+    return Math.round (((current-last)/last)*100);
+  });
+
+ paintPubCard(){
+  this.articleServices.getPubComp().subscribe({
+    next:(res)=>{
+      this.newArticles.set (res.thisMonth);
+      this.lastMonth.set (res.lastMonth);
+    },
+    error: (err) => console.error('Error al pintar la card:', err)
+  })
+ }
 
   
 //** Metrica nuevos usuarios. Mostrar diferencia entre ususarios nuevos de este mes respeto al mes pasado */

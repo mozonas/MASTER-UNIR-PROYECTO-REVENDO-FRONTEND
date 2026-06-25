@@ -61,8 +61,8 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
       @for (article of currentPageArticles(); track article.id) {
       <div class="col">
-        <app-product-card [article]="article" [showActions]="true" (editClicked)="onEdit(article)"
-          (deleteClicked)="onDelete(article)"></app-product-card>
+        <app-article-card [article]="article" [showActions]="true" (editClicked)="onEdit(article)"
+          (deleteClicked)="onDelete(article)"/>
       </div>
       }
     </div>

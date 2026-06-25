@@ -6,18 +6,6 @@
   background-color: #8cd86a;
   color: #ffffff;
 }
-/*
-.sidebar {
-  border: none;
-  position: fixed;
-  top: 138px;          
-  bottom: 0;
-  left: 0;
-  width: 250px;
-  background-color: #8cd86a;
-  color: #fff;
-  border: none;
-}*/
 
 .sidebar {
   position: relative;
@@ -67,7 +55,7 @@
 
 /* Títulos del sidebar */
 .sidebar-heading {
-  color: #ffff;
+  color: #ffffff;
 }
 .dropdown-arrow{
   cursor: pointer;
@@ -84,3 +72,4 @@
   padding-left: 0;
   margin-left: 0;
 }
+
