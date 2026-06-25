@@ -13,10 +13,10 @@ export class ModerationService {
         return this.http.get<BadgesResponse>(`${this.apiUrl}/reports/badges-counters`);
     }
 
-    reportArticle(articleId: number, motivo: string, usuarioId: number): Observable<{ message: string; reporteId: number }> {
+    reportArticle(articleId: number, motivo: string, reportType: number, usuarioId: number): Observable<{ message: string; reporteId: number }> {
         return this.http.post<{ message: string; reporteId: number }>(
             `${this.apiUrl}/reports/report-article/${articleId}`,
-            { motivo, usuarioId }
+            { motivo, reportType, usuarioId }
         );
     }
 

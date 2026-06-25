@@ -38,7 +38,7 @@ export class ArticleDetailComponent {
   mensajeReporte = signal('');
   reportado = signal(false);
   listReportTypes: ReportType[] = [];
-  selectedTypeReport: ReportType | null = null;
+  selectedTypeReport: number = 0;
 
   galleryImages = computed(() => {
     const currentArticle = this.article();
@@ -78,7 +78,7 @@ export class ArticleDetailComponent {
   onReportar(): void {
     this.moderationService.getReportTypes().subscribe({
       next: (data: any) => {
-         this.listReportTypes = data;
+        this.listReportTypes = data;
       },
       error: () => {
 
@@ -103,7 +103,7 @@ export class ArticleDetailComponent {
     if (!articulo) return;
 
     this.enviandoReporte.set(true);
-    this.moderationService.reportArticle(Number(articulo.id), this.motivoReporte().trim(), usuarioId).subscribe({
+    this.moderationService.reportArticle(Number(articulo.id), this.motivoReporte().trim(), this.selectedTypeReport, usuarioId).subscribe({
       next: () => {
         this.reportado.set(true);
         this.mensajeReporte.set('Artículo reportado. Quedará en revisión por un moderador.');
