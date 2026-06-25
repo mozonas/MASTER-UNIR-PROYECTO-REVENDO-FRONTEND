@@ -23,7 +23,7 @@ export class UserPageSell implements OnInit {
   isAdminViewing: boolean = false;
 
 
-  selectedFilter = signal<'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'>('all');
+  selectedFilter = signal<'all' | 'DISPONIBLE' | 'VENDIDO'>('all');
   currentPage = signal(1);
   pageSize = 6;
 
@@ -82,7 +82,7 @@ export class UserPageSell implements OnInit {
     });
   }
 
-  setFilter(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO') {
+  setFilter(filter: 'all' | 'DISPONIBLE' | 'VENDIDO') {
     this.selectedFilter.set(filter);
     this.currentPage.set(1);
   }
@@ -114,7 +114,7 @@ export class UserPageSell implements OnInit {
     void this.router.navigate(['/article-form'], { queryParams: { userId } });
   }
 
-  getFilterCount(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'): number {
+  getFilterCount(filter: 'all' | 'DISPONIBLE' | 'VENDIDO'): number {
     const all = this.articles();
     if (filter === 'all') return all.length;
     return all.filter(a => a.estadoVenta === filter).length;

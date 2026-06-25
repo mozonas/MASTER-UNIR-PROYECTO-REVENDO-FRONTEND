@@ -39,13 +39,6 @@
         <span class="badge bg-light text-dark ms-2">{{ getFilterCount('VENDIDO') }}</span>
         }
       </button>
-      <button type="button" class="nav-link text-dark rounded-pill" [class.active]="selectedFilter() === 'RESERVADO'"
-        (click)="setFilter('RESERVADO')">
-        Reportados
-        @if (selectedFilter() === 'RESERVADO') {
-        <span class="badge bg-light text-dark ms-2">{{ getFilterCount('RESERVADO') }}</span>
-        }
-      </button>
     </nav>
 
     @if (filteredArticles().length === 0) {
