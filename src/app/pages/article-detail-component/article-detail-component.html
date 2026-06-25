@@ -3,10 +3,17 @@
     <div class="col-12 col-xl-11">
         <div class="card shadow-sm">
             <div class="card-body">
-                <!-- Estado -->
+               <div class="d-flex justify-content-between align-items-center w-100">
+                 <!-- Estado -->
                 <span class="badge estado-articulo mb-3 text-white text-uppercase fw-bold">
                     <h3>{{article()?.estadoVenta}}</h3>
                 </span>
+                @if(!estaReportado && !estaVendido){
+                <button class="btn btn-outline-danger btn-lg" (click)="onReportar()">
+                    <i class="fa fa-flag me-1"></i> Reportar
+                </button>
+                }
+               </div>
 
                 <!-- Carrusel -->
                 @if (galleryImages().length) {
@@ -61,11 +68,6 @@
                         <h3 class="fw-bold">
                             {{article()?.titulo}}
                         </h3>
-
-                        <button *ngIf="!estaReportado && !estaVendido" class="btn btn-outline-danger btn-sm"
-                            (click)="onReportar()">
-                            <i class="fa fa-flag me-1"></i> Reportar
-                        </button>
                     </div>
 
                     <p class="text-muted">
@@ -158,6 +160,19 @@
     <div class="report-modal" (click)="$event.stopPropagation()">
         <h5 class="report-modal__title">Reportar artículo</h5>
         <p class="report-modal__subtitle">{{article()?.titulo}}</p>
+        <div class="mb-3">
+            <label for="treporte" class="form-label">Tipo de reporte:</label>
+            <select id="treporte" class="form-select" [(ngModel)]="selectedTypeReport">
+                <option  value="" disabled selected>
+                    Selecciona el tipo de reporte
+                </option>
+                @for (item of listReportTypes; track $index) {
+                <option [ngValue]="item.id">
+                    {{ item.tipo }}
+                </option>
+                }
+            </select>
+        </div>
         <textarea class="report-modal__textarea" placeholder="Describe el motivo del reporte..."
             [value]="motivoReporte()" (input)="motivoReporte.set($any($event.target).value)" rows="4"
             maxlength="500"></textarea>
