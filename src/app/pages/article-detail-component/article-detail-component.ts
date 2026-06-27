@@ -117,7 +117,7 @@ export class ArticleDetailComponent {
         this.enviandoReporte.set(false);
       }
     });
-     this.router.navigate(['/home']);
+    this.router.navigate(['/home']);
   }
 
   async ngOnInit() {
