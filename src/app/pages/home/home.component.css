@@ -11,6 +11,10 @@
   margin-bottom: 24px;
 }
 
+.home-filters {
+  justify-content: center;
+}
+
 .home-new-article-btn {
   margin-left: auto;
 }

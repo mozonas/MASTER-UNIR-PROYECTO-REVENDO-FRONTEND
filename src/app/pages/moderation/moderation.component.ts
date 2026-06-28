@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { SidebarOption } from '../../interfaces/sidebar.interface';
+import { AsideComponent } from "../../shared/aside/aside.component";
 
 @Component({
   selector: 'app-moderation',
   standalone: true,
-  imports: [CommonModule, SidebarComponent, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, SidebarComponent],
   templateUrl: './moderation.component.html',
   styleUrl: './moderation.component.css'
 })

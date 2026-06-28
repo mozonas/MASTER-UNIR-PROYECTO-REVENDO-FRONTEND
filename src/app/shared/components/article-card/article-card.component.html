@@ -1,7 +1,7 @@
 <div class="product-card" [class.product-card--en-revision]="estaReportado" [class.product-card--vendido]="estaVendido"
   (click)="viewArticle(article)">
   <div class="product-card__image">
-    <!-- <img [src]="imageSrc" [alt]="article.titulo" (error)="onImageError()" /> -->
+    <img [src]="'http://localhost:3000/' + article.image" [alt]="article.titulo" />
     @if (article.categoria_nombre) {
     <span class="product-card__badge">{{ article.categoria_nombre }}</span>
     }
@@ -22,8 +22,7 @@
       <!-- <span class="product-card__location">{{ article.tipoEntrega }}</span> -->
     </div>
   </div>
-  @if (!isAdminViewing) {
-  @if (showActions) {
+  @if (showActions && canManageArticle) {
   <div class="product-card__actions">
     <button class="product-card__action-btn product-card__action-btn--edit"
       (click)="$event.stopPropagation(); editClicked.emit()" [disabled]="estaVendido">
@@ -34,6 +33,5 @@
       <i class="fa fa-trash me-1"></i> Eliminar
     </button>
   </div>
-  }
   }
 </div>

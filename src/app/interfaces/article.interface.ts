@@ -1,4 +1,4 @@
-export interface iArticle {
+export interface Article {
   id: string;
   titulo: string;
   descripcion: string;

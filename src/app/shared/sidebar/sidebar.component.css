@@ -1,0 +1,31 @@
+/* Contenedor del menú lateral */
+.custom-sidebar {
+  background-color: #8cd86a;
+  height: 100%;
+  width: 100%;
+  overflow-y: hidden !important;
+  box-sizing: border-box;
+}
+
+/* Opción Activa (Fondo blanco, texto verde) */
+.nav-pills .active-custom {
+  background-color: #ffffff !important;
+  color: #8cd86a !important;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Opciones No Activas (Texto blanco) */
+.nav-link.text-dark-50 {
+  color: #ffffff !important;
+  opacity: 0.9;
+  transition: all 0.2s ease;
+}
+
+/* Hover interactivo uniforme */
+.nav-link:hover,
+.nav-link.text-dark-50:hover {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+  opacity: 1;
+}

@@ -9,7 +9,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 5%;
+  min-height: 100vh;
 }
 
 .signin-card {
@@ -17,15 +17,15 @@
   border-radius: 16px;
   border: 1px solid #ddd;
   overflow: hidden;
-  width: 680px;
-  min-height: 460px;
+  width: 920px;
+  min-height: auto;
   display: flex;
   border-radius: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .logo-section {
-  width: 200px;
+  width: 300px;
   padding: 2rem;
   border-right: 1px solid #eee;
   display: flex;
