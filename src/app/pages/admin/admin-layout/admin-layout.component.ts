@@ -28,8 +28,9 @@ export class AdminLayoutComponent {
     { id: 'chat', name: 'Gestión de mensajería', icon: 'bi-chat-left-text' }
   ];
 
-  handleModeratorNav(tabId: string) {
-    this.router.navigate(['/admin/moderacion/' + tabId]);
+  handleModeratorNav(tabId: string) {        
+    this.router.navigate(['./moderacion/' + tabId], { relativeTo: this.router.routerState.root.firstChild });
   }
+
 }
   
