@@ -37,6 +37,15 @@ export class HeaderMenuComponent implements OnInit {
   username = signal(this.authService.getUserName() ?? '');
   isStaff = computed(() => ['ADMIN', 'MODERADOR'].includes(this.role()));
 
+  getHomeRoute(): string {
+  const role = this.authService.getUserRole(); // ADMIN | MODERADOR | USUARIO
+
+  if (role === 'ADMIN') return '/admin';
+  if (role === 'MODERADOR') return '/moderation/panel';
+  return '/home'; // usuario normal
+}
+
+
   ngOnInit(): void {
     this.http.get<{ status: string; data: Categoria[] }>('http://localhost:3000/api/categories').subscribe({
       next: (resp) => {
