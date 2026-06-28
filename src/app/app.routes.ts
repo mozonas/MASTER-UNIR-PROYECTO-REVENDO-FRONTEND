@@ -89,13 +89,13 @@ export const routes: Routes = [
   {
     path: 'moderation',
     component: ModerationComponent,
-    canActivate: [roleGuard(['MODERADOR'])], //VCB - añadir proteccion del rol
+    canActivate: [roleGuard(['MODERADOR','ADMIN'])], //VCB - añadir proteccion del rol
     children: [
       { path: '', redirectTo: 'panel', pathMatch: 'full' },
       { path: 'panel', component: ModerationDashboardComponent },
       { path: 'articulos', component: ArticlesListComponent },
       { path: 'articulos/detalle/:id', component: ArticleReportDetailComponent },
-      { path: 'chat', component: ChatsListComponent }
+      { path: 'chat', component: ChatsListComponent },
     ]
   },
 
