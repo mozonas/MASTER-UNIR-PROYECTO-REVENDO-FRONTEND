@@ -134,13 +134,15 @@ p.text-muted {
 }
 
 .pagination .page-item.active .page-link {
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: #a3d66f;
+  border-color: #a3d66f;
+  color: white;
 }
 
 .pagination .page-link {
   min-width: 44px;
   text-align: center;
+  color: #6ab03b;
 }
 
 .product-card:hover .product-image {

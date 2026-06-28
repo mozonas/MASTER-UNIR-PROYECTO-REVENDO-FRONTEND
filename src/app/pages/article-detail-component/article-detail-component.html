@@ -6,23 +6,25 @@
         </button>
         <div class="card shadow-sm">
             <div class="card-body">
-               <div class="d-flex justify-content-between align-items-center w-100">
-                 <!-- Estado -->
-                <span class="badge estado-articulo mb-3 text-white text-uppercase fw-bold">
-                    <h3>{{article()?.estadoVenta}}</h3>
-                </span>
-                @if(!estaReportado && !estaVendido){
-                <button class="btn btn-outline-danger btn-lg" (click)="onReportar()">
-                    <i class="fa fa-flag me-1"></i> Reportar
-                </button>
-                }
-               </div>
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <!-- Estado -->
+                    <span class="badge estado-articulo mb-3 text-white text-uppercase fw-bold">
+                        <h3>{{article()?.estadoVenta}}</h3>
+                    </span>
+                    @if(!estaReportado && !estaVendido){
+                    <button class="btn btn-outline-danger btn-lg" (click)="onReportar()">
+                        <i class="fa fa-flag me-1"></i> Reportar
+                    </button>
+                    }
+                </div>
 
                 <!-- Carrusel -->
-                @if (galleryImages().length) {
+                @if (article()?.fotos && article()?.fotos?.length) {
                 <div class="row justify-content-center">
                     <div class="col-12 col-xl-10">
+
                         <div class="carousel slide altura">
+
                             <div class="carousel-inner">
                                 @for (foto of article()?.fotos; track $index; let i = $index) {
                                 <div class="carousel-item" [class.active]="i === subindiceActivo">
@@ -33,6 +35,7 @@
                                 </div>
                                 }
                             </div>
+
                             <button class="carousel-control-prev" type="button" (click)="anteriorFoto()">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             </button>
@@ -40,6 +43,7 @@
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             </button>
                         </div>
+
                     </div>
                 </div>
                 }
