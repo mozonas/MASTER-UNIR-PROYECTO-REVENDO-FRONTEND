@@ -128,7 +128,7 @@ export class ArticleDetailComponent {
 
   async getArticleData(id: string) {
     this.articlesService.getArticleById(id).subscribe({
-      next: (data) => {        
+      next: (data) => {
         this.article.set(data ?? null);
       },
       error: (err) => {
@@ -174,6 +174,15 @@ export class ArticleDetailComponent {
 
   onBack(): void {
     this.location.back();
+  }
+
+  verPerfilVendedor(): void {
+    const sellerId = this.article()?.usuarios_id;
+    if (sellerId && sellerId > 0) {
+      // Navega a la ruta que configuraste en tu app.routes.ts para ver perfiles
+      // Ejemplo si tu ruta en Angular es: { path: 'users/:id', component: UserProfileComponent }
+      this.router.navigate(['/user-info', sellerId]);
+    }
   }
 
   /**

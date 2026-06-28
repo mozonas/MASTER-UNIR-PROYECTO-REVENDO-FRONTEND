@@ -1,31 +1,50 @@
-/* Contenedor del menú lateral */
+/* sidebar-moderador**/
+
+/* Elimina paddings laterales del contenedor */
 .custom-sidebar {
-  background-color: #8cd86a;
-  height: 100%;
-  width: 100%;
-  overflow-y: hidden !important;
-  box-sizing: border-box;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    background-color: #8cd86a !important;
 }
 
-/* Opción Activa (Fondo blanco, texto verde) */
-.nav-pills .active-custom {
-  background-color: #ffffff !important;
-  color: #8cd86a !important;
-  font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+/* Reajuste del título del menú (Moderación)*/
+.custom-sidebar > div.d-flex {
+    padding-left: 0.50rem !important;
+    padding-right: 1.25rem !important;
+    justify-content: flex-start !important;
+    margin-bottom: 0.5rem !important; 
+    padding-bottom: 0.5rem !important;   /* Corregido: añadido 'rem' */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5) !important;
 }
 
-/* Opciones No Activas (Texto blanco) */
-.nav-link.text-dark-50 {
-  color: #ffffff !important;
-  opacity: 0.9;
-  transition: all 0.2s ease;
+.nav.flex-column {
+    width: 100% !important;
 }
 
-/* Hover interactivo uniforme */
-.nav-link:hover,
-.nav-link.text-dark-50:hover {
-  background-color: rgba(255, 255, 255, 0.15) !important;
-  color: #ffffff !important;
-  opacity: 1;
+/* Ajustes de botones */
+.custom-sidebar .nav-link {
+    font-family: 'Geologica', sans-serif !important;
+    font-size: 0.95rem !important;
+    font-weight: 500 !important;
+    color: #ffffff !important;
+    padding-left: 0.50rem !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: 0 !important; 
+    border-radius: 0 !important; 
+    padding: 10px 1.25rem 10px 0.50rem !important; 
+}
+
+/* Hover Verde Oscuro */
+.custom-sidebar .nav-link:hover,
+.custom-sidebar .nav-link.text-dark-50:hover {
+    background-color: #5eaa47 !important;
+    color: #ffffff !important;
+}
+
+/* Estado activo modificado */
+.custom-sidebar .active-custom {
+    background-color: #6fbf54 !important; 
+    color: #ffffff !important;
+    font-weight: 500 !important;
 }

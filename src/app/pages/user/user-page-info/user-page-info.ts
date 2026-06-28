@@ -31,6 +31,7 @@ export class UserPageInfoComponent implements OnInit {
   isLoaded: boolean = false;
   mapUrl: SafeResourceUrl | null = null;
   isAdminViewing: boolean = false;
+  isExternalProfileViewing: boolean = false; // Usuario normal viendo perfil ajeno
 
   activeTab: 'productos' | 'valoraciones' = 'productos';
 
@@ -64,10 +65,21 @@ export class UserPageInfoComponent implements OnInit {
     // 1. Intentamos obtener el ID desde los parámetros de la URL (ruta de Admin)
     const idFromRoute = this.route.snapshot.paramMap.get('id');
 
+    // Recuperamos el ID del usuario logueado actualmente y su rol
+    const currentLoggedUserId = this.authService.getUserId();
+    const isUserAdmin = this.authService.getUserRole() === 'ADMIN'; // O como verifiques el rol en tu AuthService (ej: decodedToken o señal)
+
     if (idFromRoute) {
       userIdParaCargar = Number(idFromRoute);
-      this.isAdminViewing = true; // El admin está auditando un perfil ajeno
-      console.log(`📋 Modo Admin: Visualizando usuario desde URL con ID: ${userIdParaCargar}`);
+
+      // Visualización de Admin si el que está logueado es verdaderamente un ADMIN
+      if (isUserAdmin) {
+        this.isAdminViewing = true;
+        console.log(`📋 Modo Admin: Visualizando usuario desde URL con ID: ${userIdParaCargar}`);
+      } else {
+        this.isExternalProfileViewing = true;
+        console.log(`👁️ Modo Común: Un usuario está viendo el perfil del vendedor ID: ${userIdParaCargar}`);
+      }
     } else {
       // 2. Si no hay ID en la URL, mantenemos tu comportamiento original (Perfil propio del usuario logueado)
       userIdParaCargar = this.authService.getUserId();
@@ -219,11 +231,14 @@ export class UserPageInfoComponent implements OnInit {
   }
 
   onBack(): void {
-    // Si es el admin auditando, lo devolvemos a la lista de usuarios del panel de control
     if (this.isAdminViewing) {
+      // 1. Si es el admin auditando, lo devuelve estrictamente a la lista de gestión de usuarios
       this.router.navigate(['/admin/users']);
+    } else if (this.isExternalProfileViewing) {
+      // 2. Si es un usuario normal que venía de ver un artículo, vuelve atrás en el historial (al detalle del artículo)
+      this.location.back();
     } else {
-      // Si es un usuario normal, lo mandamos al Home o al Hub principal
+      // 3. Si estaba revisando su propio perfil desde el menú de navegación habitual, va al Home
       this.router.navigate(['/home']);
     }
   }
