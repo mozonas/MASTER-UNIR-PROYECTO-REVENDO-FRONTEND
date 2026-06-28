@@ -2,9 +2,13 @@
   <div class="container-fluid d-grid gap-3 align-items-center mb-2" style="grid-template-columns: auto 1fr;">
 
     <div class="logo-container">
-      <a [routerLink]="isStaff() ? ['/admin'] : ['/home']">
+<!--       <a [routerLink]="isStaff() ? ['/admin'] : ['/home']">
+        <img src="/images/logo_revendo.png" alt="Revendo logo" width="80" height="60" />
+      </a> -->
+      <a [routerLink]="[getHomeRoute()]">
         <img src="/images/logo_revendo.png" alt="Revendo logo" width="80" height="60" />
       </a>
+
       <p class="texto-marca mb-0">ReVendo</p>
     </div>
 
