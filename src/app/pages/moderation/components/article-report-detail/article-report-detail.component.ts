@@ -75,6 +75,7 @@ export class ArticleReportDetailComponent implements OnInit {
   }
 
   volver(): void {
-    this.router.navigate(['/moderation/articulos']);
+    const prefix = this.router.url.includes('admin') ? '/admin/moderacion' : '/moderation';
+    this.router.navigate([`${prefix}/articulos`]);
   }
 }

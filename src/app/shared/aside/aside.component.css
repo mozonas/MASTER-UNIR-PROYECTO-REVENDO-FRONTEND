@@ -5,23 +5,19 @@
 .offcanvas-body {
   background-color: #8cd86a;
   color: #ffffff;
+  overflow-x: hidden;
 }
-/*
+
 .sidebar {
   border: none;
-  position: fixed;
-  top: 138px;          
+  position: sticky;
+  top: 138px;
   bottom: 0;
   left: 0;
   width: 250px;
+  height: calc(100vh - 138px);
   background-color: #8cd86a;
   color: #fff;
-  border: none;
-}*/
-
-.sidebar {
-  position: relative;
-  width: 250px;
   z-index: 10;
 }
 
@@ -30,24 +26,21 @@
 .offcanvas-body {
   overflow-x: hidden;
 }
-
 /* Enlaces */
 .sidebar .nav-link,
 #sidebarMenu .nav-link {
   color: #ffffff;
   font-weight: 500;
-  white-space: nowrap; /* evita que el texto rompa y genere scroll */
+  white-space: nowrap;
   padding-right: 1rem;
   padding-left: 1rem;
 }
-
 /* Hover más oscuro */
 .sidebar .nav-link:hover,
 #sidebarMenu .nav-link:hover {
   background-color: #5eaa47;
   color: #ffffff;
 }
-
 /* Activo */
 .sidebar .nav-link.active,
 #sidebarMenu .nav-link.active {
@@ -55,7 +48,6 @@
   color: #ffffff;
   font-weight: 700;
 }
-
 /* Iconos blancos y tamaño fijo */
 .sidebar svg,
 #sidebarMenu svg {
@@ -64,7 +56,6 @@
   height: 16px;
   flex-shrink: 0; 
 }
-
 /* Títulos del sidebar */
 .sidebar-heading {
   color: #ffff;
@@ -84,3 +75,5 @@
   padding-left: 0;
   margin-left: 0;
 }
+
+

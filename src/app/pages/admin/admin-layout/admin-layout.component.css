@@ -1,26 +1,38 @@
+.layout-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: calc(100vh - 138px - 60px - 48px); 
+  overflow: hidden;
+}
+
+.layout-container aside {
+  width: 250px;
+  min-width: 250px;
+  flex-shrink: 0;
+}
+
 .component-view {
-  padding: 1rem;
-  width: calc(100% - 250px);
+  margin-left: 0;            
+  padding: 1.5rem;           
+  width: 100%;               
+  height: 100%;              
   overflow-y: auto;
-  background-color: #f8f9fa;
+  background-color: #f8f9fa;   
   transition: margin-left 0.3s ease, width 0.3s ease;
   z-index: 20;
 }
 
 
 
-.moderator-embed {
-  all: unset;
-  display: block;
-  width: 100%;
-}
 
-:host {
-  display: flex;
-  flex-direction: row;
-  height: calc(100vh - 138px);
-  overflow: hidden;
-}
+
+
+
+
+
+
+
 
 
 
