@@ -169,15 +169,15 @@ export class UserPageInfoComponent implements OnInit {
           const [lat, lng] = coordSection.split(',');
 
           // Url exacta para embeber coordenadas con una sola chincheta (q=) y centrado (ll=)
-          urlBase = `https://maps.google.com/maps?q=${lat.trim()},${lng.trim()}&ll=${lat.trim()},${lng.trim()}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+          urlBase = `https://maps.google.com/maps?q=${lat.trim()},${lng.trim()}&ll=${lat.trim()},${lng.trim()}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
         } catch (e) {
           console.error('Error al parsear las coordenadas de la dirección:', e);
           // Si falla el parseo por lo que sea, cae en el buscador clásico por texto
-          urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+          urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
         }
       } else {
         // Si es un usuario antiguo sin el tag de coordenadas, buscamos por texto plano
-        urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+        urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
       }
 
       this.mapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(urlBase);
