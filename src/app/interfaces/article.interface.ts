@@ -17,9 +17,10 @@ export interface Article {
   seller?: {
     nombre?: string;
     apellidos?: string;
+    direccion?: string;
   };
   // AÑADIDO PARA COMPATIBILIDAD CON Article
-  ubicacion: string;
+  // ubicacion: string;
   foto?: string;
 
 }

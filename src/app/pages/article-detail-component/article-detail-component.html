@@ -8,8 +8,9 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center w-100">
                     <!-- Estado -->
-                    <span class="badge estado-articulo mb-3 text-white text-uppercase fw-bold">
-                        <h3>{{article()?.estadoVenta}}</h3>
+                    <span class="badge estado-articulo mb-3 text-white text-uppercase fw-bold"
+                        [class.estado-articulo--revision]="estaEnRevision">
+                        <h3>{{estadoLabel}}</h3>
                     </span>
                     @if(!estaReportado && !estaVendido){
                     <button class="btn btn-outline-danger btn-lg" (click)="onReportar()">
@@ -55,12 +56,12 @@
                 <!-- Artículo -->
                 <div class="col-lg-5">
                     <div class="d-flex justify-content-between align-items-start">
-                        <h3 class="fw-bold">
+                        <h2 class="fw-bold mt-4 mb-4">
                             {{article()?.titulo}}
-                        </h3>
+                        </h2>
                     </div>
 
-                    <p class="text-muted">
+                    <p class="text-muted mb-4">
                         {{article()?.descripcion}}
                     </p>
 
@@ -76,21 +77,24 @@
                         <strong>Pago:</strong> {{article()?.tipoPago}}
                     </p>
 
-                    <span class="badge categoria-badge">
+                    <span class="badge categoria-badge mt-3">
                         {{article()?.categoria_nombre}}
                     </span>
                 </div>
 
                 <!-- Precio -->
                 <div class="col-lg-2 d-flex justify-content-center align-items-start">
-                    <h1 class="fw-bold">
+                    <p class="fw-bold precio">
                         {{article()?.precio}}€
-                    </h1>
+                    </p>
                 </div>
 
                 <!-- Vendedor -->
                 <div class="col-lg-5">
-                    <div class="card">
+                    <div class="card" (click)="verPerfilVendedor()"
+                        style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;"
+                        onmouseover="this.style.transform='scale(1.01)'; this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)'"
+                        onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
                         <div class="card-body">
 
                             <!-- Información del vendedor -->
@@ -104,17 +108,40 @@
                                 </div>
 
                                 @if ((article()?.usuarios_id ?? 0) > 0) {
-                                <app-detail-seller [sellerId]="article()?.usuarios_id ?? 0">
+                                <app-detail-seller [sellerId]="article()?.usuarios_id ?? 0"
+                                    (click)="verPerfilVendedor()">
                                 </app-detail-seller>
                                 }
                             </div>
 
+                            @if (mapUrl) {
+                            <div class="map-container overflow-hidden rounded-3 border border-light shadow-sm mb-3">
+                                <iframe width="100%" height="120" loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade" [src]="mapUrl"
+                                    title="Ubicación del vendedor">
+                                </iframe>
+                            </div>
+                            } @else {
+                            <div class="alert alert-light text-center border rounded-3 p-3 mt-3 text-muted"
+                                style="font-size: 0.825rem;">
+                                <i class="fa fa-map-marker me-1"></i> Ubicación no especificada por el vendedor
+                            </div>
+                            }
+
                             <!-- Botón -->
-                            <div class="d-grid">
-                                <button class="btn btn-success" (click)="contactarVendedor()">
+                            <div class="d-grid gap-2">
+                                @if (puedeComprar) {
+                                <button class="btn btn-primary" (click)="comprarArticulo()" [disabled]="compraDeshabilitada">
+                                    {{ comprando() ? 'Procesando...' : 'Comprar' }}
+                                </button>
+                                }
+                                <button class="btn btn-success" (click)="contactarVendedor(); $event.stopPropagation()">
                                     Mensaje directo
                                 </button>
                             </div>
+                            @if (mensajeCompra()) {
+                            <p class="mt-2 mb-0">{{ mensajeCompra() }}</p>
+                            }
 
                         </div>
                     </div>
@@ -140,7 +167,19 @@
     </div>
 </div>
 
-<!-- Modal de reporte -->
+<!--CGM 290626 COMPONENTE COMPARTIDO-->
+@if (mostrarModalReporte() && article()) {
+  <app-report-type 
+    targetType="ARTICULO" 
+    [targetId]="+article()!.id" 
+    [targetTitle]="article()?.titulo || ''"
+    (closeModal)="cerrarModalReporte()"
+    (onReportSuccess)="reportado.set(true)">
+  </app-report-type>
+}
+
+
+<!-- Modal de reporte 
 <div class="report-modal-backdrop" *ngIf="mostrarModalReporte()" (click)="cerrarModalReporte()">
     <div class="report-modal" (click)="$event.stopPropagation()">
         <h5 class="report-modal__title">Reportar artículo</h5>
@@ -170,4 +209,4 @@
         </div>
         <p class="report-modal__success" *ngIf="mensajeReporte()">{{mensajeReporte()}}</p>
     </div>
-</div>
+</div>-->

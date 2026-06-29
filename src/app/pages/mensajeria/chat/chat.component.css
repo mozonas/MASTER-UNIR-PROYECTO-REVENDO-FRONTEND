@@ -263,3 +263,17 @@
   padding: 3px 12px;
   border-radius: 10px;
 }
+
+/*CGM 260626 MODAL REPORTE*/
+.chat-header {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  width: 100%;
+}
+
+.chat-header-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px; 
+}

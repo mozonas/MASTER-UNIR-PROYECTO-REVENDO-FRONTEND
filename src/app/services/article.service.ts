@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { map, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
-import {VentasMes} from '../interfaces/ventas.interface';
+import { VentasMes } from '../interfaces/ventas.interface';
 import { PubStats } from '../interfaces/pub-stats.interface';
 import { Article } from '../interfaces/article.interface';
 import { AuthService } from './auth.service';
@@ -111,6 +111,16 @@ export class ArticleService {
     );
   }
 
+  marcarVendido(id: string, datos: { tipoPago: string; precio: number }): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/user-sell/${id}/vender`, datos).pipe(
+      tap(() => {
+        this.Articles.update((articles) =>
+          articles.map((article) => article.id === id ? { ...article, estadoVenta: 'VENDIDO', tipoPago: datos.tipoPago } : article)
+        );
+      })
+    );
+  }
+
   findLoadedArticleById(id: number | string): Article | undefined {
     return this.Articles().find((article) => article.id === String(id));
   }
@@ -168,15 +178,7 @@ export class ArticleService {
       return undefined;
     }
 
-    const estadoRaw = (articulo.estadoVenta ?? '').toString().toUpperCase();
-    let estadoVenta: Article['estadoVenta'] = 'DISPONIBLE';
-    if (estadoRaw === 'VENDIDO') {
-      estadoVenta = 'VENDIDO';
-    } else if (estadoRaw === 'RESERVADO') {
-      estadoVenta = 'RESERVADO';
-    } else if (estadoRaw === 'BORRADO') {
-      estadoVenta = 'BORRADO';
-    }
+    const estadoVenta: Article['estadoVenta'] = (articulo.estadoVenta ?? 'DISPONIBLE').toString().toUpperCase();
 
     const createdAtValue = articulo.created_at ?? articulo.createdAt;
     const createdAt = createdAtValue ? new Date(createdAtValue) : new Date();
@@ -204,10 +206,12 @@ export class ArticleService {
           }))
         : undefined,
       estado_reporte: articulo.estado_reporte != null ? Number(articulo.estado_reporte) : null,
+
       seller: articulo.seller && typeof articulo.seller === 'object'
         ? {
           nombre: articulo.seller.nombre ? String(articulo.seller.nombre) : undefined,
           apellidos: articulo.seller.apellidos ? String(articulo.seller.apellidos) : undefined,
+          direccion: articulo.seller.direccion ? String(articulo.seller.direccion) : (articulo.direccion ? String(articulo.direccion) : undefined),
         }
         : undefined,
     } as Article;
@@ -239,16 +243,16 @@ export class ArticleService {
     return trimmed;
   }
 
-   // Artículos publicados este mes
-    getPubComp():Observable <PubStats> {
-      return this.http.get<PubStats>(`${this.apiUrl}/article/published/comparison`);
-    }
-    // Articulos vendidos este mes
-     getVentasMensuales(month: number): Observable<VentasMes[]> {
-      return this.http.get<VentasMes[]>(`${this.apiUrl}/article/sold/${month}`);
-    }
-    // Articulos vendidos este año
-    getVentasAnuales(year:number): Observable<{mes:number;total: number}[]>  {
-      return this.http.get<{mes:number;total: number}[]>(`${this.apiUrl}/article/sold/year/${year}`);
-    }
+  // Artículos publicados este mes
+  getPubComp(): Observable<PubStats> {
+    return this.http.get<PubStats>(`${this.apiUrl}/article/published/comparison`);
+  }
+  // Articulos vendidos este mes
+  getVentasMensuales(month: number): Observable<VentasMes[]> {
+    return this.http.get<VentasMes[]>(`${this.apiUrl}/article/sold/${month}`);
+  }
+  // Articulos vendidos este año
+  getVentasAnuales(year: number): Observable<{ mes: number; total: number }[]> {
+    return this.http.get<{ mes: number; total: number }[]>(`${this.apiUrl}/article/sold/year/${year}`);
+  }
 }
