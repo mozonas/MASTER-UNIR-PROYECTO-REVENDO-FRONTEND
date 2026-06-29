@@ -82,15 +82,32 @@ export class ArticleDetailComponent {
     return this.article()?.estadoVenta === 'VENDIDO';
   }
 
+  get estaEnRevision(): boolean {
+    return this.article()?.estadoVenta === 'EN_REVISION';
+  }
+
   get esPropietario(): boolean {
     const usuarioId = this.authService.getUserId();
     return !!usuarioId && usuarioId === this.article()?.usuarios_id;
   }
 
   get puedeComprar(): boolean {
-    return this.article()?.estadoVenta === 'DISPONIBLE'
-      && this.authService.isLogged()
-      && !this.esPropietario;
+    return this.authService.isLogged() && !this.esPropietario;
+  }
+
+  get compraDeshabilitada(): boolean {
+    return this.comprando() || this.article()?.estadoVenta !== 'DISPONIBLE';
+  }
+
+  get estadoLabel(): string {
+    const estado = this.article()?.estadoVenta;
+    const etiquetas: Record<string, string> = {
+      DISPONIBLE: 'Disponible',
+      EN_REVISION: 'En revisión',
+      RETIRADO: 'Retirado',
+      VENDIDO: 'Vendido',
+    };
+    return estado ? (etiquetas[estado] ?? estado) : '';
   }
 
   onReportar(): void {

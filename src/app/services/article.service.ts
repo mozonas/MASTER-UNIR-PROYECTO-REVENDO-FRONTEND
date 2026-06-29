@@ -111,6 +111,16 @@ export class ArticleService {
     );
   }
 
+  marcarVendido(id: string, datos: { tipoPago: string; precio: number }): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/user-sell/${id}/vender`, datos).pipe(
+      tap(() => {
+        this.Articles.update((articles) =>
+          articles.map((article) => article.id === id ? { ...article, estadoVenta: 'VENDIDO', tipoPago: datos.tipoPago } : article)
+        );
+      })
+    );
+  }
+
   findLoadedArticleById(id: number | string): Article | undefined {
     return this.Articles().find((article) => article.id === String(id));
   }
@@ -168,15 +178,7 @@ export class ArticleService {
       return undefined;
     }
 
-    const estadoRaw = (articulo.estadoVenta ?? '').toString().toUpperCase();
-    let estadoVenta: Article['estadoVenta'] = 'DISPONIBLE';
-    if (estadoRaw === 'VENDIDO') {
-      estadoVenta = 'VENDIDO';
-    } else if (estadoRaw === 'RESERVADO') {
-      estadoVenta = 'RESERVADO';
-    } else if (estadoRaw === 'BORRADO') {
-      estadoVenta = 'BORRADO';
-    }
+    const estadoVenta: Article['estadoVenta'] = (articulo.estadoVenta ?? 'DISPONIBLE').toString().toUpperCase();
 
     const createdAtValue = articulo.created_at ?? articulo.createdAt;
     const createdAt = createdAtValue ? new Date(createdAtValue) : new Date();

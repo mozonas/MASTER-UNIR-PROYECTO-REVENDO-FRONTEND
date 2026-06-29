@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { AuthService } from '../../../services/auth.service';
@@ -8,7 +9,7 @@ import { ArticleCardComponent } from '../../../shared/components/article-card/ar
 
 @Component({
   selector: 'app-user-page-sell',
-  imports: [CommonModule, ArticleCardComponent],
+  imports: [CommonModule, FormsModule, ArticleCardComponent],
   templateUrl: './user-page-sell.html',
   styleUrls: ['./user-page-sell.css'],
 })
@@ -119,6 +120,56 @@ export class UserPageSell implements OnInit, OnChanges {
         error: (error) => console.error('Error al eliminar artículo:', error),
       });
     }
+  }
+
+  mostrarModalVenta = signal(false);
+  articuloEnVenta = signal<Article | null>(null);
+  metodoPagoVenta = signal('Efectivo');
+  precioVenta = signal(0);
+  enviandoVenta = signal(false);
+  errorVenta = signal('');
+
+  onMarcarVendido(article: Article): void {
+    if (!this.canManageArticle(article)) {
+      return;
+    }
+
+    this.articuloEnVenta.set(article);
+    this.metodoPagoVenta.set(article.tipoPago || 'Efectivo');
+    this.precioVenta.set(article.precio);
+    this.errorVenta.set('');
+    this.mostrarModalVenta.set(true);
+  }
+
+  cerrarModalVenta(): void {
+    this.mostrarModalVenta.set(false);
+    this.articuloEnVenta.set(null);
+  }
+
+  confirmarVenta(): void {
+    const articulo = this.articuloEnVenta();
+    if (!articulo || this.precioVenta() <= 0) {
+      this.errorVenta.set('Indica un precio válido.');
+      return;
+    }
+
+    this.enviandoVenta.set(true);
+    this.errorVenta.set('');
+
+    this.articleService.marcarVendido(articulo.id, {
+      tipoPago: this.metodoPagoVenta(),
+      precio: this.precioVenta(),
+    }).subscribe({
+      next: () => {
+        this.enviandoVenta.set(false);
+        this.cerrarModalVenta();
+      },
+      error: (error) => {
+        console.error('Error al marcar como vendido:', error);
+        this.errorVenta.set(error?.error?.message || 'Error al registrar la venta. Inténtalo de nuevo.');
+        this.enviandoVenta.set(false);
+      }
+    });
   }
 
   addNewArticle() {
