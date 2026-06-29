@@ -109,11 +109,17 @@
         <app-user-page-sell [userId]="idVendedor"></app-user-page-sell>
       </div>
       }
-
       @if (activeTab === 'valoraciones') {
       <div>
-        <div class="mb-4">
-          <h3 class="fw-bold fs-4 text-dark">Opiniones de compradores</h3>
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+          <h3 class="fw-bold fs-4 text-dark m-0">Opiniones de compradores</h3>
+
+          @if (isExternalProfileViewing && puedeValorar) {
+          <button type="button" class="btn btn-primary btn-sm px-4 rounded-pill fw-semibold text-white shadow-sm"
+            (click)="irAValorar()">
+            <i class="fa fa-pencil me-1"></i> Valorar compra de "{{ transaccionPendiente.articulo_titulo }}"
+          </button>
+          }
         </div>
 
         @if (listaValoraciones.length === 0) {
