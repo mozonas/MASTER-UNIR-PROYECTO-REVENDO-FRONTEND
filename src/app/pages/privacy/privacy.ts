@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-privacy',
@@ -9,15 +8,9 @@ import { Location } from '@angular/common';
 })
 export class PrivacyComponent {
 
-  private location = inject(Location);
-
   currentDate: string = new Date().toLocaleDateString('es-ES', {
     day: 'numeric',
     month: 'long',
     year: 'numeric'
   });
-
-  onBack(): void {
-    this.location.back();
-  }
 }
