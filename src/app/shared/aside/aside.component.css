@@ -15,16 +15,10 @@
   bottom: 0;
   left: 0;
   width: 250px;
-  height: calc(100vh - 138px);
+  height: calc(200vh - 138px);
   background-color: #8cd86a;
   color: #fff;
   z-index: 10;
-}
-
-.sidebar,
-#sidebarMenu,
-.offcanvas-body {
-  overflow-x: hidden;
 }
 /* Enlaces */
 .sidebar .nav-link,
