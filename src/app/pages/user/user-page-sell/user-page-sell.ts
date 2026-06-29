@@ -5,6 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { AuthService } from '../../../services/auth.service';
 import { Article } from '../../../interfaces/article.interface';
+import { ModerationService } from '../../../services/moderation.service';
+import { ArticleInReview } from '../../../interfaces/moderation.interface';
 import { ArticleCardComponent } from '../../../shared/components/article-card/article-card.component';
 
 @Component({
@@ -16,17 +18,19 @@ import { ArticleCardComponent } from '../../../shared/components/article-card/ar
 export class UserPageSell implements OnInit, OnChanges {
   private articleService = inject(ArticleService);
   private authService = inject(AuthService);
+  private moderationService = inject(ModerationService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
   @Input() userId: number | null = null;
 
   articles = this.articleService.Articles;
+  reportedArticles = signal<Article[]>([]);
 
   isAdminViewing: boolean = false;
 
 
-  selectedFilter = signal<'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'>('all');
+  selectedFilter = signal<'all' | 'DISPONIBLE' | 'VENDIDO' | 'REPORTADO'>('all');
   currentPage = signal(1);
   pageSize = 6;
 
@@ -34,6 +38,11 @@ export class UserPageSell implements OnInit, OnChanges {
     const filter = this.selectedFilter();
     const all = this.articles();
     if (filter === 'all') return all;
+
+    if (filter === 'REPORTADO') {
+      return this.reportedArticles();
+    }
+
     return all.filter(a => a.estadoVenta === filter);
   });
 
@@ -77,7 +86,7 @@ export class UserPageSell implements OnInit, OnChanges {
     return inputUserId ?? routeUserId ?? this.authService.getUserId();
   }
 
-  private loadArticles(): void {
+  private loadArticles(estado: 'all' | 'REPORTADO' = 'all'): void {
     const userId = this.resolveUserId();
 
     if (!userId) {
@@ -85,14 +94,44 @@ export class UserPageSell implements OnInit, OnChanges {
       return;
     }
 
-    this.articleService.getAllUserArticles(userId).subscribe({
+    this.articleService.getAllUserArticles(userId, estado).subscribe({
       error: (error) => console.error('Error al cargar artículos:', error),
     });
   }
 
-  setFilter(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO') {
+  private loadReportedArticles(): void {
+    const userId = this.resolveUserId();
+
+    if (!userId) {
+      console.error('No se pudo obtener el ID de usuario para cargar los artículos reportados.');
+      return;
+    }
+
+    this.moderationService.getArticlesInReview().subscribe({
+      next: (articlesInReview) => {
+        const reported = articlesInReview
+          .filter((article) => article.usuarios_id === userId)
+          .map((article) => this.mapReportedArticle(article));
+
+        this.reportedArticles.set(reported);
+      },
+      error: (error) => {
+        console.error('Error al cargar artículos reportados:', error);
+        this.reportedArticles.set([]);
+      }
+    });
+  }
+
+  setFilter(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'REPORTADO') {
     this.selectedFilter.set(filter);
     this.currentPage.set(1);
+
+    if (filter === 'REPORTADO') {
+      this.loadReportedArticles();
+      return;
+    }
+
+    this.loadArticles('all');
   }
 
   setPage(page: number) {
@@ -184,9 +223,35 @@ export class UserPageSell implements OnInit, OnChanges {
     return this.authService.getUserId() === article.usuarios_id;
   }
 
-  getFilterCount(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'): number {
+  getFilterCount(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'REPORTADO'): number {
     const all = this.articles();
     if (filter === 'all') return all.length;
+
+    if (filter === 'REPORTADO') {
+      return this.reportedArticles().length;
+    }
+
     return all.filter(a => a.estadoVenta === filter).length;
+  }
+
+  private mapReportedArticle(article: ArticleInReview): Article {
+    return {
+      id: String(article.id),
+      titulo: String(article.titulo ?? ''),
+      descripcion: String(article.descripcion ?? ''),
+      precio: Number(article.precio ?? 0),
+      estadoVenta: String(article.estadoVenta ?? 'DISPONIBLE').toUpperCase(),
+      estadoProducto: undefined,
+      tipoEntrega: '',
+      tipoPago: '',
+      created_at: new Date(article.fecha_reporte ?? Date.now()),
+      usuarios_id: Number(article.usuarios_id ?? 0),
+      categorias_id: 0,
+      categoria_nombre: undefined,
+      image: article.foto ? String(article.foto) : null,
+      fotos: undefined,
+      estado_reporte: 1,
+      seller: undefined,
+    };
   }
 }
