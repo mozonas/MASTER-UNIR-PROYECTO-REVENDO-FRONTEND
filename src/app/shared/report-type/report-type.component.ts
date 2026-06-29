@@ -15,16 +15,16 @@ export class ReportTypeComponent implements OnInit {
   private moderationService = inject(ModerationService);
   private authService = inject(AuthService);
   
-// Inputs obligatorios
-  targetType = input.required<'ARTICULO' | 'USUARIO'>();
-  targetId = input.required<number>(); // ID del articulo proviniente del chat
-  targetTitle = input<string>('');    // Título articulo o nombre usuario
 
-  //  Outputs para avisar cerrar modal
+  targetType = input.required<'ARTICULO' | 'USUARIO'>();
+  targetId = input.required<number>(); 
+  targetTitle = input<string>('');    
+
+ 
   closeModal = output<void>();
   onReportSuccess = output<void>();
 
-  // Estados internos del formulario
+  
   listReportTypes = signal<ReportType[]>([]);
   selectedTypeReport = signal<number>(0);
   motivoReporte = signal('');
@@ -32,7 +32,7 @@ export class ReportTypeComponent implements OnInit {
   mensajeReporte = signal('');
 
   ngOnInit(): void {
-    // Carga automaticamente la categoria correcta gracias input reactivo
+    
     this.moderationService.getReportTypes(this.targetType()).subscribe({
       next: (data: any) => this.listReportTypes.set(data),
       error: () => this.mensajeReporte.set('Error al cargar el tipo de reporte.')
@@ -67,7 +67,7 @@ export class ReportTypeComponent implements OnInit {
     this.enviandoReporte.set(true);
 
     
-    /*this.moderationService.reportArticle(
+    this.moderationService.reportArticle(
       this.targetId(), 
       this.motivoReporte().trim(), 
       this.selectedTypeReport(), 
@@ -76,14 +76,14 @@ export class ReportTypeComponent implements OnInit {
       next: () => {
         this.mensajeReporte.set('Reporte enviado con éxito. Quedará en revisión.');
         this.enviandoReporte.set(false);
-        this.onReportSuccess.emit(); // todo ok
+        this.onReportSuccess.emit(); 
         setTimeout(() => this.closeModal.emit(), 2000);
       },
       error: () => {
         this.mensajeReporte.set('Error al enviar el reporte. Inténtalo de nuevo.');
         this.enviandoReporte.set(false);
       }
-    });*/
+    });
   }
 }
 
