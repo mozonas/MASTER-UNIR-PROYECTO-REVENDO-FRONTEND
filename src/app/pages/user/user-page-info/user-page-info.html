@@ -34,14 +34,21 @@
             </p>
 
             <div class="d-flex justify-content-center mt-3">
+              <!-- Envolvemos con un @if para verificar si tiene permisos de edición -->
+              @if (isAdminViewing || !isExternalProfileViewing) {
+
               @if (isAdminViewing) {
-              <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-pill fw-semibold" (click)="irAEditar()">
+              <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-pill fw-semibold"
+                (click)="irAEditar()">
                 <i class="fa fa-edit me-1"></i> Modificar Perfil
               </button>
               } @else {
-              <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-pill fw-semibold" (click)="irAEditar()">
+              <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-pill fw-semibold"
+                (click)="irAEditar()">
                 <i class="fa fa-pencil me-1"></i> Editar mi Perfil
               </button>
+              }
+
               }
             </div>
           </div>
@@ -79,7 +86,7 @@
               </div>
               }
             </div>
-            <app-detail-seller [sellerId]="idVendedor"></app-detail-seller>
+            <app-detail-seller [sellerId]="idVendedor" class="border-top"></app-detail-seller>
           </div>
         </div>
 

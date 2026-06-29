@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../services/article.service';
@@ -6,7 +6,7 @@ import { ModerationService } from '../../services/moderation.service';
 import { AuthService } from '../../services/auth.service';
 import { DetailSeller } from "../../shared/detail-seller/detail-seller";
 import { Article } from '../../interfaces/article.interface';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import { ReportType } from '../../interfaces/report-type.interface';
 import { FormsModule } from '@angular/forms';
 
@@ -17,11 +17,10 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './article-detail-component.html',
   styleUrl: './article-detail-component.css',
 })
-export class ArticleDetailComponent {
+export class ArticleDetailComponent implements OnInit {
   modalOpen = false;
   selectedImage: string | null = null;
   article = signal<Article | null>(null);
-  // Variable para controlar de forma manual la foto activa en el carrusel
   subindiceActivo = 0;
 
   private route = inject(ActivatedRoute);
@@ -30,9 +29,9 @@ export class ArticleDetailComponent {
   private router = inject(Router);
   private moderationService = inject(ModerationService);
   private sanitizer = inject(DomSanitizer);
-
   private location = inject(Location);
 
+  mapUrl: SafeResourceUrl | null = null;
 
   mostrarModalReporte = signal(false);
   motivoReporte = signal('');
@@ -82,9 +81,7 @@ export class ArticleDetailComponent {
       next: (data: any) => {
         this.listReportTypes = data;
       },
-      error: () => {
-
-      }
+      error: () => { }
     });
     this.mostrarModalReporte.set(true);
     this.motivoReporte.set('');
@@ -128,8 +125,16 @@ export class ArticleDetailComponent {
 
   async getArticleData(id: string) {
     this.articlesService.getArticleById(id).subscribe({
-      next: (data) => {        
-        this.article.set(data ?? null);
+      next: (res: any) => {
+        console.log('📦 DATOS DEL ARTÍCULO RECIBIDOS:', res);
+
+        // Controlamos si la respuesta viene envuelta en .data por el servicio o limpia
+        const articuloLimpio = res?.data ? res.data : res;
+
+        this.article.set(articuloLimpio ?? null);
+
+        // Pasamos el objeto directamente para el renderizado del mapa
+        this.generarUrlMapa(articuloLimpio);
       },
       error: (err) => {
         console.error('Error cargando producto:', err);
@@ -138,6 +143,34 @@ export class ArticleDetailComponent {
         }
       }
     });
+  }
+
+  // Este método procesa directamente el string del campo direccion
+  private generarUrlMapa(articulo: any): void {
+    // Buscamos primero en seller.direccion
+    const direccionRaw = articulo?.seller?.direccion || articulo?.direccion || '';
+    const direccionCompleta = direccionRaw.trim();
+
+    if (direccionCompleta) {
+      let urlBase = '';
+
+      if (direccionCompleta.includes('[COORD:')) {
+        try {
+          const coordSection = direccionCompleta.split('[COORD:')[1].replace(']', '').trim();
+          const [lat, lng] = coordSection.split(',');
+          urlBase = `https://maps.google.com/maps?q=${lat.trim()},${lng.trim()}&ll=${lat.trim()},${lng.trim()}&t=&z=12&ie=UTF8&iwloc=&output=embed`;
+        } catch (e) {
+          console.error('Error al parsear las coordenadas de la dirección:', e);
+          urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=12&ie=UTF8&iwloc=&output=embed`;
+        }
+      } else {
+        urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=12&ie=UTF8&iwloc=&output=embed`;
+      }
+
+      this.mapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(urlBase);
+    } else {
+      this.mapUrl = null;
+    }
   }
 
   openImageModal(img: string) {
@@ -176,6 +209,13 @@ export class ArticleDetailComponent {
     this.location.back();
   }
 
+  verPerfilVendedor(): void {
+    const sellerId = this.article()?.usuarios_id;
+    if (sellerId && sellerId > 0) {
+      this.router.navigate(['/user-info', sellerId]);
+    }
+  }
+
   /**
    * Función que captura el evento del selector de tipo de reporte
    * @param event 
@@ -183,7 +223,5 @@ export class ArticleDetailComponent {
   onSelect(event: Event) {
     const value = (event.target as HTMLSelectElement).value;
     console.log('Seleccionado:', value);
-
-
   }
 }

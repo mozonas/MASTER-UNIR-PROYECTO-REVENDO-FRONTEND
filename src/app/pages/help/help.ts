@@ -1,5 +1,4 @@
 import { Component, signal, computed, inject } from '@angular/core';
-import { Location } from '@angular/common';
 import Swal from 'sweetalert2';
 
 
@@ -16,8 +15,6 @@ interface FAQ {
   styleUrl: './help.css'
 })
 export class HelpComponent {
-  
-  private location = inject(Location);
 
   // Categoría seleccionada por el usuario (por defecto 'Todas')
   selectedCategory = signal<string>('Todas');
@@ -108,9 +105,5 @@ export class HelpComponent {
   
   onContactSupport(): void {
     console.log('Redirigiendo al canal de soporte técnico de ReVendo...');
-  }
-
-  onBack(): void {
-    this.location.back();
   }
 }
