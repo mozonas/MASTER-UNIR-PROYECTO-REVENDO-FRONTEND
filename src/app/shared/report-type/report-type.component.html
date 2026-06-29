@@ -1,0 +1,57 @@
+<div class="report-modal-backdrop" (click)="cerrarModalReporte()">
+  <div class="report-modal" (click)="$event.stopPropagation()">
+    
+    <h5 class="report-modal__title">
+      Reportar {{ targetType() === 'ARTICULO' ? 'artículo' : 'usuario' }}
+    </h5>
+    
+    @if (targetTitle()) {
+      <p class="report-modal__subtitle">{{ targetTitle() }}</p>
+    }
+
+    <div class="mb-3">
+      <label for="treporte" class="form-label">Tipo de reporte:</label>
+      <select 
+        id="treporte" 
+        class="form-select" 
+        [value]="selectedTypeReport()"
+        (change)="onSelectChange($event)">
+        
+        <option value="0" disabled selected>
+          Selecciona el tipo de reporte
+        </option>
+        
+        @for (item of listReportTypes(); track item.id) {
+          <option [value]="item.id">
+            {{ item.tipo }}
+          </option>
+        }
+      </select>
+    </div>
+
+    <textarea 
+      class="report-modal__textarea" 
+      placeholder="Describe el motivo del reporte..."
+      [value]="motivoReporte()" 
+      (input)="motivoReporte.set($any($event.target).value)" 
+      rows="4"
+      maxlength="500">
+    </textarea>
+
+    <div class="report-modal__actions">
+      <button class="btn btn-secondary btn-sm" (click)="cerrarModalReporte()">
+        Cancelar
+      </button>
+      <button 
+        class="btn btn-danger btn-sm" 
+        (click)="enviarReporte()"
+        [disabled]="selectedTypeReport() === 0 || enviandoReporte()">
+        {{ enviandoReporte() ? 'Enviando...' : 'Enviar reporte' }}
+      </button>
+    </div>
+
+    @if (mensajeReporte()) {
+      <p class="report-modal__success">{{ mensajeReporte() }}</p>
+    }
+  </div>
+</div>

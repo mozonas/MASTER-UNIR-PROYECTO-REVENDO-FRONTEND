@@ -9,11 +9,12 @@ import { Article } from '../../interfaces/article.interface';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ReportType } from '../../interfaces/report-type.interface';
 import { FormsModule } from '@angular/forms';
+import { ReportTypeComponent } from '../../shared/report-type/report-type.component';
 
 @Component({
   selector: 'app-article-detail-component',
   standalone: true,
-  imports: [CommonModule, DetailSeller, FormsModule],
+  imports: [CommonModule, DetailSeller, FormsModule,ReportTypeComponent],
   templateUrl: './article-detail-component.html',
   styleUrl: './article-detail-component.css',
 })
