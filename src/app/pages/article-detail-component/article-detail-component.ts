@@ -7,7 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { DetailSeller } from "../../shared/detail-seller/detail-seller";
 import { Article } from '../../interfaces/article.interface';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { ReportType } from '../../interfaces//report-type.interface';
+import { ReportType } from '../../interfaces/report-type.interface';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -78,7 +78,7 @@ export class ArticleDetailComponent {
   }
 
   onReportar(): void {
-    this.moderationService.getReportTypes().subscribe({
+    this.moderationService.getReportTypes('ARTICULO').subscribe({
       next: (data: any) => {
         this.listReportTypes = data;
       },
@@ -117,6 +117,7 @@ export class ArticleDetailComponent {
         this.enviandoReporte.set(false);
       }
     });
+    this.router.navigate(['/home']);
   }
 
   async ngOnInit() {
@@ -127,7 +128,7 @@ export class ArticleDetailComponent {
 
   async getArticleData(id: string) {
     this.articlesService.getArticleById(id).subscribe({
-      next: (data) => {
+      next: (data) => {        
         this.article.set(data ?? null);
       },
       error: (err) => {
