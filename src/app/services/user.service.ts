@@ -42,6 +42,6 @@ export class UserService {
     /**Obtiene los usuarios del mes actual y anterior */
 
     getUserStats(): Observable<any> {
-    return this.http.get<any>('http://localhost:3000/api/users/stats/users');
+    return this.http.get<any>(`${this.apiUrl}/stats/users`);////ojo ruta ok?
 }
 }

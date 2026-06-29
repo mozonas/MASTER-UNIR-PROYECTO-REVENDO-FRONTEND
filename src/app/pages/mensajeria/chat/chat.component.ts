@@ -1,10 +1,11 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChatService } from '../../../services/chat.service';
 import { AuthService } from '../../../services/auth.service';
+import { ReportTypeComponent } from '../../../shared/report-type/report-type.component';
 
 interface Mensaje {
   id: number;
@@ -29,7 +30,7 @@ interface Conversacion {
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,ReportTypeComponent],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
@@ -49,6 +50,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   nuevoMensaje: string = '';
   busqueda: string = '';
 
+  mostrarModalReporte = signal(false);
+  reportado = signal(false);
+
   private pollingMensajes: any;
   private pollingConversaciones: any;
 
@@ -60,6 +64,19 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.pollingConversaciones = setInterval(() => {
       this.cargarConversaciones();
     }, 5000);
+  }
+  
+  //**ACCIONES PARA EL MODAL REPORTAR */
+  onReportar(): void {
+    this.mostrarModalReporte.set(true);
+  }
+
+  cerrarModalReporte(): void {
+    this.mostrarModalReporte.set(false);
+  }
+
+  gestionarReport(): void {
+    this.reportado.set(true);
   }
 
   ngOnDestroy() {

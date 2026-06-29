@@ -167,7 +167,19 @@
     </div>
 </div>
 
-<!-- Modal de reporte -->
+<!--CGM 290626 COMPONENTE COMPARTIDO-->
+@if (mostrarModalReporte() && article()) {
+  <app-report-type 
+    targetType="ARTICULO" 
+    [targetId]="+article()!.id" 
+    [targetTitle]="article()?.titulo || ''"
+    (closeModal)="cerrarModalReporte()"
+    (onReportSuccess)="reportado.set(true)">
+  </app-report-type>
+}
+
+
+<!-- Modal de reporte 
 <div class="report-modal-backdrop" *ngIf="mostrarModalReporte()" (click)="cerrarModalReporte()">
     <div class="report-modal" (click)="$event.stopPropagation()">
         <h5 class="report-modal__title">Reportar artículo</h5>
@@ -197,4 +209,4 @@
         </div>
         <p class="report-modal__success" *ngIf="mensajeReporte()">{{mensajeReporte()}}</p>
     </div>
-</div>
+</div>-->
