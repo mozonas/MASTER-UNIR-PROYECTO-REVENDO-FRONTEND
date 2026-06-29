@@ -131,16 +131,18 @@
                             <!-- Botón -->
                             <div class="d-grid gap-2">
                                 @if (puedeComprar) {
-                                <button class="btn btn-primary" (click)="comprarArticulo()" [disabled]="compraDeshabilitada">
+                                <button class="btn btn-primary" (click)="comprarArticulo(); $event.stopPropagation()"
+                                    [disabled]="compraDeshabilitada">
                                     {{ comprando() ? 'Procesando...' : 'Comprar' }}
                                 </button>
-                                }
+                                
                                 <button class="btn btn-success" (click)="contactarVendedor(); $event.stopPropagation()">
                                     Mensaje directo
                                 </button>
+                                }
                             </div>
                             @if (mensajeCompra()) {
-                            <p class="mt-2 mb-0">{{ mensajeCompra() }}</p>
+                            <p class="mt-2 mb-0 text-danger small fw-medium">{{ mensajeCompra() }}</p>
                             }
 
                         </div>
@@ -169,13 +171,9 @@
 
 <!--CGM 290626 COMPONENTE COMPARTIDO-->
 @if (mostrarModalReporte() && article()) {
-  <app-report-type 
-    targetType="ARTICULO" 
-    [targetId]="+article()!.id" 
-    [targetTitle]="article()?.titulo || ''"
-    (closeModal)="cerrarModalReporte()"
-    (onReportSuccess)="reportado.set(true)">
-  </app-report-type>
+<app-report-type targetType="ARTICULO" [targetId]="+article()!.id" [targetTitle]="article()?.titulo || ''"
+    (closeModal)="cerrarModalReporte()" (onReportSuccess)="reportado.set(true)">
+</app-report-type>
 }
 
 

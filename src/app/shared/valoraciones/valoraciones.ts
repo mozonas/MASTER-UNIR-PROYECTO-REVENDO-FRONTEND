@@ -90,7 +90,7 @@ export class ValoracionesComponent implements OnInit {
       next: (res) => {
         console.log('✅ Valoración guardada con éxito', res);
         // Redirige de vuelta al perfil de información del vendedor
-        this.router.navigate(['/user-info', this.idVendedor]);
+        this.router.navigate(['/home']);
       },
       error: (err) => {
         console.error('❌ Error al guardar la valoración', err);
@@ -101,6 +101,6 @@ export class ValoracionesComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/user-info', this.idVendedor]);
+    this.router.navigate(['/home']);
   }
 }

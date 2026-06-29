@@ -15,7 +15,7 @@ import { ReportTypeComponent } from '../../shared/report-type/report-type.compon
 @Component({
   selector: 'app-article-detail-component',
   standalone: true,
-  imports: [CommonModule, DetailSeller, FormsModule,ReportTypeComponent],
+  imports: [CommonModule, DetailSeller, FormsModule, ReportTypeComponent],
   templateUrl: './article-detail-component.html',
   styleUrl: './article-detail-component.css',
 })
@@ -53,7 +53,6 @@ export class ArticleDetailComponent implements OnInit {
   });
 
   constructor() {
-    // Reseteamos el índice a 0 cada vez que el artículo cambie (por si navegas entre artículos)
     effect(() => {
       if (this.article()) {
         this.subindiceActivo = 0;
@@ -61,7 +60,6 @@ export class ArticleDetailComponent implements OnInit {
     });
   }
 
-  // Métodos manuales para el carrusel sin depender del JS de Bootstrap
   anteriorFoto(): void {
     const total = this.galleryImages().length;
     if (total <= 1) return;
@@ -160,14 +158,8 @@ export class ArticleDetailComponent implements OnInit {
   async getArticleData(id: string) {
     this.articlesService.getArticleById(id).subscribe({
       next: (res: any) => {
-        console.log('📦 DATOS DEL ARTÍCULO RECIBIDOS:', res);
-
-        // Controlamos si la respuesta viene envuelta en .data por el servicio o limpia
         const articuloLimpio = res?.data ? res.data : res;
-
         this.article.set(articuloLimpio ?? null);
-
-        // Pasamos el objeto directamente para el renderizado del mapa
         this.generarUrlMapa(articuloLimpio);
       },
       error: (err) => {
@@ -179,28 +171,23 @@ export class ArticleDetailComponent implements OnInit {
     });
   }
 
-  // Este método procesa directamente el string del campo direccion
   private generarUrlMapa(articulo: any): void {
-    // Buscamos primero en seller.direccion
     const direccionRaw = articulo?.seller?.direccion || articulo?.direccion || '';
     const direccionCompleta = direccionRaw.trim();
 
     if (direccionCompleta) {
       let urlBase = '';
-
       if (direccionCompleta.includes('[COORD:')) {
         try {
           const coordSection = direccionCompleta.split('[COORD:')[1].replace(']', '').trim();
           const [lat, lng] = coordSection.split(',');
           urlBase = `https://maps.google.com/maps?q=${lat.trim()},${lng.trim()}&ll=${lat.trim()},${lng.trim()}&t=&z=12&ie=UTF8&iwloc=&output=embed`;
         } catch (e) {
-          console.error('Error al parsear las coordenadas de la dirección:', e);
           urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=12&ie=UTF8&iwloc=&output=embed`;
         }
       } else {
         urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=12&ie=UTF8&iwloc=&output=embed`;
       }
-
       this.mapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(urlBase);
     } else {
       this.mapUrl = null;
@@ -220,7 +207,6 @@ export class ArticleDetailComponent implements OnInit {
   onImageError(event: Event): void {
     const target = event.target as HTMLImageElement | null;
     if (!target) return;
-
     if (!target.src.endsWith('/images/placeholder_articulo.png')) {
       target.src = '/images/placeholder_articulo.png';
     }
@@ -228,9 +214,7 @@ export class ArticleDetailComponent implements OnInit {
 
   getSafeImageUrl(url: string | null | undefined): string | SafeUrl {
     const value = url ?? '/images/placeholder_articulo.png';
-    return value.startsWith('data:image/')
-      ? this.sanitizer.bypassSecurityTrustUrl(value)
-      : value;
+    return value.startsWith('data:image/') ? this.sanitizer.bypassSecurityTrustUrl(value) : value;
   }
 
   comprarArticulo(): void {
@@ -246,10 +230,21 @@ export class ArticleDetailComponent implements OnInit {
     this.mensajeCompra.set('');
 
     this.transactionsService.comprar(articulo.id, usuarioId).subscribe({
-      next: () => {
+      next: (res: any) => {
         this.article.update(a => a ? { ...a, estadoVenta: 'VENDIDO' } : a);
-        this.mensajeCompra.set('¡Compra realizada con éxito!');
         this.comprando.set(false);
+
+        // 🌟 Recuperamos el ID de la transacción devuelta por el servidor
+        const transaccionId = res?.transaccionId || res?.id || 1;
+
+        // 🌟 Redirección inmediata cambiando de componente en la misma pestaña
+        this.router.navigate(['/evaluar'], {
+          queryParams: {
+            vendedorId: articulo.usuarios_id,
+            transaccionId: transaccionId,
+            titulo: articulo.titulo
+          }
+        });
       },
       error: (err) => {
         if (err.status === 409) {
@@ -282,10 +277,6 @@ export class ArticleDetailComponent implements OnInit {
     }
   }
 
-  /**
-   * Función que captura el evento del selector de tipo de reporte
-   * @param event 
-   */
   onSelect(event: Event) {
     const value = (event.target as HTMLSelectElement).value;
     console.log('Seleccionado:', value);
