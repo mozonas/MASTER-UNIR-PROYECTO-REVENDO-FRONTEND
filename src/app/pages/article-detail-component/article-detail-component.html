@@ -8,8 +8,9 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center w-100">
                     <!-- Estado -->
-                    <span class="badge estado-articulo mb-3 text-white text-uppercase fw-bold">
-                        <h3>{{article()?.estadoVenta}}</h3>
+                    <span class="badge estado-articulo mb-3 text-white text-uppercase fw-bold"
+                        [class.estado-articulo--revision]="estaEnRevision">
+                        <h3>{{estadoLabel}}</h3>
                     </span>
                     @if(!estaReportado && !estaVendido){
                     <button class="btn btn-outline-danger btn-lg" (click)="onReportar()">
@@ -127,11 +128,20 @@
                             </div>
                             }
 
-                            <div class="d-grid">
+                            <!-- Botón -->
+                            <div class="d-grid gap-2">
+                                @if (puedeComprar) {
+                                <button class="btn btn-primary" (click)="comprarArticulo()" [disabled]="compraDeshabilitada">
+                                    {{ comprando() ? 'Procesando...' : 'Comprar' }}
+                                </button>
+                                }
                                 <button class="btn btn-success" (click)="contactarVendedor(); $event.stopPropagation()">
                                     Mensaje directo
                                 </button>
                             </div>
+                            @if (mensajeCompra()) {
+                            <p class="mt-2 mb-0">{{ mensajeCompra() }}</p>
+                            }
 
                         </div>
                     </div>
