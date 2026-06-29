@@ -8,6 +8,7 @@ import { VentasMes } from '../interfaces/ventas.interface';
 import { PubStats } from '../interfaces/pub-stats.interface';
 import { Article } from '../interfaces/article.interface';
 import { AuthService } from './auth.service';
+import { ArticleInReview } from '../interfaces/moderation.interface';
 
 export interface ArticleUpsertPayload {
   titulo: string;
@@ -88,6 +89,20 @@ export class ArticleService {
     );
   }
 
+  isReportedArticle(article: Pick<Article, 'estado_reporte'> | null | undefined): boolean {
+    return Number(article?.estado_reporte) === 1;
+  }
+
+  getReportedUserArticles(userId: number): Observable<Article[]> {
+    return this.http.get<ArticleInReview[]>(`${this.apiUrl}/reports/articles-in-review`).pipe(
+      map((articlesInReview) =>
+        articlesInReview
+          .filter((article) => article.usuarios_id === userId)
+          .map((article) => this.mapReportedArticleToArticle(article))
+      )
+    );
+  }
+
   // Añade esto dentro de tu ArticleService
   getAllPublicArticles(): Observable<Article[]> {
     return this.http.get<any>(`${this.apiUrl}/articles`).pipe(
@@ -107,6 +122,16 @@ export class ArticleService {
     return this.http.delete<any>(`${this.apiUrl}/user-sell/${id}`).pipe(
       tap(() => {
         this.Articles.update((articles) => articles.filter((article) => article.id !== id));
+      })
+    );
+  }
+
+  marcarVendido(id: string, datos: { tipoPago: string; precio: number }): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/user-sell/${id}/vender`, datos).pipe(
+      tap(() => {
+        this.Articles.update((articles) =>
+          articles.map((article) => article.id === id ? { ...article, estadoVenta: 'VENDIDO', tipoPago: datos.tipoPago } : article)
+        );
       })
     );
   }
@@ -168,15 +193,7 @@ export class ArticleService {
       return undefined;
     }
 
-    const estadoRaw = (articulo.estadoVenta ?? '').toString().toUpperCase();
-    let estadoVenta: Article['estadoVenta'] = 'DISPONIBLE';
-    if (estadoRaw === 'VENDIDO') {
-      estadoVenta = 'VENDIDO';
-    } else if (estadoRaw === 'RESERVADO') {
-      estadoVenta = 'RESERVADO';
-    } else if (estadoRaw === 'BORRADO') {
-      estadoVenta = 'BORRADO';
-    }
+    const estadoVenta: Article['estadoVenta'] = (articulo.estadoVenta ?? 'DISPONIBLE').toString().toUpperCase();
 
     const createdAtValue = articulo.created_at ?? articulo.createdAt;
     const createdAt = createdAtValue ? new Date(createdAtValue) : new Date();
@@ -213,6 +230,27 @@ export class ArticleService {
         }
         : undefined,
     } as Article;
+  }
+
+  private mapReportedArticleToArticle(article: ArticleInReview): Article {
+    return {
+      id: String(article.id),
+      titulo: String(article.titulo ?? ''),
+      descripcion: String(article.descripcion ?? ''),
+      precio: Number(article.precio ?? 0),
+      estadoVenta: String(article.estadoVenta ?? 'DISPONIBLE').toUpperCase(),
+      estadoProducto: undefined,
+      tipoEntrega: '',
+      tipoPago: '',
+      created_at: new Date(article.fecha_reporte ?? Date.now()),
+      usuarios_id: Number(article.usuarios_id ?? 0),
+      categorias_id: 0,
+      categoria_nombre: undefined,
+      image: article.foto ? String(article.foto) : null,
+      fotos: undefined,
+      estado_reporte: 1,
+      seller: undefined,
+    };
   }
 
   private normalizeImagePath(value: unknown): string | null {

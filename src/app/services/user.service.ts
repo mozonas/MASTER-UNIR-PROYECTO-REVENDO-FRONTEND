@@ -46,6 +46,8 @@ export class UserService {
         return this.http.get<any>(`${this.apiUrl}/stats/users`);
     }
 
+    getUserStats(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/stats/users`);////ojo ruta ok?
     /**
      * Comprueba dinámicamente si el comprador tiene transacciones legítimas
      * pendientes de valorar con el vendedor especificado en la base de datos.
