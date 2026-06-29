@@ -30,6 +30,14 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
     direccion: ''
   };
 
+  //mog 29/06/26 fix foto formulario
+  selectedFile: File | null = null;
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    this.selectedFile = file ?? null;
+  }
+
   private pkInstance: any = null;
 
   // Validación de mayoría de edad
@@ -99,6 +107,21 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
   }
 
   onSubmit() {
+    //mog 290626 fix foto form
+    // Construimos FormData
+    const form = new FormData();
+    form.append('nombre', this.formData.nombre);
+    form.append('apellidos', this.formData.apellidos);
+    form.append('email', this.formData.email);
+    form.append('usuario', this.formData.usuario);
+    form.append('password', this.formData.password);
+    form.append('fecha_nacimiento', this.formData.fecha_nacimiento);
+    form.append('direccion', this.formData.direccion);
+
+    if (this.selectedFile) {
+      form.append('foto', this.selectedFile);
+    }
+
     // Bloqueamos el registro si el usuario es menor de edad
     if (this.esMenorDeEdad()) {
       alert('Debes tener al menos 18 años para registrarte.');
@@ -113,7 +136,19 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
 
     console.log('Enviando signup verificado:', this.formData);
 
-    this.authService.signup(this.formData).subscribe({
+    /* this.authService.signup(this.formData).subscribe({
+      next: (resp) => {
+        alert('Usuario creado correctamente');
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        console.error('Error en signup:', err);
+        alert('Error al crear usuario. Verifica los campos e inténtalo de nuevo.');
+      }
+    }); */
+
+    // Enviar FormData por AuthService
+    this.authService.signup(form).subscribe({
       next: (resp) => {
         alert('Usuario creado correctamente');
         this.router.navigate(['/login']);
