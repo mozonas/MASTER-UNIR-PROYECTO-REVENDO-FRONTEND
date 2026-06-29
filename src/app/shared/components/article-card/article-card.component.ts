@@ -23,7 +23,7 @@ export class ArticleCardComponent {
   private router = inject(Router);
 
   get estaReportado(): boolean {
-    return !!this.article.estado_reporte;
+    return this.article.estadoVenta === 'EN_REVISION';
   }
 
   get estaVendido(): boolean {

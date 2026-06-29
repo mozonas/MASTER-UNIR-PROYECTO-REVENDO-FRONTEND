@@ -161,8 +161,12 @@ export class ArticleDetailComponent {
 
   async getArticleData(id: string) {
     this.articlesService.getArticleById(id).subscribe({
-      next: (data) => {        
-        this.article.set(data ?? null);
+      next: (data) => {
+        if (!data) {
+          this.router.navigate(['/404']);
+          return;
+        }
+        this.article.set(data);
       },
       error: (err) => {
         console.error('Error cargando producto:', err);
