@@ -110,11 +110,19 @@
                             </div>
 
                             <!-- Botón -->
-                            <div class="d-grid">
+                            <div class="d-grid gap-2">
+                                @if (puedeComprar) {
+                                <button class="btn btn-primary" (click)="comprarArticulo()" [disabled]="comprando()">
+                                    {{ comprando() ? 'Procesando...' : 'Comprar' }}
+                                </button>
+                                }
                                 <button class="btn btn-success" (click)="contactarVendedor()">
                                     Mensaje directo
                                 </button>
                             </div>
+                            @if (mensajeCompra()) {
+                            <p class="mt-2 mb-0">{{ mensajeCompra() }}</p>
+                            }
 
                         </div>
                     </div>

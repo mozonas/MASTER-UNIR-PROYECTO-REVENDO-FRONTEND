@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../services/article.service';
 import { ModerationService } from '../../services/moderation.service';
 import { AuthService } from '../../services/auth.service';
+import { TransactionsServices } from '../../services/transactions.service';
 import { DetailSeller } from "../../shared/detail-seller/detail-seller";
 import { Article } from '../../interfaces/article.interface';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -29,6 +30,7 @@ export class ArticleDetailComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   private moderationService = inject(ModerationService);
+  private transactionsService = inject(TransactionsServices);
   private sanitizer = inject(DomSanitizer);
 
   private location = inject(Location);
@@ -41,6 +43,9 @@ export class ArticleDetailComponent {
   reportado = signal(false);
   listReportTypes: ReportType[] = [];
   selectedTypeReport: number = 0;
+
+  comprando = signal(false);
+  mensajeCompra = signal('');
 
   galleryImages = computed(() => {
     const currentArticle = this.article();
@@ -75,6 +80,17 @@ export class ArticleDetailComponent {
 
   get estaVendido(): boolean {
     return this.article()?.estadoVenta === 'VENDIDO';
+  }
+
+  get esPropietario(): boolean {
+    const usuarioId = this.authService.getUserId();
+    return !!usuarioId && usuarioId === this.article()?.usuarios_id;
+  }
+
+  get puedeComprar(): boolean {
+    return this.article()?.estadoVenta === 'DISPONIBLE'
+      && this.authService.isLogged()
+      && !this.esPropietario;
   }
 
   onReportar(): void {
@@ -164,6 +180,38 @@ export class ArticleDetailComponent {
     return value.startsWith('data:image/')
       ? this.sanitizer.bypassSecurityTrustUrl(value)
       : value;
+  }
+
+  comprarArticulo(): void {
+    const articulo = this.article();
+    const usuarioId = this.authService.getUserId();
+
+    if (!articulo || !usuarioId) {
+      this.mensajeCompra.set('Error: debes iniciar sesión para comprar.');
+      return;
+    }
+
+    this.comprando.set(true);
+    this.mensajeCompra.set('');
+
+    this.transactionsService.comprar(articulo.id, usuarioId).subscribe({
+      next: () => {
+        this.article.update(a => a ? { ...a, estadoVenta: 'VENDIDO' } : a);
+        this.mensajeCompra.set('¡Compra realizada con éxito!');
+        this.comprando.set(false);
+      },
+      error: (err) => {
+        if (err.status === 409) {
+          this.mensajeCompra.set('Este artículo ya no está disponible.');
+          this.getArticleData(String(articulo.id));
+        } else if (err.status === 400) {
+          this.mensajeCompra.set('No puedes comprar tu propio artículo.');
+        } else {
+          this.mensajeCompra.set('Error al procesar la compra. Inténtalo de nuevo.');
+        }
+        this.comprando.set(false);
+      }
+    });
   }
 
   contactarVendedor() {

@@ -18,4 +18,12 @@ export class TransactionsServices {
   );
 }
 
+  //** Compra de un artículo: crea la transacción y lo marca como VENDIDO */
+  comprar(articleId: string | number, usuariosId: number): Observable<{ message: string; transaccionId: number }> {
+    return this.http.post<{ message: string; transaccionId: number }>(
+      `${this.apiUrl}/comprar/${articleId}`,
+      { usuarios_id: usuariosId }
+    );
+  }
+
 }
