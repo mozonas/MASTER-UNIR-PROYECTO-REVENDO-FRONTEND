@@ -89,7 +89,8 @@
 
         <div class="mb-2">
           <label class="form-label">Foto</label>
-          <input type="file" class="form-control form-control-sm" />
+          <input type="file" class="form-control form-control-sm"
+          (change)="onFileSelected($event)" />
         </div>
 
         <div class="mb-2">
