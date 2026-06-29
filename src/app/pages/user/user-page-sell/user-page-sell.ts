@@ -5,8 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { AuthService } from '../../../services/auth.service';
 import { Article } from '../../../interfaces/article.interface';
-import { ModerationService } from '../../../services/moderation.service';
-import { ArticleInReview } from '../../../interfaces/moderation.interface';
 import { ArticleCardComponent } from '../../../shared/components/article-card/article-card.component';
 
 @Component({
@@ -18,7 +16,6 @@ import { ArticleCardComponent } from '../../../shared/components/article-card/ar
 export class UserPageSell implements OnInit, OnChanges {
   private articleService = inject(ArticleService);
   private authService = inject(AuthService);
-  private moderationService = inject(ModerationService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -107,13 +104,9 @@ export class UserPageSell implements OnInit, OnChanges {
       return;
     }
 
-    this.moderationService.getArticlesInReview().subscribe({
-      next: (articlesInReview) => {
-        const reported = articlesInReview
-          .filter((article) => article.usuarios_id === userId)
-          .map((article) => this.mapReportedArticle(article));
-
-        this.reportedArticles.set(reported);
+    this.articleService.getReportedUserArticles(userId).subscribe({
+      next: (articles) => {
+        this.reportedArticles.set(articles);
       },
       error: (error) => {
         console.error('Error al cargar artículos reportados:', error);
@@ -232,26 +225,5 @@ export class UserPageSell implements OnInit, OnChanges {
     }
 
     return all.filter(a => a.estadoVenta === filter).length;
-  }
-
-  private mapReportedArticle(article: ArticleInReview): Article {
-    return {
-      id: String(article.id),
-      titulo: String(article.titulo ?? ''),
-      descripcion: String(article.descripcion ?? ''),
-      precio: Number(article.precio ?? 0),
-      estadoVenta: String(article.estadoVenta ?? 'DISPONIBLE').toUpperCase(),
-      estadoProducto: undefined,
-      tipoEntrega: '',
-      tipoPago: '',
-      created_at: new Date(article.fecha_reporte ?? Date.now()),
-      usuarios_id: Number(article.usuarios_id ?? 0),
-      categorias_id: 0,
-      categoria_nombre: undefined,
-      image: article.foto ? String(article.foto) : null,
-      fotos: undefined,
-      estado_reporte: 1,
-      seller: undefined,
-    };
   }
 }
