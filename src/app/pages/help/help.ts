@@ -77,13 +77,10 @@ export class HelpComponent {
     const formData = new FormData(form);
 
     try {
-      //  frena el código aquí hasta que Web3Forms responda
       await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         body: formData
       });
-
-      // Una vez que se completa el envío, pasamos a las siguientes líneas
       Swal.fire({
         title: '¡Mensaje enviado!',
         text: 'Nos pondremos en contacto contigo pronto.',
@@ -94,11 +91,9 @@ export class HelpComponent {
           popup: 'rounded-4 shadow'
         }
       });
-      
-      form.reset(); // El formulario se limpia de forma totalmente segura
+      form.reset(); 
 
     } catch (error) {
-      // Si el servidor cae, se muestra mensaje
       console.error('Error en el envío:', error);
     }
   }

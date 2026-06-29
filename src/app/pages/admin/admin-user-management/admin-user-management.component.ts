@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminUserService } from '../../../services/admin/admin-user.service';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-admin-user-management',
@@ -76,15 +77,28 @@ export class AdminUserManagementComponent implements OnInit {
   // ACCIONES DE LOS ICONOS
   // -------------------------
 
-
+  //**CGM-290626-implementación modal */
   onDelete(id: number) {
-    if (!confirm('¿Seguro que quieres eliminar este usuario?')) return;
-
-    this.adminUserService.deleteUser(id).subscribe({
-      next: () => {
-        this.loadUsers();
-      },
-      error: (err) => console.error(err)
+    Swal.fire({
+    title: '¿Seguro que quieres eliminar este usuario?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Eliminar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#8cd86a'
+    }).then((result) => {
+    if (result.isConfirmed) {
+      this.adminUserService.deleteUser(id).subscribe({
+        next: () => this.loadUsers(),
+        error: (err) => {console.error(err);
+          Swal.fire({
+            title: 'Error',
+            text: 'No se pudo eliminar al usuario.',
+            icon: 'error'
+          });
+        }
+      });
+    }
     });
   }
 
