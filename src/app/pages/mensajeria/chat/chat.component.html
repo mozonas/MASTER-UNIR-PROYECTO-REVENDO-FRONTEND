@@ -34,10 +34,13 @@
         <img [src]="'/images/' + conversacionActiva.foto" 
              (error)="onImageError($event)"
              alt="avatar" class="conv-avatar"/>
-        <div>
+        <div class="chat-header-info">
           <span class="conv-nombre">{{ conversacionActiva.usuario }}</span>
           <span class="conv-articulo">{{ conversacionActiva.titulo }}</span>
         </div>
+        <button class="btn-reportar" (click)="reportarUsuario()" title="Reportar usuario">
+          <i class="fa fa-flag"></i>
+        </button>
       </div>
 
       <div class="mensajes-container">
@@ -74,3 +77,37 @@
 
   </div>
 </div>
+
+@if (mostrarModalReporte) {
+  <div class="modal-reporte-backdrop" (click)="cerrarModalReporte()">
+    <div class="modal-reporte" (click)="$event.stopPropagation()">
+      
+      <h5 class="modal-reporte-titulo">Reportar usuario</h5>
+      <p class="modal-reporte-subtitulo">@{{ conversacionActiva?.usuario }}</p>
+
+      @if (reporteEnviado) {
+        <div class="alert alert-success">
+          Reporte enviado correctamente. El equipo de moderación lo revisará.
+        </div>
+      } @else {
+        <textarea class="form-control mb-3" rows="4"
+          placeholder="Describe el motivo del reporte..."
+          [(ngModel)]="motivoReporte"
+          maxlength="500">
+        </textarea>
+
+        <div class="modal-reporte-acciones">
+          <button class="btn btn-secondary btn-sm" (click)="cerrarModalReporte()">
+            Cancelar
+          </button>
+          <button class="btn btn-danger btn-sm"
+            (click)="enviarReporte()"
+            [disabled]="motivoReporte.trim().length < 5 || enviandoReporte">
+            {{ enviandoReporte ? 'Enviando...' : 'Enviar reporte' }}
+          </button>
+        </div>
+      }
+
+    </div>
+  </div>
+}

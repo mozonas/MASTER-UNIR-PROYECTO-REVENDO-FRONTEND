@@ -12,6 +12,7 @@ import { AdminLayoutComponent } from './pages/admin/admin-layout/admin-layout.co
 import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 import { ChatComponent } from './pages/mensajeria/chat/chat.component';
 import { ForbiddenComponent } from './pages/forbidden/forbidden.component';
+import { ChatReportDetailComponent } from './pages/moderation/components/chat-report-detail/chat-report-detail.component';
 
 //import { roleGuard } from './guards/role.guard';
 import { HeaderMenuComponent } from './shared/headers/header-menu/header-menu.component';
@@ -88,7 +89,8 @@ export const routes: Routes = [
       { path: 'panel', component: ModerationDashboardComponent },
       { path: 'articulos', component: ArticlesListComponent },
       { path: 'articulos/detalle/:id', component: ArticleReportDetailComponent },
-      { path: 'chat', component: ChatsListComponent }
+      { path: 'chat', component: ChatsListComponent },
+      { path: 'chat/detalle/:id', component: ChatReportDetailComponent }
     ]
   },
 

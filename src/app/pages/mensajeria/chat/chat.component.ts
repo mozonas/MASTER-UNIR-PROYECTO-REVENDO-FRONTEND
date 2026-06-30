@@ -5,6 +5,7 @@ import { inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChatService } from '../../../services/chat.service';
 import { AuthService } from '../../../services/auth.service';
+import { ModerationService } from '../../../services/moderation.service';
 
 interface Mensaje {
   id: number;
@@ -39,6 +40,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
   private route = inject(ActivatedRoute);
+  private moderationService = inject(ModerationService);
 
   usuarioActualId: number = 0;
   articuloIdDesdeUrl: number | null = null;
@@ -48,6 +50,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   mensajesActivos: Mensaje[] = [];
   nuevoMensaje: string = '';
   busqueda: string = '';
+
+  mostrarModalReporte: boolean = false;
+  motivoReporte: string = '';
+  enviandoReporte: boolean = false;
+  reporteEnviado: boolean = false;
 
   private pollingMensajes: any;
   private pollingConversaciones: any;
@@ -208,5 +215,48 @@ export class ChatComponent implements OnInit, OnDestroy {
   onImageError(event: Event) {
     const img = event.target as HTMLImageElement;
     img.src = '/images/avatar_usuario.png';
+  }
+
+  reportarUsuario() {
+    if (!this.conversacionActiva) return;
+    this.mostrarModalReporte = true;
+    this.motivoReporte = '';
+    this.reporteEnviado = false;
+  }
+
+  cerrarModalReporte() {
+    this.mostrarModalReporte = false;
+    this.motivoReporte = '';
+  }
+
+  enviarReporte() {
+    if (!this.motivoReporte.trim() || !this.conversacionActiva) return;
+    this.enviandoReporte = true;
+
+    this.chatService.getArticuloPorId(this.conversacionActiva.articulos_id).subscribe({
+      next: (resp) => {
+        const usuarioId = resp.data?.seller?.id || resp.data?.usuarios_id;
+
+        this.moderationService.reportarUsuarioChat(
+          this.motivoReporte,
+          usuarioId,
+          this.conversacionActiva!.articulos_id
+        ).subscribe({
+          next: () => {
+            this.enviandoReporte = false;
+            this.reporteEnviado = true;
+            setTimeout(() => {
+              this.cerrarModalReporte();
+            }, 2000);
+          },
+          error: () => {
+            this.enviandoReporte = false;
+          }
+        });
+      },
+      error: () => {
+        this.enviandoReporte = false;
+      }
+    });
   }
 }

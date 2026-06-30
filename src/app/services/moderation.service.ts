@@ -68,4 +68,25 @@ export class ModerationService {
             `${this.apiUrl}/reports/types`
         );
     }
+
+    enviarNotificacion(reporteId: number, usuarioId: number, articuloId: number, contenido: string): Observable<any> {
+        return this.http.post(`${this.apiUrl}/reports/chats/notificar/${reporteId}`, {
+            contenido,
+            usuarios_id: usuarioId,
+            articulos_id: articuloId
+        });
+    }
+
+    // Reportar usuario desde el chat
+    reportarUsuarioChat(motivo: string, usuariosId: number, articulosId: number): Observable<any> {
+        return this.http.post(`${this.apiUrl}/reports/chats/reportar-usuario`, {
+            motivo,
+            usuarios_id: usuariosId,
+            articulos_id: articulosId
+        });
+    }
+
+    resolveReportChat(reporteId: number, accion: 'archivar' | 'bloquear'): Observable<any> {
+        return this.http.put(`${this.apiUrl}/reports/chats/resolve/${reporteId}`, { accion });
+    }
 }
