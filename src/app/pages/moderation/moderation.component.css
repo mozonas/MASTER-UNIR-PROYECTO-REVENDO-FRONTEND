@@ -1,41 +1,46 @@
-:host {
+.moderation-layout {
   display: flex;
   flex-direction: row;
-  position: fixed;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 10;
-  box-sizing: border-box;
-  overflow: hidden !important;
+  width: 100%;
+  height: calc(120vh - 138px - 60px - 48px); 
+  overflow: hidden;
 }
 
-aside {
+.moderation-sidebar {
   width: 250px;
   min-width: 250px;
-  max-width: 250px;
+  background-color: #8cd86a; 
+  flex-shrink: 0; 
+}
+
+.moderation-sidebar app-sidebar {
+  display: block;
+  width: 100%;
   height: 100%;
-  background-color: #8cd86a;
-  flex-shrink: 0;
-  overflow: hidden !important;
 }
 
 .component-view {
-  flex-grow: 1;
-  width: calc(100% - 250px);
-  padding: 1.5rem;
-  overflow-y: auto;
-  background-color: #f8f9fa;
+  padding: 1.5rem;           
+  width: calc(100% - 250px); 
+  flex-grow: 1;              
   height: 100%;
-  box-sizing: border-box;
-  padding-bottom: 200px;
+  overflow-y: auto;
+  background-color: #f8f9fa;   
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  z-index: 20;
 }
 
-aside ::ng-deep {
-  .custom-sidebar {
-    height: 100% !important;
-    overflow: hidden !important;
-    background-color: transparent !important;
-    padding-bottom: 0 !important;
-  }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

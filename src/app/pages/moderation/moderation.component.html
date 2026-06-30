@@ -1,9 +1,24 @@
-<aside>
-  <app-sidebar title="Moderación" [options]="menuOptions" (optionSelected)="handleNavigation($event)">
-  </app-sidebar>
-</aside>
+<div class="moderation-layout">
 
-<!-- Pantalla principal dinámica sin márgenes forzados -->
-<section class="component-view">
-  <router-outlet></router-outlet>
-</section>
+  <!-- Sidebar -->
+  <aside class="moderation-sidebar">
+    <app-sidebar
+      title="Moderación"
+      [options]="menuOptions"
+      [activeTab]="activeTab"
+      (optionSelected)="handleNavigation($event)">
+    </app-sidebar>
+  </aside>
+
+  <!-- Espacio restante para visualizar componentes -->
+  <main class="component-view">
+    <router-outlet></router-outlet>
+  </main>
+  
+</div>
+
+
+
+
+
+

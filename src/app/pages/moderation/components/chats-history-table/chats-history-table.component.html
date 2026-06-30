@@ -1,29 +1,28 @@
-
 <div class="table-responsive">
-  <table class="table table-hover table-striped mb-0 align-middle custom-table">
-    <thead>
+  <table class="table table-hover mb-0 align-middle">
+    <thead class="table-light">
       <tr>
-        <th class="col-fecha">Fecha</th> 
-        <th class="col-caso">Caso</th>
-        <th class="col-resolucion">Resolución</th>
-        <th class="col-articulo">Usuario</th>
-        <th class="col-motivo">Motivo del Reporte</th>
-        <!-- <th class="col-acciones text-center">Acciones</th> -->
+        <th class="w-15">Fecha</th> 
+        <th class="w-10">Caso</th>
+        <th class="w-15">Resolución</th>
+        <th class="w-25">Usuario</th>
+        <th class="w-35">Motivo del Reporte</th>
+        <!-- <th class="text-center">Acciones</th> -->
       </tr>
     </thead>
     <tbody>
-      @for (history of paginatedHistory(); track $index) {
+      @for (history of paginatedHistory(); track history.id) {
         <tr>
           <td><span class="text-muted">{{ history.created_at | date:'dd/MM/yyyy HH:mm' }}</span></td>
           <td><strong>#{{ history.id }}</strong></td>
           <td>
-            <strong [ngClass]="history.estado === 'retirado' ? 'txt-error' : 'txt-success'">
+            <strong [ngClass]="history.estado === 'retirado' ? 'text-danger' : 'text-success'">
               {{ history.estado === 'retirado' ? '❌ BLOQUEADO' : '✅ RESTITUIDO' }}
             </strong>
           </td>
-          <td>&#64;{{ history.usuario }}</td>
+          <td>@{{ history.usuario }}</td>
           <td>
-            <span class="text-danger-reason">
+            <span class="text-secondary text-truncate d-inline-block w-100" style="max-width: 350px;">
               {{ history.motivo }}
             </span>
           </td>
@@ -34,7 +33,11 @@
           -->
         </tr>
       } @empty {
-        <tr><td colspan="5" class="text-center py-4 text-muted">No se encontraron incidencias de mensajería registradas en el historial.</td></tr>
+        <tr>
+          <td colspan="5" class="text-center py-4 text-muted">
+            No se encontraron incidencias de mensajería registradas en el historial.
+          </td>
+        </tr>
       }
     </tbody>
   </table>
@@ -50,5 +53,6 @@
     </app-pagination-buttons>
   </div>
 }
+
 
 
