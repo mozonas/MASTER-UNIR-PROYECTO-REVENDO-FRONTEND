@@ -2,6 +2,7 @@
      [style.left.px]="posX"
      [style.top.px]="posY"
      (mousedown)="iniciarArrastre($event)"
+     (touchstart)="iniciarArrastre($event)"
      (click)="irAlChat()">
   @if (router.url === '/chat') {
     <span>←</span>
