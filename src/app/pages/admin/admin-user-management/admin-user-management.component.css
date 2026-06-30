@@ -117,21 +117,21 @@
 }
 
 .profile-indicator.is-user::before {
-  background-color: turquoise;
+  background-color: gainsboro;
 }
 
 .profile-indicator.is-moderator {
-  color: black;
+  color: goldenrod;
   font-weight: 600;
 }
 
 .profile-indicator.is-moderator::before {
-  background-color: orange;
+  background-color: goldenrod;
 }
 
 
 .profile-indicator.is-admin {
-  color: black;
+  color: red;
   font-weight: 600;
 }
 
