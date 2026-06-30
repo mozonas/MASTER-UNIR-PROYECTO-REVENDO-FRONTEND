@@ -4,6 +4,11 @@
     font-size: 0.9rem;
 }
 
+.estado-articulo--revision {
+    background-color: #f0ad4e;
+    color: #000;
+}
+
 .categoria-badge {
     background-color: var(--primary-color);
     color: #000;
@@ -143,4 +148,26 @@
   font-size: 13px;
   color: #28a745;
   text-align: center;
+}
+
+/* Optimizaciones de iframe de mapas */
+.map-container {
+  position: relative;
+  transition: opacity 0.3s ease;
+  background-color: #e5e3df;
+}
+
+.map-container iframe {
+  border: 0;
+  display: block;
+  filter: grayscale(10%) contrast(95%);
+  transition: filter 0.3s ease;
+}
+
+.map-container iframe:hover {
+  filter: grayscale(0%) contrast(100%);
+}
+
+.precio{
+  font-size: 7vh;
 }

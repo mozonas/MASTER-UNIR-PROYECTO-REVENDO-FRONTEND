@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModerationService } from '../../../../services/moderation.service';
 import { ArticleInReview, ArticleReport } from '../../../../interfaces/moderation.interface';
+//mog 280626 importamos AuthService para usarlo en l alógica de navegación moderador/admin
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-article-report-detail',
@@ -23,6 +25,14 @@ export class ArticleReportDetailComponent implements OnInit {
   notFound = signal<boolean>(false);
   articuloEnRevision = signal<ArticleInReview | null>(null);
   reporteHistorico = signal<ArticleReport | null>(null);
+  //mog 280626 injectamos auth
+  private auth = inject(AuthService);
+  //mog 280626 generamos la propiedad getBasePath en base de auth para decidir donde navegará
+  private getBasePath(): string {
+    return this.auth.getUserRole() === 'ADMIN'
+      ? '/admin/moderacion'
+      : '/moderation';
+  }
 
   ngOnInit(): void {
     this.cargarDetalle();
@@ -74,7 +84,12 @@ export class ArticleReportDetailComponent implements OnInit {
     });
   }
 
-  volver(): void {
+/*   volver(): void {
     this.router.navigate(['/moderation/articulos']);
+  } */
+ //mog 280626 reimplementamos el método volver para que tenga en cuenta el perfil
+  volver(): void {
+    this.router.navigate([this.getBasePath() + '/articulos']);
   }
+
 }

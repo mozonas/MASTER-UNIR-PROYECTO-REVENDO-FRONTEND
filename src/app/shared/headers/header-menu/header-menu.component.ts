@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
+import { AsideComponent } from "../../aside/aside.component";
 
 interface Categoria { id: number; nombre: string; }
 interface GrupoCategoria { label: string; ids: number[]; subcategorias: Categoria[]; }
@@ -35,6 +36,15 @@ export class HeaderMenuComponent implements OnInit {
   role = signal(this.authService.getUserRole() ?? 'USUARIO');
   username = signal(this.authService.getUserName() ?? '');
   isStaff = computed(() => ['ADMIN', 'MODERADOR'].includes(this.role()));
+
+  getHomeRoute(): string {
+  const role = this.authService.getUserRole(); // ADMIN | MODERADOR | USUARIO
+
+  if (role === 'ADMIN') return '/admin';
+  if (role === 'MODERADOR') return '/moderation/panel';
+  return '/home'; // usuario normal
+}
+
 
   ngOnInit(): void {
     this.http.get<{ status: string; data: Categoria[] }>('http://localhost:3000/api/categories').subscribe({

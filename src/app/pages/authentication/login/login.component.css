@@ -86,3 +86,12 @@
 .btn-login:active {
   transform: scale(0.98);
 }
+
+.error-blocked {
+  border: 1px solid #e53935;      /* rojo fuerte */
+  background-color: #f8d7da;      /* rojo suave */
+  color: #721c24;                 /* texto rojo oscuro */
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 10px;
+}

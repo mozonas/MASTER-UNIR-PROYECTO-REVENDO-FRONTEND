@@ -2,11 +2,9 @@
 <div class="py-5 min-vh-100">
   <div class="container container-max-width">
 
-    @if (isAdminViewing) {
-      <button type="button" class="btn btn-outline-secondary btn-sm mb-5" (click)="onCancelar()">
-        <i class="fa fa-arrow-left me-1"></i> Volver
-      </button>
-    }
+    <button type="button" (click)="onBack()" class="btn btn-outline-secondary btn-sm mb-5">
+      <i class="fa fa-arrow-left me-1"></i> Volver
+    </button>
 
     <header class="card border-0 rounded-4 p-4 p-md-5 mb-5 shadow-sm">
       <div class="row g-4 align-items-center">
@@ -36,9 +34,21 @@
             </p>
 
             <div class="d-flex justify-content-center mt-3">
-              @if (!isAdminViewing) {
-              <button class="btn btn-outline-secondary btn-sm px-3 rounded-pill fw-semibold" (click)="irAEditar()"> <i
-                  class="fa fa-pencil me-1"></i>Editar mi Perfil</button>
+              <!-- Envolvemos con un @if para verificar si tiene permisos de edición -->
+              @if (isAdminViewing || !isExternalProfileViewing) {
+
+              @if (isAdminViewing) {
+              <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-pill fw-semibold"
+                (click)="irAEditar()">
+                <i class="fa fa-edit me-1"></i> Modificar Perfil
+              </button>
+              } @else {
+              <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-pill fw-semibold"
+                (click)="irAEditar()">
+                <i class="fa fa-pencil me-1"></i> Editar mi Perfil
+              </button>
+              }
+
               }
             </div>
           </div>
@@ -76,7 +86,7 @@
               </div>
               }
             </div>
-            <app-detail-seller [sellerId]="idVendedor"></app-detail-seller>
+            <app-detail-seller [sellerId]="idVendedor" class="border-top"></app-detail-seller>
           </div>
         </div>
 
@@ -92,7 +102,7 @@
       </button>
     </nav>
 
-    <main class="animate-fade-in">
+    <section class="animate-fade-in">
 
       @if (activeTab === 'productos') {
       <div>
@@ -148,7 +158,7 @@
       </div>
       }
 
-    </main>
+    </section>
 
   </div>
 </div>

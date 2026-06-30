@@ -264,67 +264,16 @@
   border-radius: 10px;
 }
 
+/*CGM 260626 MODAL REPORTE*/
 .chat-header {
   display: flex;
+  justify-content: space-between; 
   align-items: center;
-  justify-content: space-between;
-}
-
-.chat-header-info {
-  flex: 1;
-  margin-left: 0.75rem;
-}
-
-.btn-reportar {
-  background: none;
-  border: none;
-  color: #dc3545;
-  font-size: 1.1rem;
-  cursor: pointer;
-  padding: 0.4rem 0.6rem;
-  border-radius: 6px;
-  transition: background 0.2s;
-}
-
-.btn-reportar:hover {
-  background-color: #fdecea;
-}
-
-.modal-reporte-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.chat-header-user-info {
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 2000;
-}
-
-.modal-reporte {
-  background: white;
-  border-radius: 16px;
-  padding: 1.5rem;
-  width: 400px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-.modal-reporte-titulo {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-}
-
-.modal-reporte-subtitulo {
-  font-size: 0.85rem;
-  color: var(--color-primary);
-  margin-bottom: 1rem;
-}
-
-.modal-reporte-acciones {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
+  gap: 12px; 
 }

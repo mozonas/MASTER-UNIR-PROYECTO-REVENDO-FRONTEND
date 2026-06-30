@@ -1,7 +1,7 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { iArticle } from '../interfaces/article.interface';
+import { Article } from '../interfaces/article.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -60,7 +60,7 @@ export class FilterHomeService {
   // ============================
   //   LLAMADA AL BACKEND
   // ============================
-  searchArticles(): Observable<{ status: string; data: iArticle[] }> {
+  searchArticles(): Observable<{ status: string; data: Article[] }> {
     const f = this.filters();
 
     let params = new HttpParams()
@@ -73,7 +73,7 @@ export class FilterHomeService {
     .set('localizacion', f.localizacion ?? '');
 
 
-    return this.http.get<{ status: string; data: iArticle[] }>(
+    return this.http.get<{ status: string; data: Article[] }>(
       `${this.apiUrl}/filters/search`,
       { params }
     );

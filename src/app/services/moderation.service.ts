@@ -19,6 +19,7 @@ export class ModerationService {
             { motivo, reportType, usuarioId }
         );
     }
+    
 
     getArticlesInReview(): Observable<ArticleInReview[]> {
         return this.http.get<ArticleInReview[]>(`${this.apiUrl}/reports/articles-in-review`);
@@ -61,11 +62,14 @@ export class ModerationService {
 
     /**
      * Función que pide a la API los tipos de reporte
+     * @param categoria string que contiene 'ARTÍCULO' | 'USUARIO' para diferenciar la lista de reportes que es necesario devolver
      * @returns 
      */
-    getReportTypes() {
+    getReportTypes(categoria: 'ARTICULO' | 'USUARIO') {
+        console.log(`${this.apiUrl}/reports/types/${categoria}`);
+        
         return this.http.get(
-            `${this.apiUrl}/reports/types`
+            `${this.apiUrl}/reports/types/${categoria}`
         );
     }
 

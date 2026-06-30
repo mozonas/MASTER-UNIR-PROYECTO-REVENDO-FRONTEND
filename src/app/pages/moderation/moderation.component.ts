@@ -5,11 +5,12 @@ import { ModerationService } from '../../services/moderation.service';
 import { BadgesResponse } from '../../interfaces/moderation.interface';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 import { SidebarOption } from '../../interfaces/sidebar.interface';
+import { AsideComponent } from "../../shared/aside/aside.component";
 
 @Component({
   selector: 'app-moderation',
   standalone: true,
-  imports: [CommonModule, SidebarComponent, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, SidebarComponent],
   templateUrl: './moderation.component.html',
   styleUrls: ['./moderation.component.css']
 })

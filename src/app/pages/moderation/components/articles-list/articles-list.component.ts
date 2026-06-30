@@ -5,7 +5,8 @@ import { ModerationService } from '../../../../services/moderation.service';
 import { ArticleReport } from '../../../../interfaces/moderation.interface';
 import { ArticlesHistoryTableComponent } from '../articles-history-table/articles-history-table.component';
 import { ArticlesPendingTableComponent } from '../articles-pending-table/articles-pending-table.component';
-
+import { AuthService } from '../../../../services/auth.service';
+// mog 280626 importamos authservice
 @Component({
   selector: 'app-articles-list',
   standalone: true,
@@ -19,8 +20,19 @@ export class ArticlesListComponent implements OnInit {
 
   pendingArticles = signal<ArticleReport[]>([]);
   articlesHistory = signal<ArticleReport[]>([]);
+  private auth = inject(AuthService);
+
+  //mog 28/06/26 poder volver al menú de admin si eres admin
+  private getBasePath(): string {
+  return this.auth.getUserRole() === 'ADMIN'
+    ? '/admin/moderacion'
+    : '/moderation';
+}
+
+
 
   ngOnInit(): void {
+    console.log('ROL EN COMPONENTE:', this.auth.getUserRole());
     this.loadArticlesData();
   }
 
@@ -37,11 +49,27 @@ export class ArticlesListComponent implements OnInit {
     });
   }
 
-  goToDetail(reportId: number): void {
+/*   goToDetail(reportId: number): void {
     this.router.navigate(['/moderation/articulos/detalle', reportId]);
+  } */
+  
+    // MOG 280626 comentamos para poder navegar como toca si eres admin
+    // redefinimos el metodo getToDetail para que vaya en base a getBasePath
+
+  goToDetail(reportId: number): void {
+    const base = this.getBasePath();
+    this.router.navigate([base + '/articulos/detalle', reportId]);
   }
 
-  volverAlPanel(): void {
+
+/*   volverAlPanel(): void {
   this.router.navigate(['/moderation/panel']);
-  }
+  } */
+  // MOG 280626 comentamos para poder navegar como toca si eres admin
+  // redefinimos el metodo volverAlPAnel para que vaya en base a getBasePath
+  volverAlPanel(): void {
+  const base = this.getBasePath();
+  this.router.navigate([base + '/panel']);
+}
+
 }

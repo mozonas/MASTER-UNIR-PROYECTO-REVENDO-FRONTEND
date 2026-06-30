@@ -38,6 +38,7 @@ import { ArticleFormComponent } from './pages/articles/article-form/article-form
 
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
+import { guestGuard } from './guards/guest.guard';
 
 
 //17062026 mog componente error404
@@ -46,17 +47,22 @@ import { AdminActivityComponent } from './pages/admin/admin-activity/admin-activ
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'welcome' },
-  { path: 'welcome', component: WelcomeComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'signup', component: SignupComponent },
+  { path: 'welcome', component: WelcomeComponent, canActivate: [guestGuard] },
+  { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
+  { path: 'signup', component: SignupComponent, canActivate: [guestGuard] },
+
   { path: 'home', component: HomeComponent, canActivate: [authGuard] },
+
   { path: 'user-info', component: UserPageInfoComponent, canActivate: [authGuard] },
+  { path: 'user-info/:id', component: UserPageInfoComponent, canActivate: [authGuard] },
   { path: 'user-edit', component: UserPageEditComponent, canActivate: [authGuard] },
+
   { path: 'chat', component: ChatComponent, canActivate: [authGuard] },
-  { path: 'user-sell/:id', component: UserPageSell, /* canActivate: [authGuard]  */},
+
   { path: 'article-form', component: ArticleFormComponent, canActivate: [authGuard] },
   { path: 'article-form/:id', component: ArticleFormComponent, canActivate: [authGuard] },
-  { path: 'article-detail/:id', component: ArticleDetailComponent },
+  { path: 'article-detail/:id', component: ArticleDetailComponent, canActivate: [authGuard] },
+  { path: 'user-sell/:id', component: UserPageSell, canActivate: [authGuard] },
   {
     path: 'admin',
     component: AdminLayoutComponent,
@@ -80,10 +86,11 @@ export const routes: Routes = [
     ]
   },
 
-    // Directorios sección Moderación
-  { path: 'moderation', 
+  // Directorios sección Moderación
+  {
+    path: 'moderation',
     component: ModerationComponent,
-    canActivate: [roleGuard(['MODERADOR'])], //VCB - añadir proteccion del rol
+    canActivate: [roleGuard(['MODERADOR','ADMIN'])], //VCB - añadir proteccion del rol
     children: [
       { path: '', redirectTo: 'panel', pathMatch: 'full' },
       { path: 'panel', component: ModerationDashboardComponent },

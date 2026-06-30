@@ -4,10 +4,11 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { map, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
-import { iArticle } from '../interfaces/article.interface';
-import {VentasMes} from '../interfaces/ventas.interface';
+import { VentasMes } from '../interfaces/ventas.interface';
 import { PubStats } from '../interfaces/pub-stats.interface';
+import { Article } from '../interfaces/article.interface';
 import { AuthService } from './auth.service';
+import { ArticleInReview } from '../interfaces/moderation.interface';
 
 export interface ArticleUpsertPayload {
   titulo: string;
@@ -35,15 +36,15 @@ export class ArticleService {
   private apiUrl = 'http://localhost:3000/api';
   private backendUrl = 'http://localhost:3000';
 
-  Articles = signal<iArticle[]>([]);
+  Articles = signal<Article[]>([]);
 
-  getPublicArticleById(id: string): Observable<iArticle | undefined> {
+  getPublicArticleById(id: string): Observable<Article | undefined> {
     return this.getAllPublicArticles().pipe(
       map((articles) => articles.find((article) => article.id === String(id)))
     );
   }
 
-  getArticleById(id: string): Observable<iArticle | undefined> {
+  getArticleById(id: string): Observable<Article | undefined> {
     if (!this.authService.isLogged()) {
       return this.getPublicArticleById(id);
     }
@@ -64,7 +65,7 @@ export class ArticleService {
     );
   }
 
-  getUserArticleForEdit(id: string): Observable<iArticle | undefined> {
+  getUserArticleForEdit(id: string): Observable<Article | undefined> {
     return this.http.get<any>(`${this.apiUrl}/user-sell/article/${id}`).pipe(
       map(response => {
         const rawArticle = response?.data ?? response?.article ?? response;
@@ -73,12 +74,12 @@ export class ArticleService {
     );
   }
 
-  getAllUserArticles(userId?: number | null, estado: string = 'all'): Observable<iArticle[]> {
+  getAllUserArticles(userId?: number | null, estado: string = 'all'): Observable<Article[]> {
     const baseUrl = `${this.apiUrl}/user-sell`;
     const url = userId ? `${baseUrl}/${userId}` : baseUrl;
     const params = estado && estado !== 'all' ? new HttpParams({ fromObject: { estado } }) : undefined;
 
-    return this.http.get<iArticle[] | { data?: any[]; articles?: any[] }>(url, params ? { params } : {}).pipe(
+    return this.http.get<Article[] | { data?: any[]; articles?: any[] }>(url, params ? { params } : {}).pipe(
       tap(raw => console.log('RAW userarticles response:', raw)),
       map(response => this.normalizeArticlesResponse(response)),
       tap(respuesta => {
@@ -88,7 +89,22 @@ export class ArticleService {
     );
   }
 
-  getAllPublicArticles(): Observable<iArticle[]> {
+  isReportedArticle(article: Pick<Article, 'estado_reporte'> | null | undefined): boolean {
+    return Number(article?.estado_reporte) === 1;
+  }
+
+  getReportedUserArticles(userId: number): Observable<Article[]> {
+    return this.http.get<ArticleInReview[]>(`${this.apiUrl}/reports/articles-in-review`).pipe(
+      map((articlesInReview) =>
+        articlesInReview
+          .filter((article) => article.usuarios_id === userId)
+          .map((article) => this.mapReportedArticleToArticle(article))
+      )
+    );
+  }
+
+  // Añade esto dentro de tu ArticleService
+  getAllPublicArticles(): Observable<Article[]> {
     return this.http.get<any>(`${this.apiUrl}/articles`).pipe(
       map(response => this.normalizeArticlesResponse(response))
     );
@@ -110,11 +126,21 @@ export class ArticleService {
     );
   }
 
-  findLoadedArticleById(id: number | string): iArticle | undefined {
+  marcarVendido(id: string, datos: { tipoPago: string; precio: number }): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/user-sell/${id}/vender`, datos).pipe(
+      tap(() => {
+        this.Articles.update((articles) =>
+          articles.map((article) => article.id === id ? { ...article, estadoVenta: 'VENDIDO', tipoPago: datos.tipoPago } : article)
+        );
+      })
+    );
+  }
+
+  findLoadedArticleById(id: number | string): Article | undefined {
     return this.Articles().find((article) => article.id === String(id));
   }
 
-  getArticleImageUrls(article: Pick<iArticle, 'image' | 'fotos'>): string[] {
+  getArticleImageUrls(article: Pick<Article, 'image' | 'fotos'>): string[] {
     const primary = this.resolveImageUrl(article.image, '');
     const gallery = (article.fotos ?? [])
       .map((foto) => this.resolveImageUrl(foto.url, ''))
@@ -148,7 +174,7 @@ export class ArticleService {
     return this.getArticleEnums();
   }
 
-  private normalizeArticlesResponse(response: any): iArticle[] {
+  private normalizeArticlesResponse(response: any): Article[] {
     const rawArticles: any[] = Array.isArray(response?.data)
       ? response.data
       : Array.isArray(response?.articles)
@@ -159,23 +185,15 @@ export class ArticleService {
 
     return rawArticles
       .map(articulo => this.mapRawArticleToIArticle(articulo))
-      .filter((article): article is iArticle => !!article);
+      .filter((article): article is Article => !!article);
   }
 
-  private mapRawArticleToIArticle(articulo: any): iArticle | undefined {
+  private mapRawArticleToIArticle(articulo: any): Article | undefined {
     if (!articulo || typeof articulo !== 'object') {
       return undefined;
     }
 
-    const estadoRaw = (articulo.estadoVenta ?? '').toString().toUpperCase();
-    let estadoVenta: iArticle['estadoVenta'] = 'DISPONIBLE';
-    if (estadoRaw === 'VENDIDO') {
-      estadoVenta = 'VENDIDO';
-    } else if (estadoRaw === 'RESERVADO') {
-      estadoVenta = 'RESERVADO';
-    } else if (estadoRaw === 'BORRADO') {
-      estadoVenta = 'BORRADO';
-    }
+    const estadoVenta: Article['estadoVenta'] = (articulo.estadoVenta ?? 'DISPONIBLE').toString().toUpperCase();
 
     const createdAtValue = articulo.created_at ?? articulo.createdAt;
     const createdAt = createdAtValue ? new Date(createdAtValue) : new Date();
@@ -203,13 +221,36 @@ export class ArticleService {
           }))
         : undefined,
       estado_reporte: articulo.estado_reporte != null ? Number(articulo.estado_reporte) : null,
+
       seller: articulo.seller && typeof articulo.seller === 'object'
         ? {
           nombre: articulo.seller.nombre ? String(articulo.seller.nombre) : undefined,
           apellidos: articulo.seller.apellidos ? String(articulo.seller.apellidos) : undefined,
+          direccion: articulo.seller.direccion ? String(articulo.seller.direccion) : (articulo.direccion ? String(articulo.direccion) : undefined),
         }
         : undefined,
-    } as iArticle;
+    } as Article;
+  }
+
+  private mapReportedArticleToArticle(article: ArticleInReview): Article {
+    return {
+      id: String(article.id),
+      titulo: String(article.titulo ?? ''),
+      descripcion: String(article.descripcion ?? ''),
+      precio: Number(article.precio ?? 0),
+      estadoVenta: String(article.estadoVenta ?? 'DISPONIBLE').toUpperCase(),
+      estadoProducto: undefined,
+      tipoEntrega: '',
+      tipoPago: '',
+      created_at: new Date(article.fecha_reporte ?? Date.now()),
+      usuarios_id: Number(article.usuarios_id ?? 0),
+      categorias_id: 0,
+      categoria_nombre: undefined,
+      image: article.foto ? String(article.foto) : null,
+      fotos: undefined,
+      estado_reporte: 1,
+      seller: undefined,
+    };
   }
 
   private normalizeImagePath(value: unknown): string | null {
@@ -238,16 +279,16 @@ export class ArticleService {
     return trimmed;
   }
 
-   // Artículos publicados este mes
-    getPubComp():Observable <PubStats> {
-      return this.http.get<PubStats>(`${this.apiUrl}/article/published/comparison`);
-    }
-    // Articulos vendidos este mes
-     getVentasMensuales(month: number): Observable<VentasMes[]> {
-      return this.http.get<VentasMes[]>(`${this.apiUrl}/article/sold/${month}`);
-    }
-    // Articulos vendidos este año
-    getVentasAnuales(year:number): Observable<{mes:number;total: number}[]>  {
-      return this.http.get<{mes:number;total: number}[]>(`${this.apiUrl}/article/sold/year/${year}`);
-    }
+  // Artículos publicados este mes
+  getPubComp(): Observable<PubStats> {
+    return this.http.get<PubStats>(`${this.apiUrl}/article/published/comparison`);
+  }
+  // Articulos vendidos este mes
+  getVentasMensuales(month: number): Observable<VentasMes[]> {
+    return this.http.get<VentasMes[]>(`${this.apiUrl}/article/sold/${month}`);
+  }
+  // Articulos vendidos este año
+  getVentasAnuales(year: number): Observable<{ mes: number; total: number }[]> {
+    return this.http.get<{ mes: number; total: number }[]>(`${this.apiUrl}/article/sold/year/${year}`);
+  }
 }
