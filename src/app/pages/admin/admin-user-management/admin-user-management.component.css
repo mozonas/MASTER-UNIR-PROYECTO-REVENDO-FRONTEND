@@ -66,10 +66,13 @@
 /* Filas con división fina horizontal */
 .user-row-minimal {
   cursor: pointer;
+}
+
+.user-row-minimal td {
   transition: background-color 0.15s ease;
 }
 
-.user-row-minimal:hover {
+.user-row-minimal:hover td {
   background-color: #f8fafc;
 }
 
@@ -89,7 +92,6 @@
 
 .user-username {
   font-size: 0.85rem;
-  color: #64748b;
 }
 
 /* --- Indicador de Perfil (Dot Indicator) --- */
@@ -149,7 +151,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #64748b;
   opacity: 0.7;
   transition: all 0.15s ease;
 }
@@ -165,7 +166,13 @@
   border-color: #fecaca;
 }
 
-.btn-mini-action.is-blocked {
+.btn-mini-lock.is-blocked {
+  background-color: gold;
+  border-color: gold;
+  opacity: 1;
+}
+
+.btn-mini-lock:hover {
   background-color: #fffbeb;
   border-color: #fef3c7;
   opacity: 1;
