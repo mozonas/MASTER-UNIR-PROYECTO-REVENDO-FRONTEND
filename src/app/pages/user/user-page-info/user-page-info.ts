@@ -31,6 +31,7 @@ export class UserPageInfoComponent implements OnInit {
   isLoaded: boolean = false;
   mapUrl: SafeResourceUrl | null = null;
   isAdminViewing: boolean = false;
+  isExternalProfileViewing: boolean = false; // Usuario normal viendo perfil ajeno
 
   activeTab: 'productos' | 'valoraciones' = 'productos';
 
@@ -64,10 +65,21 @@ export class UserPageInfoComponent implements OnInit {
     // 1. Intentamos obtener el ID desde los parámetros de la URL (ruta de Admin)
     const idFromRoute = this.route.snapshot.paramMap.get('id');
 
+    // Recuperamos el ID del usuario logueado actualmente y su rol
+    const currentLoggedUserId = this.authService.getUserId();
+    const isUserAdmin = this.authService.getUserRole() === 'ADMIN'; // O como verifiques el rol en tu AuthService (ej: decodedToken o señal)
+
     if (idFromRoute) {
       userIdParaCargar = Number(idFromRoute);
-      this.isAdminViewing = true; // El admin está auditando un perfil ajeno
-      console.log(`📋 Modo Admin: Visualizando usuario desde URL con ID: ${userIdParaCargar}`);
+
+      // Visualización de Admin si el que está logueado es verdaderamente un ADMIN
+      if (isUserAdmin) {
+        this.isAdminViewing = true;
+        console.log(`📋 Modo Admin: Visualizando usuario desde URL con ID: ${userIdParaCargar}`);
+      } else {
+        this.isExternalProfileViewing = true;
+        console.log(`👁️ Modo Común: Un usuario está viendo el perfil del vendedor ID: ${userIdParaCargar}`);
+      }
     } else {
       // 2. Si no hay ID en la URL, mantenemos tu comportamiento original (Perfil propio del usuario logueado)
       userIdParaCargar = this.authService.getUserId();
@@ -157,15 +169,15 @@ export class UserPageInfoComponent implements OnInit {
           const [lat, lng] = coordSection.split(',');
 
           // Url exacta para embeber coordenadas con una sola chincheta (q=) y centrado (ll=)
-          urlBase = `https://maps.google.com/maps?q=${lat.trim()},${lng.trim()}&ll=${lat.trim()},${lng.trim()}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+          urlBase = `https://maps.google.com/maps?q=${lat.trim()},${lng.trim()}&ll=${lat.trim()},${lng.trim()}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
         } catch (e) {
           console.error('Error al parsear las coordenadas de la dirección:', e);
           // Si falla el parseo por lo que sea, cae en el buscador clásico por texto
-          urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+          urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
         }
       } else {
         // Si es un usuario antiguo sin el tag de coordenadas, buscamos por texto plano
-        urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+        urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
       }
 
       this.mapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(urlBase);
@@ -219,11 +231,14 @@ export class UserPageInfoComponent implements OnInit {
   }
 
   onBack(): void {
-    // Si es el admin auditando, lo devolvemos a la lista de usuarios del panel de control
     if (this.isAdminViewing) {
+      // 1. Si es el admin auditando, lo devuelve estrictamente a la lista de gestión de usuarios
       this.router.navigate(['/admin/users']);
+    } else if (this.isExternalProfileViewing) {
+      // 2. Si es un usuario normal que venía de ver un artículo, vuelve atrás en el historial (al detalle del artículo)
+      this.location.back();
     } else {
-      // Si es un usuario normal, lo mandamos al Home o al Hub principal
+      // 3. Si estaba revisando su propio perfil desde el menú de navegación habitual, va al Home
       this.router.navigate(['/home']);
     }
   }

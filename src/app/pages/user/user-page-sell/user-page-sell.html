@@ -39,11 +39,11 @@
         <span class="badge bg-light text-dark ms-2">{{ getFilterCount('VENDIDO') }}</span>
         }
       </button>
-      <button type="button" class="nav-link text-dark rounded-pill" [class.active]="selectedFilter() === 'RESERVADO'"
-        (click)="setFilter('RESERVADO')">
+      <button type="button" class="nav-link text-dark rounded-pill" [class.active]="selectedFilter() === 'REPORTADO'"
+        (click)="setFilter('REPORTADO')">
         Reportados
-        @if (selectedFilter() === 'RESERVADO') {
-        <span class="badge bg-light text-dark ms-2">{{ getFilterCount('RESERVADO') }}</span>
+        @if (selectedFilter() === 'REPORTADO') {
+        <span class="badge bg-light text-dark ms-2">{{ getFilterCount('REPORTADO') }}</span>
         }
       </button>
     </nav>
@@ -122,5 +122,3 @@
   </div>
 </div>
 }
-
-<!-- <app-footer></app-footer> -->

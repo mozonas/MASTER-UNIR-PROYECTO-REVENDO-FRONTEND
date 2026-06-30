@@ -19,6 +19,7 @@ export class ModerationService {
             { motivo, reportType, usuarioId }
         );
     }
+    
 
     getArticlesInReview(): Observable<ArticleInReview[]> {
         return this.http.get<ArticleInReview[]>(`${this.apiUrl}/reports/articles-in-review`);

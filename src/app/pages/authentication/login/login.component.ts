@@ -61,6 +61,12 @@ export class LoginComponent {
       }
       },
       error: (err) => {
+        if (err.status === 403) {
+            //MOG 290626 -> implementación para userIsBlocked
+            this.errorMessage.set('Tu cuenta ha sido bloqueada y está siendo investigada');
+            return;
+        }
+
         console.error('LOGIN ERROR =>', err);
         this.loading.set(false);
         this.errorMessage.set('Credenciales incorrectas');
