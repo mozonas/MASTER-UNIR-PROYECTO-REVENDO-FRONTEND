@@ -66,27 +66,41 @@ export class ReportTypeComponent implements OnInit {
     }
     this.enviandoReporte.set(true);
 
-    
-    this.moderationService.reportArticle(
-      this.targetId(), 
-      this.motivoReporte().trim(), 
-      this.selectedTypeReport(), 
-      usuarioId
-    ).subscribe({
-      next: () => {
-        this.mensajeReporte.set('Reporte enviado con éxito. Quedará en revisión.');
-        this.enviandoReporte.set(false);
-        this.onReportSuccess.emit(); 
-        setTimeout(() => this.closeModal.emit(), 2000);
-      },
-      error: () => {
-        this.mensajeReporte.set('Error al enviar el reporte. Inténtalo de nuevo.');
-        this.enviandoReporte.set(false);
-      }
-    });
+    if (this.targetType() === 'USUARIO') {
+      this.moderationService.reportarUsuarioChat(
+        this.motivoReporte().trim(),
+        usuarioId,
+        this.targetId()
+      ).subscribe({
+        next: () => {
+          this.mensajeReporte.set('Reporte enviado con éxito. Quedará en revisión.');
+          this.enviandoReporte.set(false);
+          this.onReportSuccess.emit();
+          setTimeout(() => this.closeModal.emit(), 2000);
+        },
+        error: () => {
+          this.mensajeReporte.set('Error al enviar el reporte. Inténtalo de nuevo.');
+          this.enviandoReporte.set(false);
+        }
+      });
+    } else {
+      this.moderationService.reportArticle(
+        this.targetId(),
+        this.motivoReporte().trim(),
+        this.selectedTypeReport(),
+        usuarioId
+      ).subscribe({
+        next: () => {
+          this.mensajeReporte.set('Reporte enviado con éxito. Quedará en revisión.');
+          this.enviandoReporte.set(false);
+          this.onReportSuccess.emit();
+          setTimeout(() => this.closeModal.emit(), 2000);
+        },
+        error: () => {
+          this.mensajeReporte.set('Error al enviar el reporte. Inténtalo de nuevo.');
+          this.enviandoReporte.set(false);
+        }
+      });
+    }
   }
 }
-
-
-
-

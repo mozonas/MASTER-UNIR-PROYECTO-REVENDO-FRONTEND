@@ -42,4 +42,6 @@ export interface ChatReport {
     estado: 'pendiente' | 'activo' | 'retirado';
     created_at: string;
     usuario: string;
+    usuarios_id: number;
+    articulos_id: number | null;
 }
