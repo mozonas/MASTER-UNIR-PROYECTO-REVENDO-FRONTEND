@@ -22,11 +22,12 @@ export class UserPageSell implements OnInit, OnChanges {
   @Input() userId: number | null = null;
 
   articles = this.articleService.Articles;
+  reportedArticles = signal<Article[]>([]);
 
   isAdminViewing: boolean = false;
 
 
-  selectedFilter = signal<'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'>('all');
+  selectedFilter = signal<'all' | 'DISPONIBLE' | 'VENDIDO' | 'REPORTADO'>('all');
   currentPage = signal(1);
   pageSize = 6;
 
@@ -34,6 +35,11 @@ export class UserPageSell implements OnInit, OnChanges {
     const filter = this.selectedFilter();
     const all = this.articles();
     if (filter === 'all') return all;
+
+    if (filter === 'REPORTADO') {
+      return this.reportedArticles();
+    }
+
     return all.filter(a => a.estadoVenta === filter);
   });
 
@@ -77,7 +83,7 @@ export class UserPageSell implements OnInit, OnChanges {
     return inputUserId ?? routeUserId ?? this.authService.getUserId();
   }
 
-  private loadArticles(): void {
+  private loadArticles(estado: 'all' | 'REPORTADO' = 'all'): void {
     const userId = this.resolveUserId();
 
     if (!userId) {
@@ -85,14 +91,40 @@ export class UserPageSell implements OnInit, OnChanges {
       return;
     }
 
-    this.articleService.getAllUserArticles(userId).subscribe({
+    this.articleService.getAllUserArticles(userId, estado).subscribe({
       error: (error) => console.error('Error al cargar artículos:', error),
     });
   }
 
-  setFilter(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO') {
+  private loadReportedArticles(): void {
+    const userId = this.resolveUserId();
+
+    if (!userId) {
+      console.error('No se pudo obtener el ID de usuario para cargar los artículos reportados.');
+      return;
+    }
+
+    this.articleService.getReportedUserArticles(userId).subscribe({
+      next: (articles) => {
+        this.reportedArticles.set(articles);
+      },
+      error: (error) => {
+        console.error('Error al cargar artículos reportados:', error);
+        this.reportedArticles.set([]);
+      }
+    });
+  }
+
+  setFilter(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'REPORTADO') {
     this.selectedFilter.set(filter);
     this.currentPage.set(1);
+
+    if (filter === 'REPORTADO') {
+      this.loadReportedArticles();
+      return;
+    }
+
+    this.loadArticles('all');
   }
 
   setPage(page: number) {
@@ -184,9 +216,14 @@ export class UserPageSell implements OnInit, OnChanges {
     return this.authService.getUserId() === article.usuarios_id;
   }
 
-  getFilterCount(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'RESERVADO'): number {
+  getFilterCount(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'REPORTADO'): number {
     const all = this.articles();
     if (filter === 'all') return all.length;
+
+    if (filter === 'REPORTADO') {
+      return this.reportedArticles().length;
+    }
+
     return all.filter(a => a.estadoVenta === filter).length;
   }
 }

@@ -30,7 +30,7 @@ interface Conversacion {
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule,ReportTypeComponent],
+  imports: [CommonModule, FormsModule, ReportTypeComponent],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
@@ -65,7 +65,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.cargarConversaciones();
     }, 5000);
   }
-  
+
   //**ACCIONES PARA EL MODAL REPORTAR */
   onReportar(): void {
     this.mostrarModalReporte.set(true);

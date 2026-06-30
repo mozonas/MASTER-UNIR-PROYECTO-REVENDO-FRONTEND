@@ -31,19 +31,21 @@
 
     @if (conversacionActiva) {
       <div class="chat-header">
-        <!--CGM290626 implementa boton reportar en el chat-->
-       <div class="chat-header-user-info"><img [src]="'/images/' + conversacionActiva.foto" 
-             (error)="onImageError($event)"
-             alt="avatar" class="conv-avatar"/>
-        <div>
-          <span class="conv-nombre">{{ conversacionActiva.usuario }}</span>
-          <span class="conv-articulo">{{ conversacionActiva.titulo }}</span>
+        <!-- CGM290626 implementa boton reportar en el chat-->
+        <div class="chat-header-user-info">
+          <img [src]="'/images/' + conversacionActiva.foto" 
+               (error)="onImageError($event)"
+               alt="avatar" class="conv-avatar"/>
+          <div class="chat-header-info">
+            <span class="conv-nombre">{{ conversacionActiva.usuario }}</span>
+            <span class="conv-articulo">{{ conversacionActiva.titulo }}</span>
+          </div>
         </div>
-      </div>
         <button class="btn btn-outline-danger btn-sm" (click)="onReportar()">
-            <i class="fa fa-flag me-1"></i> Reportar usuario
+          <i class="fa fa-flag me-1"></i> Reportar usuario
         </button>
       </div>
+
       <div class="mensajes-container">
         @for (mensaje of mensajesActivos; track mensaje.id) {
           @if (mostrarFecha(mensajesActivos, $index)) {
@@ -77,8 +79,10 @@
     }
 
   </div>
+
+
   <!--CGM 290626 COMPONENTE COMPARTIDO-->
-    @if (mostrarModalReporte() && conversacionActiva) {
+  @if (mostrarModalReporte() && conversacionActiva) {
     <app-report-type 
       targetType="USUARIO" 
       [targetId]="+conversacionActiva.articulos_id" 
