@@ -159,7 +159,15 @@ export class ArticleDetailComponent implements OnInit {
     this.articlesService.getArticleById(id).subscribe({
       next: (res: any) => {
         const articuloLimpio = res?.data ? res.data : res;
-        this.article.set(articuloLimpio ?? null);
+
+        if (!articuloLimpio) {
+          this.router.navigate(['/404']);
+          return;
+        }
+
+        this.article.set(articuloLimpio);
+
+        // Pasamos el objeto directamente para el renderizado del mapa
         this.generarUrlMapa(articuloLimpio);
       },
       error: (err) => {
