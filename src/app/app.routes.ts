@@ -77,7 +77,7 @@ export const routes: Routes = [
       { path: 'moderacion/articulos', component: ArticlesListComponent },
       { path: 'moderacion/articulos/detalle/:id', component: ArticleReportDetailComponent },
       { path: 'moderacion/chat', component: ChatsListComponent },
-
+      { path: 'moderacion/chat/detalle/:id', component: ChatReportDetailComponent },
       // Rutas nuevas de develop
       { path: 'activity/:range', component: AdminActivityComponent },
       { path: '', redirectTo: 'users', pathMatch: 'full' },
