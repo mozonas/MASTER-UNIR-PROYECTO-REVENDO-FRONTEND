@@ -65,7 +65,6 @@ export class ReportTypeComponent implements OnInit {
       return;
     }
     this.enviandoReporte.set(true);
-
     
     this.moderationService.reportArticle(
       this.targetId(), 

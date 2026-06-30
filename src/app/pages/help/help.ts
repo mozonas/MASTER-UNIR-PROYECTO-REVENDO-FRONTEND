@@ -86,7 +86,7 @@ export class HelpComponent {
         text: 'Nos pondremos en contacto contigo pronto.',
         icon: 'success',
         confirmButtonText: 'Entendido',
-        confirmButtonColor: '#0d6efd',
+        confirmButtonColor: '#8cd86a',
         customClass: {
           popup: 'rounded-4 shadow'
         }
