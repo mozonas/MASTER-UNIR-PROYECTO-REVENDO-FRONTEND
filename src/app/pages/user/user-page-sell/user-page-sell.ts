@@ -151,56 +151,6 @@ export class UserPageSell implements OnInit, OnChanges {
     });
   }
 
-  mostrarModalVenta = signal(false);
-  articuloEnVenta = signal<Article | null>(null);
-  metodoPagoVenta = signal('Efectivo');
-  precioVenta = signal(0);
-  enviandoVenta = signal(false);
-  errorVenta = signal('');
-
-  onMarcarVendido(article: Article): void {
-    if (!this.canManageArticle(article)) {
-      return;
-    }
-
-    this.articuloEnVenta.set(article);
-    this.metodoPagoVenta.set(article.tipoPago || 'Efectivo');
-    this.precioVenta.set(article.precio);
-    this.errorVenta.set('');
-    this.mostrarModalVenta.set(true);
-  }
-
-  cerrarModalVenta(): void {
-    this.mostrarModalVenta.set(false);
-    this.articuloEnVenta.set(null);
-  }
-
-  confirmarVenta(): void {
-    const articulo = this.articuloEnVenta();
-    if (!articulo || this.precioVenta() <= 0) {
-      this.errorVenta.set('Indica un precio válido.');
-      return;
-    }
-
-    this.enviandoVenta.set(true);
-    this.errorVenta.set('');
-
-    this.articleService.marcarVendido(articulo.id, {
-      tipoPago: this.metodoPagoVenta(),
-      precio: this.precioVenta(),
-    }).subscribe({
-      next: () => {
-        this.enviandoVenta.set(false);
-        this.cerrarModalVenta();
-      },
-      error: (error) => {
-        console.error('Error al marcar como vendido:', error);
-        this.errorVenta.set(error?.error?.message || 'Error al registrar la venta. Inténtalo de nuevo.');
-        this.enviandoVenta.set(false);
-      }
-    });
-  }
-
   addNewArticle() {
     void this.router.navigate(['/article-form']);
   }
