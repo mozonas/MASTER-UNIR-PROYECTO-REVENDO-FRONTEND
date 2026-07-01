@@ -72,8 +72,10 @@
       <button class="icon-btn delete" (click)="onDelete(u.id)">
         <img src="/images/ico-eliminar.svg" alt="Eliminar" />
       </button>
-
-      <button class="icon-btn block" (click)="onToggleBlock(u)">
+      <!--CGM 010726 agregado classes para cambio color y mensaje-->
+      <button class="icon-btn block" [class.isBlocked]="u.isBlocked"
+       [title]="u.isBlocked ? 'Usuario Bloqueado' : 'Usuario Desbloqueado'"
+       (click)="onToggleBlock(u)">
         <img 
           [src]="u.isBlocked ? '/images/ico-bloquear.svg' : '/images/ico-desbloquear.svg'"
           [alt]="u.isBlocked ? 'Bloqueado' : 'Desbloqueado'" />

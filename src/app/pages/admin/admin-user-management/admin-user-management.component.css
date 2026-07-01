@@ -98,8 +98,15 @@
   background: #ffe6e6;
 }
 
+/*CGM 010726 cambio color**/
 .actions .block {
-  background: #fff3cd;
+  background: #fbf7c5; 
+ 
+}
+
+/*  ESTADO CERRADO */
+.actions .block.isBlocked {
+  background: #ffd600; 
 }
 
 .pagination {
@@ -147,3 +154,4 @@
 }
 
 /*  */
+
