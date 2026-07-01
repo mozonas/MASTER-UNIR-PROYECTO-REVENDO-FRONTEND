@@ -46,10 +46,10 @@ export class ReportTypeComponent implements OnInit {
   onSelectChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     const idSeleccionada = Number(selectElement.value);
-    const tipusTrobat = this.listReportTypes().find(t => t.id === idSeleccionada);
+    const tipo = this.listReportTypes().find(t => t.id === idSeleccionada);
     
-    if (tipusTrobat) {
-      this.selectedTypeReport.set(tipusTrobat.id);
+    if (tipo) {
+      this.selectedTypeReport.set(tipo.id);
     }
   }
 
