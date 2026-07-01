@@ -285,12 +285,20 @@ export class ArticleFormComponent implements OnInit {
         const articlePayload = await this.buildFormData();
         if (this.isEditing && this.currentArticleId) {
                 this.articleService.updateArticle(this.currentArticleId, articlePayload).subscribe({
-                        next: () => this.router.navigate(['/user-info']),
+                        next: async () => {
+                                await Swal.fire({
+                                        title: 'Guardado',
+                                        text: 'Sus cambios han sido guardados',
+                                        icon: 'success',
+                                        confirmButtonColor: '#3085d6'
+                                });
+                                void this.router.navigate(['/user-info']);
+                        },
                         error: (error) => {
                                 console.error('Error al actualizar el artículo:', error);
                                 void Swal.fire({
                                         title: 'Error',
-                                        text: error?.error?.message || 'No se pudo guardar el artículo. Intente de nuevo.',
+                                        text: error?.error?.message || 'Error al guardar los cambios.',
                                         icon: 'error',
                                         confirmButtonColor: '#3085d6'
                                 });
@@ -300,7 +308,15 @@ export class ArticleFormComponent implements OnInit {
         }
 
         this.articleService.createArticle(articlePayload).subscribe({
-                next: () => this.router.navigate(['/user-info']),
+                next: async () => {
+                        await Swal.fire({
+                                title: 'Creado',
+                                text: 'Su artículo ha sido creado',
+                                icon: 'success',
+                                confirmButtonColor: '#3085d6'
+                        });
+                        void this.router.navigate(['/user-info']);
+                },
                 error: (error) => {
                         console.error('Error al crear el artículo:', error);
                         void Swal.fire({
