@@ -74,6 +74,12 @@ export class AdminCategoryManagementComponent implements OnInit {
     this.editMode = true;
     this.editId = cat.id;
     this.nombreCategoria = cat.nombre;
+
+    // Scroll al input
+    setTimeout(() => {
+    const el = document.getElementById('categoria-input');
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 0);
   }
 
   updateCategory() {
