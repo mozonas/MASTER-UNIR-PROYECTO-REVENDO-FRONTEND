@@ -20,7 +20,6 @@ export class ArticleCardComponent {
   @Input() showActions = false;
   @Output() editClicked = new EventEmitter<void>();
   @Output() deleteClicked = new EventEmitter<void>();
-  @Output() ventaClicked = new EventEmitter<void>();
   private router = inject(Router);
 
   get estaReportado(): boolean {

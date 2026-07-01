@@ -5,6 +5,7 @@ import { inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChatService } from '../../../services/chat.service';
 import { AuthService } from '../../../services/auth.service';
+import { ArticleService } from '../../../services/article.service';
 import { ReportTypeComponent } from '../../../shared/report-type/report-type.component';
 
 interface Mensaje {
@@ -25,6 +26,7 @@ interface Conversacion {
   foto: string;
   ultimo_mensaje: string;
   fecha_ultimo_mensaje: string;
+  otro_usuario_id?: number;
 }
 
 @Component({
@@ -38,6 +40,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   private chatService = inject(ChatService);
   private authService = inject(AuthService);
+  private articleService = inject(ArticleService);
   private cdr = inject(ChangeDetectorRef);
   private route = inject(ActivatedRoute);
 
@@ -52,6 +55,14 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   mostrarModalReporte = signal(false);
   reportado = signal(false);
+
+  // Modal marcar vendido
+  mostrarModalVendido: boolean = false;
+  tipoPagoSeleccionado: string = 'Efectivo';
+  precioAcordado: number = 0;
+  marcandoVendido: boolean = false;
+  articuloVendido: boolean = false;
+  esVendedor: boolean = false;
 
   private pollingMensajes: any;
   private pollingConversaciones: any;
@@ -77,6 +88,37 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   gestionarReport(): void {
     this.reportado.set(true);
+  }
+
+  // ACCIONES PARA MARCAR VENDIDO
+  abrirModalVendido(): void {
+    this.mostrarModalVendido = true;
+    this.tipoPagoSeleccionado = 'Efectivo';
+    this.precioAcordado = 0;
+  }
+
+  cerrarModalVendido(): void {
+    this.mostrarModalVendido = false;
+  }
+
+  marcarVendido(): void {
+    if (!this.conversacionActiva || !this.tipoPagoSeleccionado || !this.precioAcordado) return;
+    this.marcandoVendido = true;
+
+    this.articleService.marcarVendido(
+      String(this.conversacionActiva.articulos_id),
+      { tipoPago: this.tipoPagoSeleccionado, precio: this.precioAcordado }
+    ).subscribe({
+      next: () => {
+        this.marcandoVendido = false;
+        this.articuloVendido = true;
+        this.cerrarModalVendido();
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.marcandoVendido = false;
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -149,7 +191,18 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   seleccionarConversacion(conv: Conversacion) {
     this.conversacionActiva = conv;
+    this.articuloVendido = false;
     this.cargarMensajes(conv.articulos_id);
+
+    // Comprobar si el usuario actual es el vendedor del artículo
+    this.chatService.getArticuloPorId(conv.articulos_id).subscribe({
+      next: (resp) => {
+        const articulo = resp.data;
+        this.esVendedor = Number(articulo.usuarios_id) === this.usuarioActualId;
+        this.articuloVendido = articulo.estadoVenta === 'VENDIDO';
+        this.cdr.detectChanges();
+      }
+    });
 
     if (this.pollingMensajes) clearInterval(this.pollingMensajes);
 

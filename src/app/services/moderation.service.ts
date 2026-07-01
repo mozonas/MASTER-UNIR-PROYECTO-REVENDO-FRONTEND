@@ -73,10 +73,9 @@ export class ModerationService {
         );
     }
 
-    enviarNotificacion(reporteId: number, usuarioId: number, articuloId: number, contenido: string): Observable<any> {
+    enviarNotificacion(reporteId: number, articuloId: number, contenido: string): Observable<any> {
         return this.http.post(`${this.apiUrl}/reports/chats/notificar/${reporteId}`, {
             contenido,
-            usuarios_id: usuarioId,
             articulos_id: articuloId
         });
     }
