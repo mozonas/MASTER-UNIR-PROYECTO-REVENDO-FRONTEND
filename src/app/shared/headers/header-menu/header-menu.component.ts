@@ -38,12 +38,23 @@ export class HeaderMenuComponent implements OnInit {
   isStaff = computed(() => ['ADMIN', 'MODERADOR'].includes(this.role()));
 
   getHomeRoute(): string {
-  const role = this.authService.getUserRole(); // ADMIN | MODERADOR | USUARIO
+    const role = this.authService.getUserRole(); // ADMIN | MODERADOR | USUARIO
 
-  if (role === 'ADMIN') return '/admin';
-  if (role === 'MODERADOR') return '/moderation/panel';
-  return '/home'; // usuario normal
-}
+    if (role === 'ADMIN') return '/admin/dashboard';
+    if (role === 'MODERADOR') return '/moderation/panel';
+    return '/home'; // usuario normal
+  }
+
+  getHomeQueryParams(params?: Record<string, any>): Record<string, any> | null {
+    if (this.isStaff()) {
+      return null;
+    }
+
+    return {
+      reset: '1',
+      ...(params ?? {})
+    };
+  }
 
 
   ngOnInit(): void {

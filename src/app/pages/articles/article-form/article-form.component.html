@@ -116,16 +116,28 @@
                                                 </ul>
                                         </div>
                                 </div>
-                                } @else if (isEditing && existingImageUrls().length > 0) {
+                                }
+
+                                @if (isEditing && existingImageUrls().length > 0) {
                                 <div class="col-12">
                                         <div class="border rounded-3 p-3 bg-light">
                                                 <strong class="d-block mb-2">Imágenes actuales</strong>
-                                                <ul class="mb-0 ps-3">
+                                                <ul class="mb-0 ps-3 list-unstyled">
                                                         @for (url of existingImageUrls(); track url) {
-                                                        <li>{{ url }}</li>
+                                                        <li class="mb-2">
+                                                                <label class="d-flex align-items-center gap-2">
+                                                                        <input type="checkbox"
+                                                                                [checked]="isImageMarkedForDeletion(url)"
+                                                                                (change)="toggleImageDeletion(url, $any($event.target).checked)">
+                                                                        <span [class.text-decoration-line-through]="isImageMarkedForDeletion(url)"
+                                                                                [class.text-muted]="isImageMarkedForDeletion(url)">
+                                                                                {{ url }}
+                                                                        </span>
+                                                                </label>
+                                                        </li>
                                                         }
                                                 </ul>
-                                                <small class="text-muted d-block mt-2">Las nuevas imágenes se añadirán al carrusel junto con las actuales.</small>
+                                                <small class="text-muted d-block mt-2">Marca las imágenes que quieras eliminar al guardar. Las no marcadas se conservarán.</small>
                                         </div>
                                 </div>
                                 }

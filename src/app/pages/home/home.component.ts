@@ -71,30 +71,35 @@ export class HomeComponent implements OnInit {
     }); */
 
     this.route.queryParamMap.subscribe(params => {
+      const reset = params.get('reset');
       const cat = params.get('categoria');
       const nombreParam = params.get('nombre'); // <-- puede venir "Moda y accesorios"
 
-      this.categoriaIds.set(cat ? cat.split(',').map(Number) : null);
+      if (reset === '1') {
+        this.filterHomeService.resetFilters();
+      }
 
       if (cat) {
-        // 1) Si llega nombre en la URL → usarlo
+        this.filterHomeService.updateFilter('categoria', cat);
+        this.categoriaIds.set(cat.split(',').map(Number));
+
         if (nombreParam) {
           this.tituloCategoria.set(decodeURIComponent(nombreParam));
-        } 
-        else {
-          // 2) Si NO llega nombre → obtenerlo desde categories()
+        } else {
           const id = Number(cat);
           const catObj = this.categories().find(c => c.id === id);
           this.tituloCategoria.set(catObj?.nombre ?? null);
         }
-      } 
-      else {
-        // 3) Sin categoría → null
+      } else {
+        if (reset === '1') {
+          this.filterHomeService.updateFilter('categoria', '');
+        }
+        this.categoriaIds.set(null);
         this.tituloCategoria.set(null);
       }
 
       if (this.allArticles().length > 0) {
-        this.results.set(this.articles());
+        this.loadFilteredResults();
       }
     });
 
@@ -167,6 +172,26 @@ export class HomeComponent implements OnInit {
     this.filterHomeService.resetFilters();
     this.router.navigate(['/home']); // sin params
     this.results.set(this.allArticles());
+  }
+
+  private loadFilteredResults(): void {
+    if (this.hasActiveFilters()) {
+      this.loading.set(true);
+      this.filterHomeService.searchArticles().subscribe({
+        next: (resp) => {
+          const mapped = Array.isArray(resp?.data)
+            ? resp.data.map((a: any) => (this.articleService as any).mapRawArticleToIArticle(a)).filter(Boolean)
+            : [];
+
+          this.results.set(mapped);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false)
+      });
+      return;
+    }
+
+    this.results.set(this.articles());
   }
 
   // ============================================================

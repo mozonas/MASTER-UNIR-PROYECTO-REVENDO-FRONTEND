@@ -26,14 +26,6 @@ export class ArticleReportDetailComponent implements OnInit {
   notFound = signal<boolean>(false);
   articuloEnRevision = signal<ArticleInReview | null>(null);
   reporteHistorico = signal<ArticleReport | null>(null);
-  //mog 280626 injectamos auth
-  private auth = inject(AuthService);
-  //mog 280626 generamos la propiedad getBasePath en base de auth para decidir donde navegará
-  private getBasePath(): string {
-    return this.auth.getUserRole() === 'ADMIN'
-      ? '/admin/moderacion'
-      : '/moderation';
-  }
 
   ngOnInit(): void {
     this.cargarDetalle();
@@ -117,12 +109,8 @@ export class ArticleReportDetailComponent implements OnInit {
 
   }
 
-/*   volver(): void {
-    this.router.navigate(['/moderation/articulos']);
-  } */
- //mog 280626 reimplementamos el método volver para que tenga en cuenta el perfil
   volver(): void {
-    this.router.navigate([this.getBasePath() + '/articulos']);
+    const prefix = this.router.url.includes('admin') ? '/admin/moderacion' : '/moderation';
+    this.router.navigate([`${prefix}/articulos`]);
   }
-
 }
