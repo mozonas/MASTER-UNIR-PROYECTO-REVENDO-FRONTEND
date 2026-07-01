@@ -20,7 +20,7 @@ aside {
   flex-direction: column;
   height: 100%;
   flex-shrink: 0;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 .contenedor-moderacion {
