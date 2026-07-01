@@ -1,81 +1,144 @@
 :host {
   display: block;
-  height: 100vh;
+  width: 100%;
 }
 
 .signin-wrapper {
-  /*  background-color: #f0f0f0; */
-  /*   min-height: 100vh; */
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  min-height: 100dvh;
+  background-color: #f5f5f5;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .signin-card {
   background: white;
-  border-radius: 16px;
-  border: 1px solid #ddd;
-  overflow: hidden;
-  width: 920px;
-  min-height: auto;
-  display: flex;
   border-radius: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.logo-section {
-  width: 300px;
-  padding: 2rem;
-  border-right: 1px solid #eee;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.logo-img {
-  width: 90px;
-  height: auto;
-}
-
-.brand-name {
-  font: var(--font-primary);
-  color: var(--color-secundary);
-  margin-top: 0.5rem;
+  border: none;
+  overflow: hidden;
+  width: 100%;
+  max-width: 550px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
 }
 
 .form-section {
-  flex: 1;
-  padding: 1.5rem 2rem;
+  width: 100%;
+  padding: 30px 40px;
+  box-sizing: border-box;
 }
 
 .form-section h2 {
-  font-size: 1rem;
+  font-size: 14px;
   font-weight: 600;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  color: #333;
 }
 
 .form-label {
-  font-size: 0.75rem;
+  font-size: 12px;
+  font-weight: 600;
   color: #555;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Entrada de textos e inputs */
+.form-control-sm {
+  padding: 10px 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.form-control-sm:focus {
+  outline: none;
+  border-color: #6ab03b;
+  box-shadow: 0 0 0 3px rgba(106, 176, 59, 0.2);
+}
+
+/* Grupo del input de dirección con el icono */
+.input-group-text {
+  border: 2px solid #ddd;
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  background-color: #f8f9fa;
+}
+
+.input-group .form-control {
+  border-radius: 0 8px 8px 0;
 }
 
 .btn-crear {
-  background-color: var(--primary-color);
+  background-color: #28a745;
   border: none;
   color: white;
   font-weight: 600;
-  padding: 5px 22px;
-  border-radius: 6px;
-  font-size: 0.85rem;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  width: 100%;
 }
 
-.btn-crear:hover {
-  background-color: var(--primary-color);
+.btn-crear:hover:not([disabled]) {
+  background-color: #218838;
+  transform: translateY(-1px);
 }
 
 .btn-crear:disabled {
-  opacity: 0.5;
+  background-color: #e0e0e0;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+/* Feedback de validación de Angular */
+.invalid-feedback {
+  font-size: 11px;
+  color: #dc3545;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* Ajustes responsivos para pantallas de PC */
+@media (min-width: 576px) {
+  .btn-crear {
+    width: auto;
+  }
+}
+
+.btn-back {
+  background-color: transparent;
+  color: #6c757d;
+  border: 2px solid #ddd;
+  font-weight: 600;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  width: 100%;
+}
+
+.btn-back:hover {
+  background-color: #f8f9fa;
+  color: #333;
+  border-color: #ccc;
+}
+
+@media (min-width: 576px) {
+  .btn-crear {
+    width: auto;
+  }
+
+  .btn-back {
+    width: auto;
+  }
 }
