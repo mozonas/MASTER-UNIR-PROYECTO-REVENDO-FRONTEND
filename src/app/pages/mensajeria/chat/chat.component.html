@@ -45,7 +45,6 @@
           <i class="fa fa-flag me-1"></i> Reportar usuario
         </button>
       </div>
-
       <div class="mensajes-container">
         @for (mensaje of mensajesActivos; track mensaje.id) {
           @if (mostrarFecha(mensajesActivos, $index)) {

@@ -145,13 +145,10 @@ export class UserPageSell implements OnInit, OnChanges {
       return;
     }
 
-    const confirmed = confirm(`¿Está seguro de que desea eliminar "${article.titulo}"? Esta acción no se puede deshacer.`);
-    if (confirmed) {
-      this.articleService.deleteArticle(article.id).subscribe({
-        next: () => this.currentPage.set(Math.min(this.currentPage(), this.pageCount())),
-        error: (error) => console.error('Error al eliminar artículo:', error),
-      });
-    }
+    this.articleService.deleteArticle(article.id).subscribe({
+      next: () => this.currentPage.set(Math.min(this.currentPage(), this.pageCount())),
+      error: (error) => console.error('Error al eliminar artículo:', error),
+    });
   }
 
   mostrarModalVenta = signal(false);

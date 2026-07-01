@@ -28,6 +28,7 @@ export class ArticleFormComponent implements OnInit {
         activeErrorField: string | null = null;
         selectedImageFiles = signal<File[]>([]);
         existingImageUrls = signal<string[]>([]);
+        imagesMarkedForDeletion = signal<string[]>([]);
         private readonly maxImages = 5;
 
         tipoEntregaOptions = signal<string[]>([]);
@@ -93,6 +94,7 @@ export class ArticleFormComponent implements OnInit {
                                 });
                                 this.selectedImageFiles.set([]);
                                 this.existingImageUrls.set([]);
+                                this.imagesMarkedForDeletion.set([]);
 
                                 if (articleId) {
                                         this.isEditing = true;
@@ -131,6 +133,7 @@ export class ArticleFormComponent implements OnInit {
 
                                 const imageUrls = article.fotos?.map((foto) => foto.url).slice(0, 5) ?? [];
                                 this.existingImageUrls.set(imageUrls.length ? imageUrls : (article.image ? [article.image] : []));
+                                this.imagesMarkedForDeletion.set([]);
                                 this.articleForm.patchValue({
                                         titulo: article.titulo,
                                         descripcion: article.descripcion,
@@ -179,6 +182,25 @@ export class ArticleFormComponent implements OnInit {
                 this.articleForm.get('imageFiles')?.setValue(null);
         }
 
+        isImageMarkedForDeletion(imageUrl: string): boolean {
+                return this.imagesMarkedForDeletion().includes(imageUrl);
+        }
+
+        toggleImageDeletion(imageUrl: string, checked: boolean): void {
+                this.imagesMarkedForDeletion.update((current) => {
+                        if (checked) {
+                                return current.includes(imageUrl) ? current : [...current, imageUrl];
+                        }
+
+                        return current.filter((url) => url !== imageUrl);
+                });
+        }
+
+        private getRemainingExistingImages(): string[] {
+                const markedForDeletion = this.imagesMarkedForDeletion();
+                return this.existingImageUrls().filter((url) => !markedForDeletion.includes(url));
+        }
+
         private isAllowedImageFile(file: File): boolean {
                 if (file.type.startsWith('image/')) {
                         return true;
@@ -199,9 +221,10 @@ export class ArticleFormComponent implements OnInit {
                 formData.append('tipoPago', String(formValue.tipoPago ?? ''));
                 formData.append('categorias_id', String(formValue.categorias_id ?? ''));
 
-                if (this.isEditing && this.existingImageUrls().length > 0) {
+                const remainingExistingImages = this.getRemainingExistingImages();
+                if (this.isEditing && remainingExistingImages.length > 0) {
                         const existingFiles = await Promise.all(
-                                this.existingImageUrls().map((imageUrl, index) => this.imageUrlToFile(imageUrl, index))
+                                remainingExistingImages.map((imageUrl, index) => this.imageUrlToFile(imageUrl, index))
                         );
 
                         for (const file of existingFiles) {

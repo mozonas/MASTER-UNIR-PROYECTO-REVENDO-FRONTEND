@@ -1,17 +1,18 @@
-
-<div class="container mt-4 g-0">
+<div class="container-fluid mt-2 g-0">
   <div class="row g-4">
 
-    <!-- Gestión de articulos -->
+    <!-- Tarjeta 1: Gestión de artículos -->
     <div class="col-md-6">
-      <div class="card shadow-sm border-0 rounded overflow-hidden animate-pulse">
-        <div class="card-header py-3">
-          <h2 class="h6 mb-0 text-white fw-bold text-uppercase">👗 Gestión de Artículos</h2>
+      <div class="card shadow-sm border-0 rounded overflow-hidden">
+        <div class="card-header bg-white py-3 border-bottom">
+          <h2 class="h6 mb-0 text-dark fw-bold text-uppercase">👗 Gestión de Artículos</h2>
         </div>
         <div class="card-body bg-white d-flex align-items-center justify-content-between p-4">
           <div>
-            <p class="text-muted mb-1 small text-uppercase fw-bold font-badge">Alertas activas</p>
-            <span [class.badge-incidencias]="pendingArticlesCount() > 0" [class.badge-limpio]="pendingArticlesCount() === 0" class="badge rounded-pill px-3 py-2 fw-bold fs-5">
+            <p class="text-muted mb-1 small text-uppercase fw-bold">Alertas activas</p>
+            <span [class.bg-danger]="pendingArticlesCount() > 0" 
+                  [class.bg-success]="pendingArticlesCount() === 0" 
+                  class="badge rounded-pill px-3 py-2 fw-bold fs-5 text-white">
               {{ pendingArticlesCount() }}
             </span>
           </div>
@@ -20,16 +21,18 @@
       </div>
     </div>
 
-    <!-- Gestión de mensajeria -->
+    <!-- Tarjeta 2: Gestión de mensajería -->
     <div class="col-md-6">
-      <div class="card shadow-sm border-0 rounded overflow-hidden animate-pulse">
-        <div class="card-header py-3">
-          <h2 class="h6 mb-0 text-white fw-bold text-uppercase">💬 Gestión de Mensajería</h2>
+      <div class="card shadow-sm border-0 rounded overflow-hidden">
+        <div class="card-header bg-white py-3 border-bottom">
+          <h2 class="h6 mb-0 text-dark fw-bold text-uppercase">💬 Gestión de Mensajería</h2>
         </div>
         <div class="card-body bg-white d-flex align-items-center justify-content-between p-4">
           <div>
-            <p class="text-muted mb-1 small text-uppercase fw-bold font-badge">Alertas activas</p>
-            <span [class.badge-incidencias]="pendingChatsCount() > 0" [class.badge-limpio]="pendingChatsCount() === 0" class="badge rounded-pill px-3 py-2 fw-bold fs-5">
+            <p class="text-muted mb-1 small text-uppercase fw-bold">Alertas activas</p>
+            <span [class.bg-danger]="pendingChatsCount() > 0" 
+                  [class.bg-success]="pendingChatsCount() === 0" 
+                  class="badge rounded-pill px-3 py-2 fw-bold fs-5 text-white">
               {{ pendingChatsCount() }}
             </span>
           </div>
@@ -40,6 +43,8 @@
 
   </div>
 </div>
+
+
 
 
 
