@@ -40,7 +40,7 @@ export class HeaderMenuComponent implements OnInit {
   getHomeRoute(): string {
     const role = this.authService.getUserRole(); // ADMIN | MODERADOR | USUARIO
 
-    if (role === 'ADMIN') return '/admin';
+    if (role === 'ADMIN') return '/admin/dashboard';
     if (role === 'MODERADOR') return '/moderation/panel';
     return '/home'; // usuario normal
   }
