@@ -1,12 +1,11 @@
 :host {
   display: block;
-  height: calc(100vh - 204px);
+  height: calc(100vh - 189px);
 }
 
 .chat-wrapper {
   display: flex;
   height: 100%;
-  background-color: #f0f0f0;
   padding: 1.5rem;
   gap: 1rem;
   overflow: hidden; 
