@@ -124,6 +124,14 @@ export class ArticleDetailComponent implements OnInit {
     this.mostrarModalReporte.set(false);
   }
 
+  //CGM 01/07/26 --> redirección home
+  redireccion(): void {
+  this.reportado.set(true);
+  setTimeout(() => {
+    this.router.navigate(['/home']); 
+  }, 1200);
+}
+
   enviarReporte(): void {
     const usuarioId = this.authService.getUserId();
     const articulo = this.article();
