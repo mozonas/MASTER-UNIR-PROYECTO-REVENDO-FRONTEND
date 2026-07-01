@@ -1,23 +1,27 @@
-
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Component, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+// import { SidebarComponent } from "../sidebar/sidebar.component";
 
 @Component({
   selector: 'app-aside',
-  imports: [RouterLink,RouterLinkActive],
+  imports: [RouterLink],
   templateUrl: './aside.component.html',
   styleUrl: './aside.component.css',
 })
 export class AsideComponent {
-  actividadOpen: boolean = false;
+  private authService = inject(AuthService);
 
-  moderacionOpen: boolean = false;
+  role = signal(this.authService.getUserRole() ?? 'USUARIO');
 
-  desplegarMenu():void {
-  this.actividadOpen = !this.actividadOpen;
+  isStaff = computed(() => ['ADMIN'].includes(this.role()));
+
+  actividadOpen = false;
+
+  desplegarMenu(): void {
+    this.actividadOpen = !this.actividadOpen;
   }
 
-  desplegarModeracion(): void {
-    this.moderacionOpen = !this.moderacionOpen;
-  }
+
+
 }

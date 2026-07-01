@@ -1,9 +1,16 @@
-<div class="layout-container">
 <aside>
 
   <!-- Menú ADMIN -->
   <app-aside></app-aside>
 
+  <!-- Menú MODERADOR -->
+  <div class="contenedor-moderacion">
+    <app-sidebar
+      title="Moderación"
+      [options]="moderatorOptions"
+      (optionSelected)="handleModeratorNav($event)">
+    </app-sidebar>
+  </div>
 </aside>
 
 <section class="component-view">
@@ -11,4 +18,3 @@
     <router-outlet></router-outlet>
   </article>
 </section>
-</div>
