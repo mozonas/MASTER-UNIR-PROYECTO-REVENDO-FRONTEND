@@ -1,157 +1,204 @@
-.user-list {
-  list-style: none;
-  padding: 0;
-  margin: 20px 0 0;
-  width: 100%;
-  border: 1px solid #d9d9d9;
+/* --- Estilos Basados en Espacio y Tipografía --- */
+.fs-7 {
+  font-size: 0.85rem;
+}
+
+.text-dark-custom {
+  color: #0f172a;
+}
+
+/* --- Filtros Avanzados e Intuitivos --- */
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.form-minimal {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  color: #0f172a;
+  transition: border-color 0.15s ease;
+}
+
+.form-minimal:focus {
+  border-color: #0f172a;
+  box-shadow: none;
+}
+
+/* --- Estructura de Tabla Sutil --- */
+.table-container {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
   overflow: hidden;
-  background: #fff;
 }
 
-.user-list .header,
-.user-list .row {
-  display: grid;
-  grid-template-columns:
-    60px
-    /* id */
-    1fr
-    /* nombre */
-    1.2fr
-    /* apellidos */
-    1.6fr
-    /* email */
-    1fr
-    /* usuario */
-    1fr
-    /* perfil */
-    220px;
-  /* acciones */
-  align-items: center;
+.table-minimal {
+  width: 100%;
 }
 
-.user-list .header {
-  background: #f5f5f5;
-  font-weight: 700;
-  border-bottom: 1px solid #d9d9d9;
+/* Cabecera limpia sin separadores verticales agresivos */
+.table-minimal thead th {
+  /* background-color: #fafafa;
+  color: #64748b; */
+  background-color: #8cd86a;
+  color: white;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e8f0;
 }
 
-.user-list .row {
-  border-bottom: 1px solid #ececec;
+/* Filas con división fina horizontal */
+.user-row-minimal {
+  cursor: pointer;
 }
 
-.user-list .row:hover {
-  background: #fafafa;
+.user-row-minimal td {
+  transition: background-color 0.15s ease;
 }
 
-.user-list span {
-  padding: 10px 8px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.user-row-minimal:hover td {
+  background-color: #f8fafc;
+}
+
+.table-minimal td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.user-row-minimal:last-child td {
+  border-bottom: none;
+}
+
+.table-minimal th,
+.table-minimal td {
   white-space: nowrap;
-  border-right: 1px solid #ececec;
 }
 
-.user-list span:last-child {
-  border-right: none;
+.user-username {
+  font-size: 0.85rem;
 }
 
-/* Primera columna (id) */
-.user-list .header>span:first-child,
-.user-list .row>span:first-child {
-  padding-left: 16px;
-}
-
-/* Última columna (acciones) */
-.user-list .header>span:last-child,
-.user-list .row>span:last-child {
-  padding-right: 16px;
-}
-
-/*imagenes iconos*/
-.icon-btn img {
-  width: 1.5rem;
-  /* ~20px */
-  height: 1.5rem;
-}
-
-
-/* Acciones */
-.actions {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-}
-
-.actions button {
-  padding: 4px 8px;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-}
-
-.actions .edit {
-  background: #e6f4ff;
-}
-
-.actions .delete {
-  background: #ffe6e6;
-}
-
-/*CGM 010726 cambio color**/
-.actions .block {
-  background: #fbf7c5; 
- 
-}
-
-/*  ESTADO CERRADO */
-.actions .block.isBlocked {
-  background: #ffd600; 
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-/* filtros */
-.filters {
-  display: flex;
-  gap: 20px;
-  /* separación entre filtros */
-  margin-bottom: 20px;
+/* --- Indicador de Perfil (Dot Indicator) --- */
+.profile-indicator {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #475569;
+  display: inline-flex;
   align-items: center;
+  gap: 6px;
 }
 
-.filter-item {
-  display: flex;
+.profile-indicator::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #cbd5e1;
+}
+
+.profile-indicator.is-user {
+  color: darkgray;
+  font-weight: 600;
+}
+
+.profile-indicator.is-user::before {
+  background-color: gainsboro;
+}
+
+.profile-indicator.is-moderator {
+  color: goldenrod;
+  font-weight: 600;
+}
+
+.profile-indicator.is-moderator::before {
+  background-color: goldenrod;
+}
+
+
+.profile-indicator.is-admin {
+  color: red;
+  font-weight: 600;
+}
+
+.profile-indicator.is-admin::before {
+  background-color: red;
+}
+
+/* --- Botones de Acción Mini (Estilo Plano) --- */
+.btn-mini-action {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  /* separación entre input y botón */
+  justify-content: center;
+  opacity: 0.7;
+  transition: all 0.15s ease;
 }
 
-.filter-item input {
-  padding: 6px 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
+.btn-mini-action:hover {
+  background-color: #f1f5f9;
+  border-color: #e2e8f0;
+  opacity: 1;
 }
 
-.filter-item button {
-  background: #007bff;
+.btn-mini-delete:hover {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+.btn-mini-lock.is-blocked {
+  background-color: gold;
+  border-color: gold;
+  opacity: 1;
+}
+
+.btn-mini-lock:hover {
+  background-color: #fffbeb;
+  border-color: #fef3c7;
+  opacity: 1;
+}
+
+/* --- Paginación Minimalista --- */
+.btn-link-minimal {
+  background: none;
   border: none;
-  padding: 6px 10px;
-  border-radius: 6px;
+  color: #64748b;
+  padding: 0;
+  font-weight: 500;
+  font-size: 0.85rem;
   cursor: pointer;
+  transition: color 0.15s;
 }
 
-.filter-item button img {
-  width: 18px;
-  height: 18px;
-  filter: invert(1);
-  /* icono blanco */
+.btn-link-minimal:hover:not(:disabled) {
+  color: #0f172a;
 }
 
-/*  */
+.btn-link-minimal:disabled {
+  color: #cbd5e1;
+  cursor: not-allowed;
+}
 
+.text-neutral-300 {
+  color: #e2e8f0;
+}

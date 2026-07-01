@@ -1,7 +1,7 @@
 <!-- Artículo -->
-<div class="row justify-content-center mt-4 mb-5 w-100">
+<div class="row justify-content-center mt-5 mb-articledetail w-100">
     <div class="col-12 col-xl-11">
-        <button type="button" (click)="onBack()" class="btn btn-outline-secondary btn-sm mb-5">
+        <button type="button" (click)="onBack()" class="btn btn-outline-secondary btn-sm mb-4">
             <i class="fa fa-arrow-left me-1"></i> Volver
         </button>
         <div class="card shadow-sm">
@@ -131,16 +131,18 @@
                             <!-- Botón -->
                             <div class="d-grid gap-2">
                                 @if (puedeComprar) {
-                                <button class="btn btn-primary" (click)="comprarArticulo()" [disabled]="compraDeshabilitada">
+                                <button class="btn btn-primary" (click)="comprarArticulo(); $event.stopPropagation()"
+                                    [disabled]="compraDeshabilitada">
                                     {{ comprando() ? 'Procesando...' : 'Comprar' }}
                                 </button>
-                                }
+                                
                                 <button class="btn btn-success" (click)="contactarVendedor(); $event.stopPropagation()">
                                     Mensaje directo
                                 </button>
+                                }
                             </div>
                             @if (mensajeCompra()) {
-                            <p class="mt-2 mb-0">{{ mensajeCompra() }}</p>
+                            <p class="mt-2 mb-0 text-danger small fw-medium">{{ mensajeCompra() }}</p>
                             }
 
                         </div>
@@ -169,13 +171,9 @@
 
 <!--CGM 290626 COMPONENTE COMPARTIDO-->
 @if (mostrarModalReporte() && article()) {
-  <app-report-type 
-    targetType="ARTICULO" 
-    [targetId]="+article()!.id" 
-    [targetTitle]="article()?.titulo || ''"
-    (closeModal)="cerrarModalReporte()"
-    (onReportSuccess)="reportado.set(true)">
-  </app-report-type>
+<app-report-type targetType="ARTICULO" [targetId]="+article()!.id" [targetTitle]="article()?.titulo || ''"
+    (closeModal)="cerrarModalReporte()" (onReportSuccess)="reportado.set(true)">
+</app-report-type>
 }
 
 

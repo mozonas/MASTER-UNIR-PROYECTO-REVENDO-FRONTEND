@@ -8,7 +8,6 @@ import { Usuario } from '../../../interfaces/user.interface';
 import { UserPageSell } from '../user-page-sell/user-page-sell';
 import { DetailSeller } from "../../../shared/detail-seller/detail-seller";
 
-
 @Component({
   selector: 'app-user-page-info',
   standalone: true,
@@ -24,9 +23,7 @@ export class UserPageInfoComponent implements OnInit {
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
   private sanitizer = inject(DomSanitizer);
-
   private location = inject(Location);
-
 
   isLoaded: boolean = false;
   mapUrl: SafeResourceUrl | null = null;
@@ -56,6 +53,8 @@ export class UserPageInfoComponent implements OnInit {
   personalDetails: { label: string; value: string; lowercase?: boolean }[] = [];
   listaValoraciones: any[] = [];
   idVendedor!: number;
+  transaccionPendiente: any = null;
+  puedeValorar: boolean = false;
 
   ngOnInit(): void {
     console.log('🔄 Iniciando carga del perfil del usuario...');
@@ -67,7 +66,7 @@ export class UserPageInfoComponent implements OnInit {
 
     // Recuperamos el ID del usuario logueado actualmente y su rol
     const currentLoggedUserId = this.authService.getUserId();
-    const isUserAdmin = this.authService.getUserRole() === 'ADMIN'; // O como verifiques el rol en tu AuthService (ej: decodedToken o señal)
+    const isUserAdmin = this.authService.getUserRole() === 'ADMIN';
 
     if (idFromRoute) {
       userIdParaCargar = Number(idFromRoute);
@@ -82,7 +81,7 @@ export class UserPageInfoComponent implements OnInit {
       }
     } else {
       // 2. Si no hay ID en la URL, mantenemos tu comportamiento original (Perfil propio del usuario logueado)
-      userIdParaCargar = this.authService.getUserId();
+      userIdParaCargar = Number(currentLoggedUserId);
       console.log(`👤 Modo Usuario: Visualizando perfil propio con ID: ${userIdParaCargar}`);
     }
 
@@ -112,8 +111,22 @@ export class UserPageInfoComponent implements OnInit {
           this.generarDetallesPersonales();
           this.generarUrlMapa();
 
-          // Traemos las estadísticas del ID seleccionado
+          // Traemos las estadísticas e integraciones reales
           this.cargarEstadisticasReales(userIdParaCargar!);
+
+          const miUsuarioId = Number(this.authService.getUserId());
+          if (this.isExternalProfileViewing && miUsuarioId) {
+            this.userService.getTransaccionPendiente(this.idVendedor, miUsuarioId).subscribe({
+              next: (data) => {
+                if (data) {
+                  this.transaccionPendiente = data;
+                  this.puedeValorar = true;
+                  this.cdr.detectChanges();
+                }
+              },
+              error: (err) => console.error('❌ Error al comprobar transacciones pendientes:', err)
+            });
+          }
         }
       },
       error: (err) => {
@@ -151,6 +164,18 @@ export class UserPageInfoComponent implements OnInit {
         console.error('❌ Error en la petición HTTP al recargar estadísticas:', err);
         this.isLoaded = true;
         this.cdr.detectChanges();
+      }
+    });
+  }
+
+  irAValorar(): void {
+    if (!this.transaccionPendiente) return;
+
+    this.router.navigate(['/evaluar'], {
+      queryParams: {
+        vendedorId: this.idVendedor,
+        transaccionId: this.transaccionPendiente.transaccion_id,
+        titulo: this.transaccionPendiente.articulo_titulo
       }
     });
   }

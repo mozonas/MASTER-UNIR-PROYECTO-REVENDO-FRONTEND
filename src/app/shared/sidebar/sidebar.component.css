@@ -48,3 +48,17 @@
     color: #ffffff !important;
     font-weight: 500 !important;
 }
+
+/* Cursor y estilos de cabecera clickeable */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Estilos del chevron para colapsar/expandir */
+.chevron-icon {
+    transition: transform 0.3s ease !important;
+}
+
+.chevron-rotated {
+    transform: rotate(-180deg) !important;
+}

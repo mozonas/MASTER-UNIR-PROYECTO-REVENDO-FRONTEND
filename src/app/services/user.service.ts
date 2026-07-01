@@ -36,12 +36,47 @@ export class UserService {
      * Obtiene las valoraciones reales de un usuario específico desde la base de datos
      */
     getValoracionesUsuario(userId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/${userId}/valoraciones`);
+        return this.http.get<any[]>(`${this.apiUrl}/${userId}/valoraciones`);
     }
 
-    /**Obtiene los usuarios del mes actual y anterior */
-
+    /**
+     * Obtiene los usuarios del mes actual y anterior
+     */
     getUserStats(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/stats/users`);////ojo ruta ok?
-}
+        return this.http.get<any>(`${this.apiUrl}/stats/users`);
+    }
+
+    // getUserStats(): Observable<any> {
+    //     return this.http.get<any>(`${this.apiUrl}/stats/users`);////ojo ruta ok? repetida justo arriba
+    // }
+
+    /**
+     * Comprueba dinámicamente si el comprador tiene transacciones legítimas
+     * pendientes de valorar con el vendedor especificado en la base de datos.
+     */
+    getTransaccionPendiente(vendedorId: number, compradorId: number): Observable<any> {
+        return this.http.get<any>(
+            `${this.apiUrl}/check/transaccion-pendiente?vendedorId=${vendedorId}&compradorId=${compradorId}`
+        );
+    }
+
+    /**
+     * Envía una nueva valoración sobre un vendedor a la base de datos local
+     * @param payload Objeto adaptado al controlador del Backend con puntuacion, comentario y transaccionId
+     */
+    guardarValoracionUsuario(payload: {
+        vendedor_id: number;     // Se mantiene para construir la URL del endpoint
+        puntuacion: number;
+        comentario: string;
+        transaccionId: number;   // Añadido para que coincida con el payload del componente
+    }): Observable<{ success: boolean; message: string; valoracion_id?: number }> {
+
+        // Extraes puntuacion, comentario y transaccionId para el cuerpo (body) de la petición
+        const { puntuacion, comentario, transaccionId } = payload;
+
+        return this.http.post<{ success: boolean; message: string; valoracion_id?: number }>(
+            `${this.apiUrl}/${payload.vendedor_id}/valoraciones`,
+            { puntuacion, comentario, transaccionId }
+        );
+    }
 }
