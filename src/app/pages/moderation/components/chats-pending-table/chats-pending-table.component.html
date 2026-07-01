@@ -1,23 +1,23 @@
-
 <div class="table-responsive">
-  <table class="table table-hover table-striped mb-0 align-middle custom-table">
-    <thead>
+  <table class="table table-hover mb-0 align-middle">
+    <thead class="table-light">
       <tr>
-        <th class="col-caso">Caso</th>
-        <th class="col-usuario">Usuario Implicado</th>
-        <th class="col-motivo">Motivo de la Incidencia</th>
-        <th class="col-acciones text-center">Acciones</th>
+        <!-- Distribución elástica proporcional usando clases w-* nativas -->
+        <th class="w-10">Caso</th>
+        <th class="w-25">Usuario Implicado</th>
+        <th class="w-50">Motivo de la Incidencia</th>
+        <th class="w-15 text-center">Acciones</th>
       </tr>
     </thead>
     <tbody>
-      @for (chat of paginatedPending(); track $index) {
+      @for (chat of paginatedPending(); track chat.id) {
         <tr>
           <td><strong>#{{ chat.id }}</strong></td>
           <td>
-            <span class="d-block text-dark">&#64;{{ chat.usuario }}</span>
+            <span class="d-block text-dark">@{{ chat.usuario }}</span>
           </td>
           <td>
-            <span class="text-danger-reason text-truncate d-inline-block w-100">
+            <span class="text-danger text-truncate d-inline-block w-100" style="max-width: 400px;">
               {{ chat.motivo }}
             </span>
           </td>
@@ -49,5 +49,6 @@
     </app-pagination-buttons>
   </div>
 }
+
 
 

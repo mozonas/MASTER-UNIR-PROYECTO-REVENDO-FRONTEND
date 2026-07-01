@@ -5,6 +5,7 @@ import { ModerationService } from '../../../../services/moderation.service';
 import { ArticleInReview, ArticleReport } from '../../../../interfaces/moderation.interface';
 //mog 280626 importamos AuthService para usarlo en l alógica de navegación moderador/admin
 import { AuthService } from '../../../../services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-article-report-detail',
@@ -25,14 +26,6 @@ export class ArticleReportDetailComponent implements OnInit {
   notFound = signal<boolean>(false);
   articuloEnRevision = signal<ArticleInReview | null>(null);
   reporteHistorico = signal<ArticleReport | null>(null);
-  //mog 280626 injectamos auth
-  private auth = inject(AuthService);
-  //mog 280626 generamos la propiedad getBasePath en base de auth para decidir donde navegará
-  private getBasePath(): string {
-    return this.auth.getUserRole() === 'ADMIN'
-      ? '/admin/moderacion'
-      : '/moderation';
-  }
 
   ngOnInit(): void {
     this.cargarDetalle();
@@ -74,22 +67,50 @@ export class ArticleReportDetailComponent implements OnInit {
   }
 
   resolverReporte(accion: 'aprobar' | 'descartar'): void {
-    this.resolving.set(true);
-    this.moderationService.resolveReport(this.reporteId, accion).subscribe({
-      next: () => this.volver(),
-      error: (err) => {
-        console.error('Error al resolver el reporte:', err);
-        this.resolving.set(false);
-      }
-    });
+  Swal.fire({
+    title: accion === 'aprobar' ? '¿Estás seguro que quieres retirar este artículo?' : '¿Quieres restaurar este reporte?',
+    text: accion === 'aprobar' 
+      ? 'Esta acción eliminará el artículo de la plataforma de forma definitiva.' 
+      : 'El reporte se archivará y el artículo seguirá visible.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: accion === 'aprobar' ? '#dc3545' : '#8cd86a', // Rojo para borrar, verde para descartar
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: accion === 'aprobar' ? 'Sí, retirar artículo' : 'Sí, restaurar',
+    cancelButtonText: 'Cancelar',
+    reverseButtons: true
+  }).then((result) => {
+    
+    if (result.isConfirmed) {
+      this.resolving.set(true);
+
+      this.moderationService.resolveReport(this.reporteId, accion).subscribe({
+        next: () => {
+          
+          Swal.fire({
+            title: accion === 'aprobar' ? '¡Artículo retirado!' : '¡Reporte descartado!',
+            text: accion === 'aprobar' 
+              ? 'El artículo ha sido eliminado correctamente.' 
+              : 'El reporte se ha cerrado sin aplicar sanciones.',
+            icon: 'success',
+            confirmButtonColor: '#8cd86a'
+          }).then(() => {
+           
+            this.volver();
+          });
+        },
+        error: (err) => {
+          console.error('Error al resolver el reporte:', err);
+          this.resolving.set(false);
+        }
+      });
+    }
+  });
+
   }
 
-/*   volver(): void {
-    this.router.navigate(['/moderation/articulos']);
-  } */
- //mog 280626 reimplementamos el método volver para que tenga en cuenta el perfil
   volver(): void {
-    this.router.navigate([this.getBasePath() + '/articulos']);
+    const prefix = this.router.url.includes('admin') ? '/admin/moderacion' : '/moderation';
+    this.router.navigate([`${prefix}/articulos`]);
   }
-
 }

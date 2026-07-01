@@ -1,28 +1,23 @@
-
 <div class="table-responsive">
-  <table class="table table-hover table-striped mb-0 align-middle custom-table">
-    <thead>
+  <table class="table table-hover mb-0 align-middle">
+    <thead class="table-light">
       <tr>
-        <th class="col-caso">Caso</th>
-        <th class="col-articulo">Artículo</th>
-        <th class="col-motivo">Motivo de la Denuncia</th>
-        <th class="col-acciones text-center">Acciones</th>
+        <th class="w-10">Caso</th>
+        <th class="w-25">Artículo</th>
+        <th class="w-50">Motivo de la Denuncia</th>
+        <th class="w-15 text-center">Acciones</th>
       </tr>
     </thead>
     <tbody>
-      @for (report of paginatedPending(); track $index) {
+      @for (report of paginatedPending(); track report.id) {
         <tr>
-
           <td><strong>#{{ report.id }}</strong></td>
-
           <td>{{ report.titulo }}</td>
-
           <td>
-            <span class="text-danger-reason text-truncate d-inline-block w-100">
+            <span class="text-danger text-truncate d-inline-block w-100" style="max-width: 400px;">
               {{ report.motivo }}
             </span>
           </td>
-          
           <td class="text-center">
             <app-action-button 
               [itemId]="report.id" 
@@ -51,5 +46,6 @@
     </app-pagination-buttons>
   </div>
 }
+
 
 

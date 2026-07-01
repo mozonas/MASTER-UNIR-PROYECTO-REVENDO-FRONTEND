@@ -165,7 +165,12 @@ export class ArticleDetailComponent implements OnInit {
         // Controlamos si la respuesta viene envuelta en .data por el servicio o limpia
         const articuloLimpio = res?.data ? res.data : res;
 
-        this.article.set(articuloLimpio ?? null);
+        if (!articuloLimpio) {
+          this.router.navigate(['/404']);
+          return;
+        }
+
+        this.article.set(articuloLimpio);
 
         // Pasamos el objeto directamente para el renderizado del mapa
         this.generarUrlMapa(articuloLimpio);

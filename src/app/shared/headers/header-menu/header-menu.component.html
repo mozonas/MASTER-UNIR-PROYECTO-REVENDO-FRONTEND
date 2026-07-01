@@ -5,7 +5,7 @@
 <!--       <a [routerLink]="isStaff() ? ['/admin'] : ['/home']">
         <img src="/images/logo_revendo.png" alt="Revendo logo" width="80" height="60" />
       </a> -->
-      <a [routerLink]="[getHomeRoute()]">
+      <a [routerLink]="[getHomeRoute()]" [queryParams]="getHomeQueryParams()">
         <img src="/images/logo_revendo.png" alt="Revendo logo" width="80" height="60" />
       </a>
 
@@ -60,7 +60,7 @@
     <div class="container-fluid p-0">
       <ul class="nav w-100 justify-content-between gap-2">
         <li class="nav-item flex-fill text-center">
-          <a class="nav-link link-body-emphasis px-3" [routerLink]="['/home']">
+          <a class="nav-link link-body-emphasis px-3" [routerLink]="['/home']" [queryParams]="getHomeQueryParams()">
             Todas las categorías
           </a>
         </li>
@@ -68,14 +68,14 @@
         <li class="nav-item dropdown flex-fill text-center">
           <a class="nav-link dropdown-toggle link-body-emphasis px-2" role="button" data-bs-toggle="dropdown"
             aria-expanded="false" [routerLink]="['/home']"
-            [queryParams]="{ categoria: grupo.ids.join(','), nombre: grupo.label }">
+            [queryParams]="getHomeQueryParams({ categoria: grupo.ids.join(','), nombre: grupo.label })">
             {{ grupo.label }}
           </a>
           @if (grupo.subcategorias.length > 0) {
           <ul class="dropdown-menu w-100 text-center">
             @for (cat of grupo.subcategorias; track cat.id) {
             <li>
-              <a class="dropdown-item" [routerLink]="['/home']" [queryParams]="{ categoria: cat.id }">
+              <a class="dropdown-item" [routerLink]="['/home']" [queryParams]="getHomeQueryParams({ categoria: cat.id })">
                 {{ cat.nombre }}
               </a>
             </li>
