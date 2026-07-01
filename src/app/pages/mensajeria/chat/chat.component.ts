@@ -63,6 +63,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   marcandoVendido: boolean = false;
   articuloVendido: boolean = false;
   esVendedor: boolean = false;
+  esUsuario: boolean = false;
 
   private pollingMensajes: any;
   private pollingConversaciones: any;
@@ -71,6 +72,10 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.usuarioActualId = this.authService.getUserId() || 0;
     this.articuloIdDesdeUrl = Number(this.route.snapshot.queryParamMap.get('articuloId')) || null;
     this.cargarConversaciones();
+    const role = this.authService.getUserRole();
+    if (role === 'USUARIO') {
+      this.esUsuario = true;
+    }
 
     this.pollingConversaciones = setInterval(() => {
       this.cargarConversaciones();
