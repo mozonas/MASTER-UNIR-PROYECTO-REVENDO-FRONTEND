@@ -8,6 +8,7 @@ import { Usuario } from '../../../interfaces/user.interface';
 
 // Importamos PlaceKit Autocomplete
 import placekitAutocomplete from '@placekit/autocomplete-js';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-user-page-edit',
@@ -204,15 +205,28 @@ export class UserPageEditComponent implements OnInit, OnDestroy {
 
     this.userService.updatePerfilUsuario(this.currentUser.id, formData as unknown as Partial<Usuario>).subscribe({
       next: (response) => {
-        if (this.isAdminViewing) {
-          this.router.navigate(['/admin/users']);
-        } else {
-          this.router.navigate(['/user-info']);
-        }
+        Swal.fire({
+          title: 'Los cambios han sido guardados',
+          icon: 'success',
+          confirmButtonColor: '#8cd86a',
+          allowOutsideClick: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            if (this.isAdminViewing) {
+              this.router.navigate(['/admin/users']);
+            } else {
+              this.router.navigate(['/user-info']);
+            }
+          }
+        });
       },
       error: (err) => {
         console.error('❌ Error al guardar los cambios en el servidor:', err);
-        alert('Hubo un error al intentar guardar los cambios del perfil.');
+        Swal.fire({
+          title: 'Error al guardar los cambios',
+          icon: 'error',
+          confirmButtonColor: '#dc3545'
+        });
       }
     });
   }

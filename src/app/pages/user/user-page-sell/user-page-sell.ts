@@ -6,6 +6,7 @@ import { ArticleService } from '../../../services/article.service';
 import { AuthService } from '../../../services/auth.service';
 import { Article } from '../../../interfaces/article.interface';
 import { ArticleCardComponent } from '../../../shared/components/article-card/article-card.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-user-page-sell',
