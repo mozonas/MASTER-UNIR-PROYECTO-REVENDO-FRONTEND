@@ -65,7 +65,7 @@
       @for (article of currentPageArticles(); track article.id) {
       <div class="col">
         <app-article-card [article]="article" [showActions]="true" (editClicked)="onEdit(article)"
-          (deleteClicked)="onDelete(article)" (ventaClicked)="onMarcarVendido(article)"/>
+          (deleteClicked)="onDelete(article)"/>
       </div>
       }
     </div>
@@ -90,38 +90,3 @@
     }
   </div>
 </div>
-
-<!-- Modal de confirmación de venta -->
-@if (mostrarModalVenta()) {
-<div class="report-modal-backdrop" (click)="cerrarModalVenta()">
-  <div class="report-modal" (click)="$event.stopPropagation()">
-    <h5 class="report-modal__title">Marcar como vendido</h5>
-    <p class="report-modal__subtitle">{{ articuloEnVenta()?.titulo }}</p>
-
-    <div class="mb-3">
-      <label for="metodoPago" class="form-label">Método de pago:</label>
-      <select id="metodoPago" class="form-select" [(ngModel)]="metodoPagoVenta">
-        <option value="Efectivo">Efectivo</option>
-        <option value="Tarjeta">Tarjeta</option>
-        <option value="Bizum">Bizum</option>
-      </select>
-    </div>
-
-    <div class="mb-3">
-      <label for="precioAcordado" class="form-label">Precio acordado (€):</label>
-      <input id="precioAcordado" type="number" class="form-control" min="0.01" step="0.01"
-        [(ngModel)]="precioVenta" />
-    </div>
-
-    <div class="report-modal__actions">
-      <button class="btn btn-secondary btn-sm" (click)="cerrarModalVenta()">Cancelar</button>
-      <button class="btn btn-success btn-sm" (click)="confirmarVenta()" [disabled]="enviandoVenta()">
-        {{ enviandoVenta() ? 'Guardando...' : 'Confirmar venta' }}
-      </button>
-    </div>
-    @if (errorVenta()) {
-    <p class="report-modal__success">{{ errorVenta() }}</p>
-    }
-  </div>
-</div>
-}
