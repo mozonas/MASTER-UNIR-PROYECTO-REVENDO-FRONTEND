@@ -79,7 +79,6 @@ export class ChatReportDetailComponent implements OnInit {
     this.enviando = true;
     this.moderationService.enviarNotificacion(
       this.reporte.id,
-      this.reporte.usuarios_id,
       this.reporte.articulos_id || 0,
       this.mensajeNotificacion
     ).subscribe({
