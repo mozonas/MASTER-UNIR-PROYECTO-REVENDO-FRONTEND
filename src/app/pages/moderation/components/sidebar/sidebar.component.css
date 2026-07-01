@@ -1,0 +1,26 @@
+
+.nav-link {
+  color: #ffffff;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none; 
+}
+
+.nav-link:hover {
+  background-color: #5eaa47;
+  color: #ffffff;
+}
+
+.nav-link.active {
+  background-color: #6fbf54;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+i, svg {
+  filter: brightness(0) invert(1);
+  flex-shrink: 0; 
+}
+
+
+

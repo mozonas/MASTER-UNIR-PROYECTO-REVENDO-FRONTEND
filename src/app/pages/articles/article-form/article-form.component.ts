@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ArticleService } from '../../../services/article.service';
 import { AuthService } from '../../../services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
         selector: 'app-article-form',
@@ -28,6 +29,7 @@ export class ArticleFormComponent implements OnInit {
         activeErrorField: string | null = null;
         selectedImageFiles = signal<File[]>([]);
         existingImageUrls = signal<string[]>([]);
+        imagesMarkedForDeletion = signal<string[]>([]);
         private readonly maxImages = 5;
 
         tipoEntregaOptions = signal<string[]>([]);
@@ -93,6 +95,7 @@ export class ArticleFormComponent implements OnInit {
                                 });
                                 this.selectedImageFiles.set([]);
                                 this.existingImageUrls.set([]);
+                                this.imagesMarkedForDeletion.set([]);
 
                                 if (articleId) {
                                         this.isEditing = true;
@@ -124,13 +127,19 @@ export class ArticleFormComponent implements OnInit {
                                 this.loadedArticleOwnerId = article.usuarios_id;
 
                                 if (!this.canManageOwnerArticle(this.loadedArticleOwnerId)) {
-                                        alert('No tienes permisos para editar este artículo.');
+                                        void Swal.fire({
+                                                title: 'Acceso denegado',
+                                                text: 'No tienes permisos para editar este artículo.',
+                                                icon: 'error',
+                                                confirmButtonColor: '#3085d6'
+                                        });
                                         void this.router.navigate(['/forbidden']);
                                         return;
                                 }
 
                                 const imageUrls = article.fotos?.map((foto) => foto.url).slice(0, 5) ?? [];
                                 this.existingImageUrls.set(imageUrls.length ? imageUrls : (article.image ? [article.image] : []));
+                                this.imagesMarkedForDeletion.set([]);
                                 this.articleForm.patchValue({
                                         titulo: article.titulo,
                                         descripcion: article.descripcion,
@@ -162,12 +171,22 @@ export class ArticleFormComponent implements OnInit {
                 const invalidFiles = files.filter((file) => !this.isAllowedImageFile(file));
 
                 if (invalidFiles.length > 0) {
-                        alert('Solo se permiten archivos de imagen (jpg, jpeg, png, webp, gif, bmp, svg).');
+                        void Swal.fire({
+                                title: 'Formato no valido',
+                                text: 'Solo se permiten archivos de imagen (jpg, jpeg, png, webp, gif, bmp, svg).',
+                                icon: 'warning',
+                                confirmButtonColor: '#3085d6'
+                        });
                 }
 
                 const limitedFiles = validImageFiles.slice(0, this.maxImages);
                 if (validImageFiles.length > this.maxImages) {
-                        alert(`Solo se permiten ${this.maxImages} imágenes como máximo.`);
+                        void Swal.fire({
+                                title: 'Limite de imagenes',
+                                text: `Solo se permiten ${this.maxImages} imágenes como máximo.`,
+                                icon: 'warning',
+                                confirmButtonColor: '#3085d6'
+                        });
                 }
 
                 this.selectedImageFiles.set(limitedFiles);
@@ -177,6 +196,25 @@ export class ArticleFormComponent implements OnInit {
         clearSelectedImages(): void {
                 this.selectedImageFiles.set([]);
                 this.articleForm.get('imageFiles')?.setValue(null);
+        }
+
+        isImageMarkedForDeletion(imageUrl: string): boolean {
+                return this.imagesMarkedForDeletion().includes(imageUrl);
+        }
+
+        toggleImageDeletion(imageUrl: string, checked: boolean): void {
+                this.imagesMarkedForDeletion.update((current) => {
+                        if (checked) {
+                                return current.includes(imageUrl) ? current : [...current, imageUrl];
+                        }
+
+                        return current.filter((url) => url !== imageUrl);
+                });
+        }
+
+        private getRemainingExistingImages(): string[] {
+                const markedForDeletion = this.imagesMarkedForDeletion();
+                return this.existingImageUrls().filter((url) => !markedForDeletion.includes(url));
         }
 
         private isAllowedImageFile(file: File): boolean {
@@ -199,9 +237,10 @@ export class ArticleFormComponent implements OnInit {
                 formData.append('tipoPago', String(formValue.tipoPago ?? ''));
                 formData.append('categorias_id', String(formValue.categorias_id ?? ''));
 
-                if (this.isEditing && this.existingImageUrls().length > 0) {
+                const remainingExistingImages = this.getRemainingExistingImages();
+                if (this.isEditing && remainingExistingImages.length > 0) {
                         const existingFiles = await Promise.all(
-                                this.existingImageUrls().map((imageUrl, index) => this.imageUrlToFile(imageUrl, index))
+                                remainingExistingImages.map((imageUrl, index) => this.imageUrlToFile(imageUrl, index))
                         );
 
                         for (const file of existingFiles) {
@@ -249,7 +288,12 @@ export class ArticleFormComponent implements OnInit {
                         next: () => this.router.navigate(['/user-info']),
                         error: (error) => {
                                 console.error('Error al actualizar el artículo:', error);
-                                alert(error?.error?.message || 'No se pudo guardar el artículo. Intente de nuevo.');
+                                void Swal.fire({
+                                        title: 'Error',
+                                        text: error?.error?.message || 'No se pudo guardar el artículo. Intente de nuevo.',
+                                        icon: 'error',
+                                        confirmButtonColor: '#3085d6'
+                                });
                         }
                 });
                 return;
@@ -259,7 +303,12 @@ export class ArticleFormComponent implements OnInit {
                 next: () => this.router.navigate(['/user-info']),
                 error: (error) => {
                         console.error('Error al crear el artículo:', error);
-                        alert(error?.error?.message || 'No se pudo crear el artículo. Intente de nuevo.');
+                        void Swal.fire({
+                                title: 'Error',
+                                text: error?.error?.message || 'No se pudo crear el artículo. Intente de nuevo.',
+                                icon: 'error',
+                                confirmButtonColor: '#3085d6'
+                        });
                 }
         });
 }

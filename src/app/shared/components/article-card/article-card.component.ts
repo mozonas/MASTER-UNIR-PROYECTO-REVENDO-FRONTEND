@@ -3,6 +3,7 @@ import { CurrencyPipe } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { Article } from '../../../interfaces/article.interface';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-article-card',
@@ -39,6 +40,26 @@ export class ArticleCardComponent {
 
   get esPropietario(): boolean {
     return this.authService.getUserId() === this.article.usuarios_id;
+  }
+
+  async confirmDelete(event: Event): Promise<void> {
+    event.stopPropagation();
+
+    const result = await Swal.fire({
+      title: '¿Seguro que quieres eliminar este artículo?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
+      this.deleteClicked.emit();
+    }
   }
 
   viewArticle(article: Article) {

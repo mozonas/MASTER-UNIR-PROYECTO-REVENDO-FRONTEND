@@ -5,7 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ModerationService } from '../../../../services/moderation.service';
 import { ChatService } from '../../../../services/chat.service';
 import { ChatReport } from '../../../../interfaces/moderation.interface';
-
+//mog 300626 importamos authservice parala lógica de navegación admin/moderator
+import { AuthService } from '../../../../services/auth.service';
 @Component({
   selector: 'app-chat-report-detail',
   imports: [CommonModule, FormsModule],
@@ -29,7 +30,13 @@ export class ChatReportDetailComponent implements OnInit {
   exito: boolean = false;
 
   resolviendo: boolean = false;
-
+  //mog 300626 inyectamos
+  private auth = inject(AuthService);
+  private getBasePath(): string {
+    return this.auth.getUserRole() === 'ADMIN'
+      ? '/admin/moderacion'
+      : '/moderation';
+  }
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!id) {
@@ -119,8 +126,13 @@ export class ChatReportDetailComponent implements OnInit {
     });
   }
 
-  volver() {
+/*   volver() {
     this.router.navigate(['/moderation/chat']);
+  } */
+
+  volver(): void {
+    const base = this.getBasePath();
+    this.router.navigate([base + '/chat']);
   }
 
 }
