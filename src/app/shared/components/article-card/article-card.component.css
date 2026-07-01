@@ -155,16 +155,6 @@
   color: white;
 }
 
-.product-card__action-btn--vendido {
-  border-color: #198754;
-  color: #198754;
-}
-
-.product-card__action-btn--vendido:hover {
-  background: #198754;
-  color: white;
-}
-
 .product-card__badge--revision {
   background: #f0ad4e;
   left: unset;
