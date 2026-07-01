@@ -6,6 +6,7 @@ import { ArticleService } from '../../../services/article.service';
 import { AuthService } from '../../../services/auth.service';
 import { Article } from '../../../interfaces/article.interface';
 import { ArticleCardComponent } from '../../../shared/components/article-card/article-card.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-user-page-sell',
@@ -194,12 +195,28 @@ export class UserPageSell implements OnInit, OnChanges {
     }).subscribe({
       next: () => {
         this.enviandoVenta.set(false);
-        this.cerrarModalVenta();
+        Swal.fire({
+          title:'¡Artículo vendido!',
+          text:'Enhorabuena por tu venta. El estado del artículo se ha actualizado',
+          icon:'success',
+          confirmButtonColor:'#8cd86a',
+          allowOutsideClick:false
+        }).then ((result)=>{
+          if(result.isConfirmed){
+            this.cerrarModalVenta();
+          }
+        })
       },
       error: (error) => {
         console.error('Error al marcar como vendido:', error);
         this.errorVenta.set(error?.error?.message || 'Error al registrar la venta. Inténtalo de nuevo.');
         this.enviandoVenta.set(false);
+        Swal.fire({
+          title: 'Error',
+          text: error?.error?.message || 'Error al registrar la venta. Inténtalo de nuevo.',
+          icon: 'error',
+          confirmButtonColor: '#dc3545'
+        });
       }
     });
   }

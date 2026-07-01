@@ -114,7 +114,7 @@ export class AdminCategoryManagementComponent implements OnInit {
             title: '¡Eliminada!',
             text: 'La categoría ha sido eliminada correctamente.',
             icon: 'success',
-            confirmButtonColor: '#3085d6'
+            confirmButtonColor: '#8cd86a'
           });
           
           // Recargamos la lista de categorías

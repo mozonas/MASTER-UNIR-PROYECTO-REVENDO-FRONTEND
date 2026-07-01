@@ -94,7 +94,7 @@ export class ReportTypeComponent implements OnInit {
           this.mensajeReporte.set('Reporte enviado con éxito. Quedará en revisión.');
           this.enviandoReporte.set(false);
           this.onReportSuccess.emit();
-          setTimeout(() => this.closeModal.emit(), 2000);
+          setTimeout(() => this.closeModal.emit(), 1000);
         },
         error: () => {
           this.mensajeReporte.set('Error al enviar el reporte. Inténtalo de nuevo.');

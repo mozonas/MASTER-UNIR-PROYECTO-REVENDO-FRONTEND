@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { HeaderMenuComponent } from "../../../shared/headers/header-menu/header-menu.component";
 
 import placekitAutocomplete from '@placekit/autocomplete-js';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-signup',
@@ -124,7 +125,12 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
 
     // Bloqueamos el registro si el usuario es menor de edad
     if (this.esMenorDeEdad()) {
-      alert('Debes tener al menos 18 años para registrarte.');
+      Swal.fire({
+        title: 'Registro rechazado',
+        text: 'Debes tener al menos 18 años para registrarte.',
+        icon: 'warning',
+        confirmButtonColor: '#dc3545'
+      });
       return;
     }
 
@@ -150,12 +156,26 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
     // Enviar FormData por AuthService
     this.authService.signup(form).subscribe({
       next: (resp) => {
-        alert('Usuario creado correctamente');
-        this.router.navigate(['/login']);
+        Swal.fire({
+          title: '¡Te has resgistrado correctamente!',
+          text: 'Tu cuenta de usuario ha sido creada',
+          icon:'success',
+          confirmButtonColor: '#8cd86a',
+          allowOutsideClick:false
+        }).then((result)=>{
+          if(result.isConfirmed){
+            this.router.navigate(['/login']);
+          }
+        })
       },
       error: (err) => {
         console.error('Error en signup:', err);
-        alert('Error al crear usuario. Verifica los campos e inténtalo de nuevo.');
+        Swal.fire({
+          title: 'Error',
+          text:'Error al crear el usuario',
+          icon: 'error',
+          confirmButtonColor: '#dc3545'
+        })
       }
     });
   }
