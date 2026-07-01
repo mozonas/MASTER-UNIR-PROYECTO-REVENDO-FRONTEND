@@ -1,16 +1,15 @@
 import { Component, AfterViewInit, OnDestroy, inject, NgZone } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
-import { HeaderMenuComponent } from "../../../shared/headers/header-menu/header-menu.component";
 
 import placekitAutocomplete from '@placekit/autocomplete-js';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [FormsModule, CommonModule, HeaderMenuComponent],
+  imports: [FormsModule, CommonModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
@@ -18,6 +17,7 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
   private authService = inject(AuthService);
   private router = inject(Router);
   private ngZone = inject(NgZone);
+  private location = inject(Location);
 
   formData = {
     nombre: '',
@@ -158,5 +158,9 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
         alert('Error al crear usuario. Verifica los campos e inténtalo de nuevo.');
       }
     });
+  }
+
+  onBack(): void {
+    this.location.back();
   }
 }

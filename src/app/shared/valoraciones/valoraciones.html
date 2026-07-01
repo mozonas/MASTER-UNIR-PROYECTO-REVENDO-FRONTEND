@@ -1,0 +1,86 @@
+<div class="container container-max-width py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+
+            <div class="card border-0 rounded-4 p-4 p-md-5 shadow-sm bg-white">
+
+                <div class="text-center mb-4">
+                    <div class="icon-shape rounded-circle bg-light text-success mx-auto mb-3 d-flex align-items-center justify-content-center"
+                        style="width: 60px; height: 60px;">
+                        <i class="fa fa-star fs-3 colorrevendo"></i>
+                    </div>
+                    <h2 class="fw-bold h4 text-dark mb-1">Valorar vendedor</h2>
+                    <p class="text-muted small">Tu opinión ayuda a mantener segura la comunidad de Revendo.</p>
+                </div>
+
+                <div class="alert alert-light border rounded-3 p-3 mb-4 d-flex align-items-center gap-2 custom-fs-7">
+                    <i class="fa fa-shopping-bag text-secondary"></i>
+                    <span>Transacción: <strong class="text-dark">{{ articuloTitulo }}</strong></span>
+                </div>
+
+                @if (errorMessage) {
+                <div class="alert alert-danger custom-fs-7 border-0 rounded-3 mb-4" role="alert">
+                    <i class="fa fa-exclamation-circle me-1"></i> {{ errorMessage }}
+                </div>
+                }
+
+                <form [formGroup]="valoracionForm" (ngSubmit)="onSubmit()" class="d-flex flex-column gap-4">
+
+                    <div class="text-center">
+                        <label class="form-label d-block text-muted fw-semibold mb-2">¿Cómo fue tu experiencia?</label>
+                        <div class="stars-selector fs-2 d-inline-flex gap-1">
+                            @for (star of [1, 2, 3, 4, 5]; track star) {
+                            <i class="fa cursor-pointer transition-all"
+                                [ngClass]="(ratingHover >= star || valoracionForm.get('puntuacion')?.value >= star) ? 'fa-star animate-scale colorrevendo' : 'fa-star text-muted'"
+                                (click)="setRating(star)" (mouseenter)="setHover(star)" (mouseleave)="setHover(0)">
+                            </i>
+                            }
+                        </div>
+                        @if (valoracionForm.get('puntuacion')?.touched && valoracionForm.get('puntuacion')?.invalid) {
+                        <div class="text-danger custom-fs-8 mt-1">Por favor, selecciona una puntuación de estrellas.
+                        </div>
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <label for="comentario" class="form-label text-muted fw-semibold custom-fs-7">Cuéntanos más
+                            detalles</label>
+                        <textarea id="comentario" formControlName="comentario"
+                            class="form-control rounded-3 p-3 custom-fs-7 border border-secondary border-opacity-25"
+                            rows="4"
+                            placeholder="¿El producto correspondía con la descripción? ¿El trato fue rápido y amable?">
+                        </textarea>
+                        <div class="d-flex justify-content-between mt-1">
+                            <span class="custom-fs-8 text-muted">Mínimo 10 caracteres.</span>
+                            @if (valoracionForm.get('comentario')?.touched && valoracionForm.get('comentario')?.invalid)
+                            {
+                            <span class="text-danger custom-fs-8">El comentario debe tener entre 10 y 500
+                                caracteres.</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-2">
+                        <button type="button" class="btn btn-light rounded-pill fw-semibold flex-grow-1 border"
+                            (click)="onCancel()" [disabled]="isSubmitting">
+                            Cancelar
+                        </button>
+                        <button type="submit"
+                            class="btn rounded-pill fw-semibold flex-grow-1 py-2 text-white btncolorrevendo"
+                            [disabled]="isSubmitting">
+                            @if (isSubmitting) {
+                            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                            Enviando...
+                            } @else {
+                            Publicar Opinión
+                            }
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>

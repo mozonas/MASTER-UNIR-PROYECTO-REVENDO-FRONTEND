@@ -1,46 +1,87 @@
-.welcome-layout {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+/* Contenedor estricto al alto de la pantalla */
+.welcome-container {
     min-height: 100vh;
-    padding: 20px;
+    /* Usa min-height para asegurar que nunca colapse */
+    min-height: 100dvh;
+    /* Soporte dinámico para móviles */
+    width: 100%;
+    background: radial-gradient(circle at top right, rgba(40, 167, 69, 0.05), transparent 40%),
+        radial-gradient(circle at bottom left, rgba(40, 167, 69, 0.02), transparent 40%);
     box-sizing: border-box;
 }
 
+/* Control estricto del tamaño del logo para evitar desbordamiento */
 .logo-img {
-    width: 20%;
-    min-width: 250px;
+    max-height: 350px;
+    /* Altura máxima en PC */
     height: auto;
+    max-width: 80vw;
+    /* Evita que se deforme en móviles muy estrechos */
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.05));
+    transition: transform 0.3s ease;
 }
 
-.auth-btn {
-    width: 100%;
-    border-radius: 8px;
-    font-size: 16px;
-   /*  background-color: red; */
+.logo-img:hover {
+    transform: scale(1.02);
 }
 
-.auth-btn-login{
+/* Ancho controlado para la botonera */
+.action-group {
+    max-width: 400px;
+    padding: 0 1rem;
+    /* Margen de seguridad interno para los botones en móvil */
+}
+
+/* Botones */
+.btn-custom {
+    border-radius: 12px;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.btn-login {
     background-color: #6ab03b;
-    color: white;
-    border: none;
-}
-
-.auth-btn-signup{
-    background-color: white;
-    color: #6ab03b;
     border: 2px solid #6ab03b;
+    color: #ffffff;
 }
 
-.auth-btn-login:hover{
-    background-color: white;
-    color: #6ab03b;
+.btn-login:hover {
+    background-color: #218838;
+    border-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(106, 176, 59, 0.3);
+}
+
+.btn-signup {
+    background-color: transparent;
     border: 2px solid #6ab03b;
+    color: #6ab03b;
 }
 
-.auth-btn-signup:hover{
-    background-color: #4e8a2f;
-    color: white;
-    border: 2px solid #4e8a2f;
+.btn-signup:hover {
+    background-color: rgba(106, 176, 59, 0.05);
+    color: #218838;
+    border-color: #218838;
+    transform: translateY(-2px);
+}
+
+.btn-custom:active {
+    transform: translateY(0);
+}
+
+/* Ajuste específico para pantallas muy pequeñas */
+@media (max-height: 500px) {
+    .logo-img {
+        max-height: 60px;
+    }
+
+    .welcome-container {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        overflow-y: auto !important;
+        /* Permite scroll si la pantalla es extremadamente pequeña en horizontal */
+    }
 }

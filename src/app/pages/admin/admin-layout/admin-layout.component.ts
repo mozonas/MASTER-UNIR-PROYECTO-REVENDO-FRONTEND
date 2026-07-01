@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AsideComponent } from '../../../shared/aside/aside.component'; 
+import { AsideComponent } from '../../../shared/aside/aside.component';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
@@ -16,4 +16,3 @@ import { RouterOutlet } from '@angular/router';
 export class AdminLayoutComponent {
 
 }
-  

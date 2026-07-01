@@ -18,6 +18,10 @@ export class ChatFabComponent implements OnInit, OnDestroy {
   private chatService = inject(ChatService);
   private authService = inject(AuthService);
 
+  // Guardamos las dimensiones previas de la pantalla para calcular la proporción al redimensionar
+  private ultimoAnchoPantalla = window.innerWidth;
+  private ultimoAltoPantalla = window.innerHeight;
+
   posX: number = window.innerWidth - 90;
   posY: number = window.innerHeight - 100;
 
@@ -59,22 +63,76 @@ export class ChatFabComponent implements OnInit, OnDestroy {
     });
   }
 
-  iniciarArrastre(event: MouseEvent) {
+  // --- DETECTOR DE CAMBIO DE TAMAÑO DE PANTALLA ---
+  @HostListener('window:resize')
+  onResize() {
+    const nuevoAncho = window.innerWidth;
+    const nuevoAlto = window.innerHeight;
+
+    // Calculamos la posición proporcional para que acompañe el redimensionamiento
+    this.posX = (this.posX / this.ultimoAnchoPantalla) * nuevoAncho;
+    this.posY = (this.posY / this.ultimoAltoPantalla) * nuevoAlto;
+
+    // Evitamos que el botón se salga por los bordes (límites de seguridad)
+    const tamanoFab = nuevoAncho <= 576 ? 48 : 56; // Ajusta según tus Media Queries de CSS
+    const margen = 16;
+
+    if (this.posX + tamanoFab > nuevoAncho) this.posX = nuevoAncho - tamanoFab - margen;
+    if (this.posX < margen) this.posX = margen;
+    if (this.posY + tamanoFab > nuevoAlto) this.posY = nuevoAlto - tamanoFab - margen;
+    if (this.posY < margen) this.posY = margen;
+
+    // Actualizamos el histórico para el próximo resize
+    this.ultimoAnchoPantalla = nuevoAncho;
+    this.ultimoAltoPantalla = nuevoAlto;
+  }
+
+  // Cambiamos el tipo a MouseEvent | TouchEvent
+  iniciarArrastre(event: MouseEvent | TouchEvent) {
     this.arrastrando = true;
     this.seMovio = false;
-    this.offsetX = event.clientX - this.posX;
-    this.offsetY = event.clientY - this.posY;
+
+    // Extraemos clientX y clientY de forma segura para ratón o táctil
+    const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+    const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+
+    this.offsetX = clientX - this.posX;
+    this.offsetY = clientY - this.posY;
   }
 
+  // Añadimos touchmove al listener de documentos para móviles
   @HostListener('document:mousemove', ['$event'])
-  moverIcono(event: MouseEvent) {
+  @HostListener('document:touchmove', ['$event'])
+  moverIcono(event: MouseEvent | TouchEvent) {
     if (!this.arrastrando) return;
     this.seMovio = true;
-    this.posX = event.clientX - this.offsetX;
-    this.posY = event.clientY - this.offsetY;
+
+    // Prevenimos el scroll de la pantalla mientras se arrastra en móvil
+    if (event instanceof TouchEvent) {
+      event.preventDefault();
+    }
+
+    // Extraemos clientX y clientY de forma segura
+    const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+    const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+
+    let nuevaX = clientX - this.offsetX;
+    let nuevaY = clientY - this.offsetY;
+
+    const tamanoFab = window.innerWidth <= 576 ? 48 : 56;
+
+    if (nuevaX < 0) nuevaX = 0;
+    if (nuevaX + tamanoFab > window.innerWidth) nuevaX = window.innerWidth - tamanoFab;
+    if (nuevaY < 0) nuevaY = 0;
+    if (nuevaY + tamanoFab > window.innerHeight) nuevaY = window.innerHeight - tamanoFab;
+
+    this.posX = nuevaX;
+    this.posY = nuevaY;
   }
 
+  // Añadimos touchend para dejar de arrastrar en móvil
   @HostListener('document:mouseup')
+  @HostListener('document:touchend')
   soltarIcono() {
     this.arrastrando = false;
   }

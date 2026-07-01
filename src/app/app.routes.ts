@@ -44,6 +44,7 @@ import { guestGuard } from './guards/guest.guard';
 //17062026 mog componente error404
 import { Error404Component } from './pages/error-404/error-404';
 import { AdminActivityComponent } from './pages/admin/admin-activity/admin-activity.component';
+import { ValoracionesComponent } from './shared/valoraciones/valoraciones';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'welcome' },
@@ -56,6 +57,7 @@ export const routes: Routes = [
   { path: 'user-info', component: UserPageInfoComponent, canActivate: [authGuard] },
   { path: 'user-info/:id', component: UserPageInfoComponent, canActivate: [authGuard] },
   { path: 'user-edit', component: UserPageEditComponent, canActivate: [authGuard] },
+  { path: 'evaluar', component: ValoracionesComponent, canActivate: [authGuard] },
 
   { path: 'chat', component: ChatComponent, canActivate: [authGuard] },
 
@@ -91,6 +93,7 @@ export const routes: Routes = [
     path: 'moderation',
     component: ModerationComponent,
     canActivate: [roleGuard(['MODERADOR'])], //VCB - añadir proteccion del rol
+    // canActivate: [roleGuard(['MODERADOR', 'ADMIN'])], //VCB - añadir proteccion del rol
     children: [
       { path: '', redirectTo: 'panel', pathMatch: 'full' },
       { path: 'panel', component: ModerationDashboardComponent },
