@@ -133,41 +133,41 @@ export class ChatReportDetailComponent implements OnInit {
   } */
  
     resolverIncidencia(accion: 'archivar' | 'bloquear') {
-  if (!this.reporte) return;
-  this.resolviendo = true;
+      if (!this.reporte) return;
+      this.resolviendo = true;
 
-  const finalizarResolucion = () => {
-    this.resolviendo = false;
-    this.exito = true;
-    this.mensajeResultado = accion === 'archivar'
-      ? 'Incidencia archivada correctamente.'
-      : 'Usuario bloqueado correctamente.';
+      const finalizarResolucion = () => {
+        this.resolviendo = false;
+        this.exito = true;
+        this.mensajeResultado = accion === 'archivar'
+          ? 'Incidencia archivada correctamente.'
+          : 'Usuario bloqueado correctamente.';
 
-    if (this.reporte) {
-      this.reporte.estado = accion === 'archivar' ? 'activo' : 'retirado';
-    }
-  };
+        if (this.reporte) {
+          this.reporte.estado = accion === 'archivar' ? 'activo' : 'retirado';
+        }
+      };
 
-  const manejarError = () => {
-    this.resolviendo = false;
-    this.exito = false;
-    this.mensajeResultado = 'Error al resolver la incidencia.';
-  };
+      const manejarError = () => {
+        this.resolviendo = false;
+        this.exito = false;
+        this.mensajeResultado = 'Error al resolver la incidencia.';
+      };
 
-  // ✔ Caso especial: bloquear → primero bloquear usuario, luego resolver reporte
-  if (accion === 'bloquear') {
-    this.adminUserService.blockUserFromReport(this.reporte.id).subscribe({
-      next: () => {
-        if (!this.reporte) return;
-        this.moderationService.resolveReportChat(this.reporte!.id, accion).subscribe({
-          next: finalizarResolucion,
+      // ✔ Caso especial: bloquear → primero bloquear usuario, luego resolver reporte
+      if (accion === 'bloquear') {
+        this.adminUserService.blockUserFromReport(this.reporte.id).subscribe({
+          next: () => {
+            if (!this.reporte) return;
+            this.moderationService.resolveReportChat(this.reporte!.id, accion).subscribe({
+              next: finalizarResolucion,
+              error: manejarError
+            });
+          },
           error: manejarError
         });
-      },
-      error: manejarError
-    });
-    return;
-  }
+        return;
+    }
 
   // ✔ Caso normal: archivar
   this.moderationService.resolveReportChat(this.reporte.id, accion).subscribe({
