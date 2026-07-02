@@ -7,6 +7,7 @@ import { ChatService } from '../../../../services/chat.service';
 import { ChatReport } from '../../../../interfaces/moderation.interface';
 //mog 300626 importamos authservice parala lógica de navegación admin/moderator
 import { AuthService } from '../../../../services/auth.service';
+import {AdminUserService} from "../../../../services/admin/admin-user.service";
 @Component({
   selector: 'app-chat-report-detail',
   imports: [CommonModule, FormsModule],
@@ -37,8 +38,9 @@ export class ChatReportDetailComponent implements OnInit {
       ? '/admin/moderacion'
       : '/moderation';
   }
-
+  //mog 02072026
   isAdmin = this.auth.getUserRole() === 'ADMIN';
+  private adminUserService= inject(AdminUserService);
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -106,7 +108,7 @@ export class ChatReportDetailComponent implements OnInit {
     });
   }
 
-  resolverIncidencia(accion: 'archivar' | 'bloquear') {
+/*   resolverIncidencia(accion: 'archivar' | 'bloquear') {
     if (!this.reporte) return;
     this.resolviendo = true;
 
@@ -120,6 +122,7 @@ export class ChatReportDetailComponent implements OnInit {
         if (this.reporte) {
           this.reporte.estado = accion === 'archivar' ? 'activo' : 'retirado';
         }
+
       },
       error: () => {
         this.resolviendo = false;
@@ -127,7 +130,52 @@ export class ChatReportDetailComponent implements OnInit {
         this.mensajeResultado = 'Error al resolver la incidencia.';
       }
     });
+  } */
+ 
+    resolverIncidencia(accion: 'archivar' | 'bloquear') {
+  if (!this.reporte) return;
+  this.resolviendo = true;
+
+  const finalizarResolucion = () => {
+    this.resolviendo = false;
+    this.exito = true;
+    this.mensajeResultado = accion === 'archivar'
+      ? 'Incidencia archivada correctamente.'
+      : 'Usuario bloqueado correctamente.';
+
+    if (this.reporte) {
+      this.reporte.estado = accion === 'archivar' ? 'activo' : 'retirado';
+    }
+  };
+
+  const manejarError = () => {
+    this.resolviendo = false;
+    this.exito = false;
+    this.mensajeResultado = 'Error al resolver la incidencia.';
+  };
+
+  // ✔ Caso especial: bloquear → primero bloquear usuario, luego resolver reporte
+  if (accion === 'bloquear') {
+    this.adminUserService.blockUserFromReport(this.reporte.id).subscribe({
+      next: () => {
+        if (!this.reporte) return;
+        this.moderationService.resolveReportChat(this.reporte!.id, accion).subscribe({
+          next: finalizarResolucion,
+          error: manejarError
+        });
+      },
+      error: manejarError
+    });
+    return;
   }
+
+  // ✔ Caso normal: archivar
+  this.moderationService.resolveReportChat(this.reporte.id, accion).subscribe({
+    next: finalizarResolucion,
+    error: manejarError
+  });
+}
+
 
 /*   volver() {
     this.router.navigate(['/moderation/chat']);
