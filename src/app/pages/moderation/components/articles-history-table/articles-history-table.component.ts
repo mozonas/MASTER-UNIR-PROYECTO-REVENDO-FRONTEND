@@ -14,9 +14,9 @@ import { PaginationButtonsComponent } from '../../../../shared/buttons/paginatio
 })
 export class ArticlesHistoryTableComponent {
   private rawHistoryData = signal<ArticleReport[]>([]);
-
-  @Input({ required: true }) set historyData(value: ArticleReport[]) {
-    this.rawHistoryData.set(value);
+  
+  @Input({ required: true }) set historyData(value: ArticleReport[] | null | undefined) {
+    this.rawHistoryData.set(value ? value.slice() : []);
     this.historyPage.set(1); 
   }
 

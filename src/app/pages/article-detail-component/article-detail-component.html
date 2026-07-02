@@ -172,7 +172,7 @@
 <!--CGM 290626 COMPONENTE COMPARTIDO-->
 @if (mostrarModalReporte() && article()) {
 <app-report-type targetType="ARTICULO" [targetId]="+article()!.id" [targetTitle]="article()?.titulo || ''"
-    (closeModal)="cerrarModalReporte()" (onReportSuccess)="reportado.set(true)">
+    (closeModal)="cerrarModalReporte()" (onReportSuccess)="redireccion()">
 </app-report-type>
 }
 

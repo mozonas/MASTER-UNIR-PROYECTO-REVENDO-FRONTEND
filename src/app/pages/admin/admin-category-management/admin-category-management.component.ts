@@ -74,6 +74,12 @@ export class AdminCategoryManagementComponent implements OnInit {
     this.editMode = true;
     this.editId = cat.id;
     this.nombreCategoria = cat.nombre;
+
+    // Scroll al input
+    setTimeout(() => {
+    const el = document.getElementById('categoria-input');
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 0);
   }
 
   updateCategory() {
@@ -114,7 +120,7 @@ export class AdminCategoryManagementComponent implements OnInit {
             title: '¡Eliminada!',
             text: 'La categoría ha sido eliminada correctamente.',
             icon: 'success',
-            confirmButtonColor: '#3085d6'
+            confirmButtonColor: '#8cd86a'
           });
           
           // Recargamos la lista de categorías
