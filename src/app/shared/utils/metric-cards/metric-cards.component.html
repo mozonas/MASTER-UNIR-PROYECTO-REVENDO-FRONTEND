@@ -1,6 +1,6 @@
 <!-- Articulos publicados-->
 <div class="metrics-grid">
-<div class="metric-card">
+<div class="metric-card border">
    <div class="metric-title">Artículos publicados </div>
    <div class="metric-value">{{ newArticles() }}</div>
    <div class="metric-sub">
@@ -18,7 +18,7 @@
    </div>
 </div>
 <!-- Usuarios nuevos -->
-<div class="metric-card">
+<div class="metric-card border">
    <div class="metric-title">Usuarios nuevos</div>
    <div class="metric-value">{{ newUsers() }}</div>
    <div class="metric-sub">
@@ -35,7 +35,7 @@
       <span>{{ usersDiff() }}% crecimiento mensual</span>
    </div>
 </div>
-<div class="metric-card active-users">
+<div class="metric-card active-users border">
    <!-- Usuarios activos-->
    <div class="metric-title">Usuarios activos</div>
    <div class="metric-value">{{ activeUsers() }}</div>
@@ -54,7 +54,7 @@
    </div>
 </div>
 <!-- Artículos reportados -->
-<div class="metric-card"  [class.red] = "reportedArticles() > 0 " [class.green] = "reportedArticles() === 0">
+<div class="metric-card border"  [class.red] = "reportedArticles() > 0 " [class.green] = "reportedArticles() === 0">
    <div class="metric-title">Artículos reportados</div>
    <div class="metric-value">{{ reportedArticles() }}</div>
    <div class="metric-sub">
