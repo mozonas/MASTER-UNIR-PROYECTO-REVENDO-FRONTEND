@@ -4,15 +4,14 @@
     <!-- Tarjeta 1: Gestión de artículos -->
     <div class="col-md-6">
       <div class="card shadow-sm border-0 rounded overflow-hidden">
-        <div class="card-header bg-white py-3 border-bottom">
-          <h2 class="h6 mb-0 text-dark fw-bold text-uppercase">👗 Gestión de Artículos</h2>
+        <div class="card-header py-3 border-bottom" style="background-color: #8cd86a;">
+          <h2 class="h5 mb-0 text-white fw-bold text-uppercase">👗 Gestión de Artículos</h2>
         </div>
         <div class="card-body bg-white d-flex align-items-center justify-content-between p-4">
           <div>
             <p class="text-muted mb-1 small text-uppercase fw-bold">Alertas activas</p>
-            <span [class.bg-danger]="pendingArticlesCount() > 0" 
-                  [class.bg-success]="pendingArticlesCount() === 0" 
-                  class="badge rounded-pill px-3 py-2 fw-bold fs-5 text-white">
+            <span [class.bg-danger]="pendingArticlesCount() > 0" [class.bg-success]="pendingArticlesCount() === 0"
+              class="badge rounded-pill px-3 py-2 fw-bold fs-5 text-white">
               {{ pendingArticlesCount() }}
             </span>
           </div>
@@ -24,15 +23,14 @@
     <!-- Tarjeta 2: Gestión de mensajería -->
     <div class="col-md-6">
       <div class="card shadow-sm border-0 rounded overflow-hidden">
-        <div class="card-header bg-white py-3 border-bottom">
-          <h2 class="h6 mb-0 text-dark fw-bold text-uppercase">💬 Gestión de Mensajería</h2>
+        <div class="card-header py-3 border-bottom" style="background-color: #8cd86a;">
+          <h2 class="h5 mb-0 text-white fw-bold text-uppercase">💬 Gestión de Mensajería</h2>
         </div>
         <div class="card-body bg-white d-flex align-items-center justify-content-between p-4">
           <div>
             <p class="text-muted mb-1 small text-uppercase fw-bold">Alertas activas</p>
-            <span [class.bg-danger]="pendingChatsCount() > 0" 
-                  [class.bg-success]="pendingChatsCount() === 0" 
-                  class="badge rounded-pill px-3 py-2 fw-bold fs-5 text-white">
+            <span [class.bg-danger]="pendingChatsCount() > 0" [class.bg-success]="pendingChatsCount() === 0"
+              class="badge rounded-pill px-3 py-2 fw-bold fs-5 text-white">
               {{ pendingChatsCount() }}
             </span>
           </div>
@@ -43,9 +41,3 @@
 
   </div>
 </div>
-
-
-
-
-
-

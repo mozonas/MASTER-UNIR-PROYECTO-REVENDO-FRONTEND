@@ -1,2 +1,87 @@
+.table-container {
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    overflow: hidden;
+}
 
+.table-minimal {
+    width: 100%;
+}
 
+.fs-7 {
+    font-size: 0.85rem;
+}
+
+.text-dark-custom {
+    color: #0f172a;
+}
+
+.user-username {
+    color: #334155;
+    font-size: 0.875rem;
+}
+
+.table-minimal thead th {
+    background-color: #8cd86a;
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.row-minimal td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background-color 0.15s ease;
+}
+
+.row-minimal:hover td {
+    background-color: #f8fafc;
+}
+
+.row-minimal:last-child td {
+    border-bottom: none;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+}
+
+.status-badge.is-blocked {
+    background-color: #fef2f2;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+}
+
+.status-badge.is-restored {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.w-10 {
+    width: 10%;
+}
+
+.w-15 {
+    width: 15%;
+}
+
+.w-25 {
+    width: 25%;
+}
+
+.w-35 {
+    width: 35%;
+}

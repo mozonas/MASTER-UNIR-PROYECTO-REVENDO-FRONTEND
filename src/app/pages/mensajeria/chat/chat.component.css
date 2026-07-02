@@ -9,22 +9,22 @@
   overflow: hidden;
   padding: 1.5rem;
   gap: 1rem;
-  background-color: #f0f0f0;
 }
 
 .conversaciones-panel {
   width: 280px;
   background: white;
-  border-right: 1px solid #ddd;
+  border: 1px solid #ddd;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden; 
+  overflow: hidden;
 }
 
 .conversaciones-lista {
-  flex: 1;          
-  overflow-y: auto; 
+  flex: 1;
+  overflow-y: auto;
 }
 
 
@@ -206,7 +206,7 @@
 }
 
 .chat-input .form-control {
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 0.5rem 1rem;
   font-size: 0.82rem;
   border: 1px solid #ddd;
@@ -279,7 +279,7 @@
 /*CGM 260626 MODAL REPORTE*/
 .chat-header {
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
   align-items: center;
   width: 100%;
 }
@@ -287,11 +287,51 @@
 .chat-header-user-info {
   display: flex;
   align-items: center;
-  gap: 12px; 
+  gap: 12px;
 }
 
 .chat-header-acciones {
   display: flex;
   gap: 0.5rem;
   align-items: center;
+}
+
+.modal-reporte-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-reporte {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  width: 400px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  z-index: 10000;
+}
+
+.modal-reporte-titulo {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.modal-reporte-subtitulo {
+  font-size: 0.85rem;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+.modal-reporte-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
 }

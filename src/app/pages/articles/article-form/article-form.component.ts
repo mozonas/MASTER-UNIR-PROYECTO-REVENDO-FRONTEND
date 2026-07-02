@@ -131,7 +131,7 @@ export class ArticleFormComponent implements OnInit {
                                                 title: 'Acceso denegado',
                                                 text: 'No tienes permisos para editar este artículo.',
                                                 icon: 'error',
-                                                confirmButtonColor: '#3085d6'
+                                                confirmButtonColor: '#8cd86a'
                                         });
                                         void this.router.navigate(['/forbidden']);
                                         return;
@@ -175,7 +175,7 @@ export class ArticleFormComponent implements OnInit {
                                 title: 'Formato no valido',
                                 text: 'Solo se permiten archivos de imagen (jpg, jpeg, png, webp, gif, bmp, svg).',
                                 icon: 'warning',
-                                confirmButtonColor: '#3085d6'
+                                confirmButtonColor: '#8cd86a'
                         });
                 }
 
@@ -185,7 +185,7 @@ export class ArticleFormComponent implements OnInit {
                                 title: 'Limite de imagenes',
                                 text: `Solo se permiten ${this.maxImages} imágenes como máximo.`,
                                 icon: 'warning',
-                                confirmButtonColor: '#3085d6'
+                                confirmButtonColor: '#8cd86a'
                         });
                 }
 
@@ -290,7 +290,7 @@ export class ArticleFormComponent implements OnInit {
                                         title: 'Guardado',
                                         text: 'Sus cambios han sido guardados',
                                         icon: 'success',
-                                        confirmButtonColor: '#3085d6'
+                                        confirmButtonColor: '#8cd86a'
                                 });
                                 void this.router.navigate(['/user-info']);
                         },
@@ -300,7 +300,7 @@ export class ArticleFormComponent implements OnInit {
                                         title: 'Error',
                                         text: error?.error?.message || 'Error al guardar los cambios.',
                                         icon: 'error',
-                                        confirmButtonColor: '#3085d6'
+                                        confirmButtonColor: '#8cd86a'
                                 });
                         }
                 });
@@ -313,7 +313,7 @@ export class ArticleFormComponent implements OnInit {
                                 title: 'Creado',
                                 text: 'Su artículo ha sido creado',
                                 icon: 'success',
-                                confirmButtonColor: '#3085d6'
+                                confirmButtonColor: '#8cd86a'
                         });
                         void this.router.navigate(['/user-info']);
                 },
@@ -323,7 +323,7 @@ export class ArticleFormComponent implements OnInit {
                                 title: 'Error',
                                 text: error?.error?.message || 'No se pudo crear el artículo. Intente de nuevo.',
                                 icon: 'error',
-                                confirmButtonColor: '#3085d6'
+                                confirmButtonColor: '#8cd86a'
                         });
                 }
         });

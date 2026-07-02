@@ -1,121 +1,104 @@
-<div class="container mt-4">
+<div class="container mt-4" style="max-width: 1000px;">
 
-  <!-- ============================
-       FORMULARIO CREAR / EDITAR
-  ============================= -->
-  <div class="card mb-4">
-    <div class="card-body">
+  <!-- Contenedor del Formulario -->
+  <div class="table-container p-4 mb-4">
+    <h5 class="text-white fw-semibold mb-3 fs-6 text-uppercase letter-spacing-05">
+      @if (editMode) {
+      Editar categoría
+      } @else {
+      Crear categoría
+      }
+    </h5>
 
-      <h5 class="card-title">
-        @if (editMode) {
-          Editar categoría
-        } @else {
-          Crear categoría
-        }
-      </h5>
+    <div class="filter-group">
+      <label for="categoria-input" class="filter-label text-white">Nombre de la categoría</label>
 
-      <div class="input-group mb-3">
-        <input
-          id="categoria-input"
-          type="text"
-          class="form-control"
-          placeholder="Nombre de la categoría"
-          [(ngModel)]="nombreCategoria"
-        />
+      <!-- Limitamos el ancho de este grupo a un tamaño óptimo (max 500px) -->
+      <div class="input-group" style="max-width: 500px;">
+        <input id="categoria-input" type="text" class="form-control form-minimal"
+          placeholder="Escribe el nombre de la categoría..." [(ngModel)]="nombreCategoria" />
 
         @if (!editMode) {
-          <button class="btn btn-primary" (click)="createCategory()">
-            <img src="/images/ico-add.svg" alt="Crear" />
-          </button>
+        <button class="btn btn-form-action" (click)="createCategory()" title="Crear categoría">
+          <img src="/images/ico-add.svg" alt="Crear" width="20" height="20" />
+        </button>
         }
 
         @if (editMode) {
-          <button class="btn btn-success" (click)="updateCategory()">
-            <img src="/images/ico-comprobado-48.svg" alt="Guardar" />
-          </button>
+        <button class="btn btn-form-action" (click)="updateCategory()" title="Guardar cambios">
+          <img src="/images/ico-comprobado-48.svg" alt="Guardar" width="20" height="20" />
+        </button>
 
-          <button class="btn btn-secondary" (click)="cancelEdit()">
-            <img src="/images/ico-cancelar.svg" alt="Cancelar" />
-          </button>
+        <button class="btn btn-form-action" (click)="cancelEdit()" title="Cancelar edición">
+          <img src="/images/ico-cancelar.svg" alt="Cancelar" width="20" height="20" />
+        </button>
         }
       </div>
-
     </div>
   </div>
 
-  <!-- ============================
-       TABLA DE CATEGORÍAS
-  ============================= -->
-  <div class="card">
-    <div class="card-body">
+  <!-- Contenedor de la Tabla (Se mantiene al ancho total del contenedor de 1000px) -->
+  <div class="table-container mb-4">
+    <div class="p-3 border-bottom border-light" style="background-color: #8cd86a;">
+      <h5 class="text-white fw-semibold m-0 fs-6 text-uppercase letter-spacing-05">Listado de categorías</h5>
+    </div>
 
-      <h5 class="card-title">Listado de categorías</h5>
-
-      <table class="table table-striped">
+    <div class="table-responsive">
+      <table class="table table-minimal align-middle mb-0">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Creada</th>
-            <th class="text-end">Acciones</th>
+            <th scope="col" class="ps-4" style="width: 100px;">ID</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Creada</th>
+            <th scope="col" class="text-center pe-4" style="width: 140px;">Acciones</th>
           </tr>
         </thead>
 
         <tbody>
-
           @for (category of categories; track category.id) {
-            <tr>
-              <td>{{ category.id }}</td>
-              <td>{{ category.nombre }}</td>
-              <td>{{ category.created_at | date:'short' }}</td>
+          <tr class="row-minimal">
+            <td class="ps-4 text-muted fs-7 fw-medium">{{ category.id }}</td>
+            <td class="text-dark-custom fw-medium">{{ category.nombre }}</td>
+            <td class="text-muted fs-7">{{ category.created_at | date:'shortDate' }}</td>
 
-              <td class="text-end">
-                <button class="btn btn-sm btn-warning me-2" (click)="startEdit(category)">
-                  <img src="/images/ico-editar.svg" alt="Editar" />
+            <td class="pe-4">
+              <div class="d-flex justify-content-center gap-1">
+                <button class="btn btn-mini-action" (click)="startEdit(category)" title="Editar">
+                  <img src="/images/ico-editar.svg" alt="Editar" width="18" height="18" />
                 </button>
 
-                <button class="btn btn-sm btn-danger" (click)="deleteCategory(category.id)">
-                  <img src="/images/ico-eliminar.svg" alt="Eliminar" />
+                <button class="btn btn-mini-action btn-mini-delete" (click)="deleteCategory(category.id)"
+                  title="Eliminar">
+                  <img src="/images/ico-eliminar.svg" alt="Eliminar" width="18" height="18" />
                 </button>
-              </td>
-            </tr>
+              </div>
+            </td>
+          </tr>
           } @empty {
-            <tr>
-              <td colspan="4" class="text-center text-muted py-3">
-                No hay categorías disponibles
-              </td>
-            </tr>
+          <tr>
+            <td colspan="4" class="text-center text-muted py-4 fs-7">
+              No hay categorías disponibles en este momento.
+            </td>
+          </tr>
           }
-
         </tbody>
       </table>
-
-      <!-- ============================
-           PAGINACIÓN
-      ============================= -->
-      <div class="d-flex justify-content-between align-items-center mt-3">
-
-        <button
-          class="btn btn-outline-primary"
-          [disabled]="page === 1"
-          (click)="prevPage()"
-        >
-          Anterior
-        </button>
-
-        <span>Página {{ page }} de {{ totalPages }}</span>
-
-        <button
-          class="btn btn-outline-primary"
-          [disabled]="page === totalPages"
-          (click)="nextPage()"
-        >
-          Siguiente
-        </button>
-
-      </div>
-
     </div>
+  </div>
+
+  <!-- Paginación -->
+  <div class="d-flex justify-content-center align-items-center gap-3 my-4">
+    <button class="btn" (click)="prevPage()" [disabled]="page === 1">
+      <i class="bi bi-chevron-left me-1"></i> Anterior
+    </button>
+
+    <span class="fw-semibold text-secondary bg-light px-3 py-1">
+      Página <span class="text-dark">{{ page }}</span> de {{ totalPages }}
+    </span>
+
+    <button class="btn" (click)="nextPage()" [disabled]="page === totalPages">
+      Siguiente <i class="bi bi-chevron-right ms-1"></i>
+    </button>
   </div>
 
 </div>
