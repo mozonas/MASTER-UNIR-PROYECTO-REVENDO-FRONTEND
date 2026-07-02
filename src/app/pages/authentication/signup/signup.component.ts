@@ -157,7 +157,7 @@ export class SignupComponent implements AfterViewInit, OnDestroy {
     this.authService.signup(form).subscribe({
       next: (resp) => {
         Swal.fire({
-          title: '¡Te has resgistrado correctamente!',
+          title: '¡Te has registrado correctamente!',
           text: 'Tu cuenta de usuario ha sido creada',
           icon:'success',
           confirmButtonColor: '#8cd86a',
