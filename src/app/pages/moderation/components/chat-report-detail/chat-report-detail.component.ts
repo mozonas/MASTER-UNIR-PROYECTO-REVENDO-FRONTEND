@@ -7,6 +7,8 @@ import { ChatService } from '../../../../services/chat.service';
 import { ChatReport } from '../../../../interfaces/moderation.interface';
 //mog 300626 importamos authservice parala lógica de navegación admin/moderator
 import { AuthService } from '../../../../services/auth.service';
+//mog 02072026
+import {AdminUserService} from "../../../../services/admin/admin-user.service";
 @Component({
   selector: 'app-chat-report-detail',
   imports: [CommonModule, FormsModule],
@@ -37,6 +39,13 @@ export class ChatReportDetailComponent implements OnInit {
       ? '/admin/moderacion'
       : '/moderation';
   }
+
+  // mog 02072026
+  // añadimos la constante típica isAdmin para saber si se es admin o no el que está viendo el detalle del reporte de chat,
+  //  para mostrar o no el botón de bloquear usuario
+  isAdmin =this.auth.getUserRole() === 'ADMIN';
+  private adminUserService = inject(AdminUserService);
+
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!id) {
@@ -107,17 +116,40 @@ export class ChatReportDetailComponent implements OnInit {
     if (!this.reporte) return;
     this.resolviendo = true;
 
-    this.moderationService.resolveReportChat(this.reporte.id, accion).subscribe({
-      next: () => {
-        this.resolviendo = false;
-        this.exito = true;
-        this.mensajeResultado = accion === 'archivar'
-          ? 'Incidencia archivada correctamente.'
-          : 'Usuario bloqueado correctamente.';
-        if (this.reporte) {
-          this.reporte.estado = accion === 'archivar' ? 'activo' : 'retirado';
+    const finalizarResolucion = () => {
+      this.resolviendo = false;
+      this.exito = true;
+      this.mensajeResultado = accion === 'archivar'
+        ? 'Incidencia archivada correctamente.'
+        : 'Usuario bloqueado correctamente.';
+      if (this.reporte) {
+        this.reporte.estado = accion === 'archivar' ? 'activo' : 'retirado';
+      }
+    };
+
+    if (accion === 'bloquear') {
+      this.adminUserService.toggleBlockUser(this.reporte.usuarios_id, 1).subscribe({
+        next: () => {
+          this.moderationService.resolveReportChat(this.reporte!.id, accion).subscribe({
+            next: finalizarResolucion,
+            error: () => {
+              this.resolviendo = false;
+              this.exito = false;
+              this.mensajeResultado = 'Error al resolver la incidencia.';
+            }
+          });
+        },
+        error: () => {
+          this.resolviendo = false;
+          this.exito = false;
+          this.mensajeResultado = 'Error al actualizar el estado del usuario.';
         }
-      },
+      });
+      return;
+    }
+
+    this.moderationService.resolveReportChat(this.reporte.id, accion).subscribe({
+      next: finalizarResolucion,
       error: () => {
         this.resolviendo = false;
         this.exito = false;
