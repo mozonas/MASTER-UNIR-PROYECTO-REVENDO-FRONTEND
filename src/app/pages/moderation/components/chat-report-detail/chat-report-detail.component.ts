@@ -37,6 +37,9 @@ export class ChatReportDetailComponent implements OnInit {
       ? '/admin/moderacion'
       : '/moderation';
   }
+
+  isAdmin = this.auth.getUserRole() === 'ADMIN';
+
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!id) {

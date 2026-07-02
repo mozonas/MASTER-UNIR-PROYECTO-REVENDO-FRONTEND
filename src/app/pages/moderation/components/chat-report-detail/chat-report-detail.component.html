@@ -24,7 +24,7 @@
       </div>
     </div>
 
-<!--     @if (reporte.estado === 'pendiente') {
+    @if (reporte.estado === 'pendiente') {
       <div class="card shadow-sm mb-4">
         <div class="card-header">
           <h5 class="mb-0">Resolver incidencia</h5>
@@ -35,15 +35,16 @@
             [disabled]="resolviendo">
             Archivar (sin acción)
           </button>
+          @if (isAdmin) {
           <button class="btn btn-outline-danger"
             (click)="resolverIncidencia('bloquear')"
             [disabled]="resolviendo">
             Bloquear usuario
           </button>
+          }
         </div>
       </div>
-    } -->
-      <!-- //mog 01/07/2026 - comentamos el código superior porque moderador no tiene esta funcionalidad, es de admin -->
+    }
 
     @if (reporte.articulos_id) {
       <div class="card shadow-sm mb-4">
