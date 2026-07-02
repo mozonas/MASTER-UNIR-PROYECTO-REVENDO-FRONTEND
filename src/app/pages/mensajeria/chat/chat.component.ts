@@ -56,7 +56,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   mostrarModalReporte = signal(false);
   reportado = signal(false);
 
-  // Modal marcar vendido
   mostrarModalVendido: boolean = false;
   tipoPagoSeleccionado: string = 'Efectivo';
   precioAcordado: number = 0;
@@ -82,7 +81,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     }, 5000);
   }
 
-  //**ACCIONES PARA EL MODAL REPORTAR */
   onReportar(): void {
     this.mostrarModalReporte.set(true);
   }
@@ -95,7 +93,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.reportado.set(true);
   }
 
-  // ACCIONES PARA MARCAR VENDIDO
   abrirModalVendido(): void {
     this.mostrarModalVendido = true;
     this.tipoPagoSeleccionado = 'Efectivo';
@@ -118,6 +115,19 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.marcandoVendido = false;
         this.articuloVendido = true;
         this.cerrarModalVendido();
+
+        const mensaje = {
+          contenido: `✅ El artículo "${this.conversacionActiva?.titulo}" ha sido marcado como vendido por ${this.precioAcordado}€ mediante ${this.tipoPagoSeleccionado}. ¡Gracias por usar ReVendo!`,
+          usuarios_id: this.usuarioActualId,
+          articulos_id: this.conversacionActiva!.articulos_id
+        };
+
+        this.chatService.enviarMensaje(mensaje).subscribe({
+          next: () => {
+            this.cargarMensajes(this.conversacionActiva!.articulos_id);
+          }
+        });
+
         this.cdr.detectChanges();
       },
       error: () => {
@@ -199,7 +209,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.articuloVendido = false;
     this.cargarMensajes(conv.articulos_id);
 
-    // Comprobar si el usuario actual es el vendedor del artículo
     this.chatService.getArticuloPorId(conv.articulos_id).subscribe({
       next: (resp) => {
         const articulo = resp.data;
