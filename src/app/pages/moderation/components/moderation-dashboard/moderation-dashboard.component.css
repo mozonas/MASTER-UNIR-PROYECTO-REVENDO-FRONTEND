@@ -1,3 +1,38 @@
+.table-container {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+}
 
+.text-dark-custom {
+    color: #0f172a;
+}
 
+.letter-spacing-05 {
+    letter-spacing: 0.05em;
+}
 
+.filter-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.profile-indicator {
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.profile-indicator.is-admin {
+    color: #ef4444;
+}
+
+.profile-indicator.is-moderator {
+    color: #16a34a;
+}

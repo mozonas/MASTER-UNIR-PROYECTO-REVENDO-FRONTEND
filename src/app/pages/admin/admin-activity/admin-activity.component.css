@@ -1,21 +1,21 @@
-.recent-activity,
-.table-activity {
-  border-left: 1px solid #e2e8f0 ;
-  border-right: 1px solid #e2e8f0;
-  border-bottom: 1px solid #e2e8f0 ;
-  border-top: 1px solid #e2e8f0;
+/* Contenedor de la sección */
+.recent-activity {
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
   overflow: hidden; 
+}
+
+/* Estilos de la tabla */
+.table-activity {
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
   margin-bottom: 0;
-  table-layout: fixed !important;
 }
 
 .table-activity thead th {
-  background-color: #8cd86a ; 
-  color: #ffffff ;            
+  background-color: #8cd86a; 
+  color: #ffffff;            
   font-weight: 500;
   font-size: 0.9rem;
   text-transform: uppercase;
@@ -26,35 +26,33 @@
 
 .table-activity tbody td {
   padding: 14px 16px;
- 
 }
 
 .table-activity tbody tr:last-child td {
   border-bottom: none;
 }
 
+/* Gestión de columnas más flexible (Responsive) */
 .table-activity th:first-child,
 .table-activity td:first-child {
-  width: 10%;
+  width: 120px;
   white-space: nowrap;
-  padding-right: 32px; 
 }
+
 .table-activity th:nth-child(2),
 .table-activity td:nth-child(2) {
-  width: 60%;
+  min-width: 250px; 
 }
 
 .table-activity th:nth-child(3),
 .table-activity td:nth-child(3) {
-  text-align: left ;
-  width: 18%; 
+  text-align: left;
+  width: 150px; 
 }
 
 .table-activity th:last-child,
 .table-activity td:last-child {
-  width: 12%;
+  width: 160px;
   white-space: nowrap;
   text-align: left;
-  padding-left: 44px;
-  padding-right: 1px; 
 }
