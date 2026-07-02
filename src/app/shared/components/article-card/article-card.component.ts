@@ -50,11 +50,10 @@ export class ArticleCardComponent {
       text: 'Esta acción no se puede deshacer.',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#dc3545',
+      confirmButtonColor: '#8cd86a',
       cancelButtonColor: '#6c757d',
-      confirmButtonText: 'Sí, eliminar',
+      confirmButtonText: 'Eliminar',
       cancelButtonText: 'Cancelar',
-      reverseButtons: true,
     });
 
     if (result.isConfirmed) {
