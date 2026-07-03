@@ -7,10 +7,8 @@
 
 /* Estilos de la tabla */
 .table-activity {
-  border-collapse: separate;
-  border-spacing: 0;
+ table-layout: fixed; 
   width: 100%;
-  margin-bottom: 0;
 }
 
 .table-activity thead th {
@@ -35,24 +33,33 @@
 /* Gestión de columnas más flexible (Responsive) */
 .table-activity th:first-child,
 .table-activity td:first-child {
-  width: 120px;
+  width: 110px;
   white-space: nowrap;
 }
 
 .table-activity th:nth-child(2),
 .table-activity td:nth-child(2) {
-  min-width: 250px; 
+  width: 55%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 24px; 
 }
 
 .table-activity th:nth-child(3),
 .table-activity td:nth-child(3) {
   text-align: left;
-  width: 150px; 
+  width: 180px; 
+  min-width: 180px;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .table-activity th:last-child,
 .table-activity td:last-child {
-  width: 160px;
+  width: 150px;
   white-space: nowrap;
   text-align: left;
 }
