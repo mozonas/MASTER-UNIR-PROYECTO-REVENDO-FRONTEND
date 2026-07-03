@@ -8,6 +8,9 @@ import { ChatReport } from '../../../../interfaces/moderation.interface';
 //mog 300626 importamos authservice parala lógica de navegación admin/moderator
 import { AuthService } from '../../../../services/auth.service';
 import {AdminUserService} from "../../../../services/admin/admin-user.service";
+
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-chat-report-detail',
   imports: [CommonModule, FormsModule],
@@ -132,7 +135,7 @@ export class ChatReportDetailComponent implements OnInit {
     });
   } */
  
-    resolverIncidencia(accion: 'archivar' | 'bloquear') {
+/*    resolverIncidencia(accion: 'archivar' | 'bloquear') {
       if (!this.reporte) return;
       this.resolviendo = true;
 
@@ -175,11 +178,101 @@ export class ChatReportDetailComponent implements OnInit {
     error: manejarError
   });
 }
-
+*/
 
 /*   volver() {
     this.router.navigate(['/moderation/chat']);
   } */
+
+/*  volver(): void {
+    const base = this.getBasePath();
+    this.router.navigate([base + '/chat']);
+  }
+
+}
+  */
+  
+  resolverIncidencia(accion: 'archivar' | 'bloquear') {
+    if (!this.reporte) return;
+
+    const esBloqueo = accion === 'bloquear';
+    const titulo = esBloqueo ? '¿Bloquear usuario y resolver?' : '¿Archivar incidencia?';
+    const texto = esBloqueo 
+      ? 'Esta acción bloqueará permanentemente al usuario asociado a este reporte.' 
+      : 'La incidencia se marcará como resuelta y se archivará.';
+    const botonConfirmar = esBloqueo ? 'Sí, bloquear y resolver' : 'Sí, archivar';
+    const colorBoton = '#8cd86a';
+
+    Swal.fire({
+      title: titulo,
+      text: texto,
+      icon: esBloqueo ? 'warning' : 'question',
+      showCancelButton: true,
+      confirmButtonColor: colorBoton,
+      cancelButtonColor: '#6e7881',
+      confirmButtonText: botonConfirmar,
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.resolviendo = true;
+
+        Swal.fire({
+          title: 'Procesando...',
+          text: 'Por favor, espere un momento.',
+          allowOutsideClick: false,
+          didOpen: () => { Swal.showLoading(); }
+        });
+
+        const finalizarResolucion = () => {
+          this.resolviendo = false;
+          this.exito = true;
+          this.mensajeResultado = esBloqueo
+            ? 'Usuario bloqueado correctamente.'
+            : 'Incidencia archivada correctamente.';
+
+          if (this.reporte) {
+            this.reporte.estado = esBloqueo ? 'retirado' : 'activo';
+          }
+
+          Swal.fire({
+            title: '¡Acción Completada!',
+            text: this.mensajeResultado,
+            icon: 'success',
+            timer: 2500,
+            showConfirmButton: false
+          }).then(() => {
+            this.volver();
+          });
+        };
+
+        const manejarError = () => {
+          this.resolviendo = false;
+          this.exito = false;
+          this.mensajeResultado = 'Error al resolver la incidencia.';
+          Swal.fire('Error', this.mensajeResultado, 'error');
+        };
+
+        if (esBloqueo) {
+          this.adminUserService.blockUserFromReport(this.reporte!.id).subscribe({
+            next: () => {
+              if (!this.reporte) return;
+              this.moderationService.resolveReportChat(this.reporte!.id, accion).subscribe({
+                next: finalizarResolucion,
+                error: manejarError
+              });
+            },
+            error: manejarError
+          });
+        } else {
+          this.moderationService.resolveReportChat(this.reporte!.id, accion).subscribe({
+            next: finalizarResolucion,
+            error: manejarError
+          });
+        }
+      }
+    });
+  }
 
   volver(): void {
     const base = this.getBasePath();
