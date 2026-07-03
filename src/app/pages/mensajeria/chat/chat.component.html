@@ -63,17 +63,16 @@
           <div class="mensaje-texto">
             {{ limpiarContenido(mensaje.contenido) }}
           </div>
-          <span class="mensaje-hora">{{ horaMensaje(mensaje.created_at) }}</span>
 
           <!-- Botón de redirección interactivo para valorar en página externa -->
           @if (obtenerTransaccionId(mensaje.contenido); as txId) {
           <!-- Validamos que el comprador no sea quien envió el mensaje para evitar autovaloraciones -->
           @if (mensaje.usuarios_id !== usuarioActualId) {
-          <div class="mt-3 text-start">
+          <div class="mt-4 text-center mx-auto">
             @if (transaccionPendienteId === txId) {
             <!-- Transacción aún pendiente: Muestra botón para ir a valorar -->
             <button
-              class="btn btn-success btn-sm rounded-pill px-3 fw-bold d-flex align-items-center gap-1 shadow-sm border-0"
+              class="btn btn-success btn-sm rounded-pill px-3 fw-bold d-flex align-items-center gap-1 shadow-sm border-0 mx-auto"
               (click)="redireccionarAValoracion(mensaje, txId)" style="font-size: 0.8rem; background-color: #198754;">
               <i class="fa fa-star text-warning animate-spin-slow"></i> Valorar vendedor
             </button>
@@ -87,6 +86,7 @@
             }
           </div>
           }
+          <span class="mensaje-hora">{{ horaMensaje(mensaje.created_at) }}</span>
           }
         </div>
       </div>
