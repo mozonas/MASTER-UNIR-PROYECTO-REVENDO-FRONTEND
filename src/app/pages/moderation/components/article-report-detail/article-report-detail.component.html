@@ -13,7 +13,7 @@
     <div class="card-body p-4">
       <div class="d-flex gap-4 flex-wrap">
         @if (articuloEnRevision()!.foto) {
-          <img [src]="'http://localhost:3000/uploads/' + articuloEnRevision()!.foto"
+          <img [src]="'http://localhost:3000/' + articuloEnRevision()!.foto"
                [alt]="articuloEnRevision()!.titulo"
                class="rounded"
                style="width:160px;height:160px;object-fit:cover;">
