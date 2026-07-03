@@ -31,7 +31,7 @@
                         <div class="stars-selector fs-2 d-inline-flex gap-1">
                             @for (star of [1, 2, 3, 4, 5]; track star) {
                             <i class="fa cursor-pointer transition-all"
-                                [ngClass]="(ratingHover >= star || valoracionForm.get('puntuacion')?.value >= star) ? 'fa-star animate-scale colorrevendo' : 'fa-star text-muted'"
+                                [ngClass]="(ratingHover >= star || valoracionForm.get('puntuacion')?.value >= star) ? 'fa-star animate-scale colorrevendo' : 'fa-star'"
                                 (click)="setRating(star)" (mouseenter)="setHover(star)" (mouseleave)="setHover(0)">
                             </i>
                             }
