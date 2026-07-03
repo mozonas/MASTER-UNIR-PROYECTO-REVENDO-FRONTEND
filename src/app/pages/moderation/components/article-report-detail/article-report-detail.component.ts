@@ -74,11 +74,10 @@ export class ArticleReportDetailComponent implements OnInit {
       : 'El reporte se archivará y el artículo seguirá visible.',
     icon: 'warning',
     showCancelButton: true,
-    confirmButtonColor: accion === 'aprobar' ? '#dc3545' : '#8cd86a', // Rojo para borrar, verde para descartar
+    confirmButtonColor: '#8cd86a',
     cancelButtonColor: '#6c757d',
-    confirmButtonText: accion === 'aprobar' ? 'Sí, retirar artículo' : 'Sí, restaurar',
+    confirmButtonText: accion === 'aprobar' ? 'Retirar artículo' : 'Restaurar',
     cancelButtonText: 'Cancelar',
-    reverseButtons: true
   }).then((result) => {
     
     if (result.isConfirmed) {
