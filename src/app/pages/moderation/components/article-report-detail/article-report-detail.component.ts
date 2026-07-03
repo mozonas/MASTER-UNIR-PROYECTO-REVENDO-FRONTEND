@@ -6,11 +6,14 @@ import { ArticleInReview, ArticleReport } from '../../../../interfaces/moderatio
 //mog 280626 importamos AuthService para usarlo en l alógica de navegación moderador/admin
 import { AuthService } from '../../../../services/auth.service';
 import Swal from 'sweetalert2';
-
+//mog 03072026
+import { ChatService } from '../../../../services/chat.service';
+import { ChatReport } from '../../../../interfaces/moderation.interface';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-article-report-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,FormsModule],
   templateUrl: './article-report-detail.component.html',
   styleUrl: './article-report-detail.component.css',
 })
@@ -26,6 +29,17 @@ export class ArticleReportDetailComponent implements OnInit {
   notFound = signal<boolean>(false);
   articuloEnRevision = signal<ArticleInReview | null>(null);
   reporteHistorico = signal<ArticleReport | null>(null);
+
+  //mog 03072026 implementar mandar mensajes al usuario
+  reporte: ChatReport | null = null;
+  mensajesConversacion: any[] = [];
+  cargandoMensajes: boolean = false;
+  mensajeNotificacion: string = '';
+  enviando: boolean = false;
+  mensajeResultado: string = '';
+  exito: boolean = false;
+
+    resolviendo: boolean = false;
 
   ngOnInit(): void {
     this.cargarDetalle();
@@ -113,4 +127,36 @@ export class ArticleReportDetailComponent implements OnInit {
     const prefix = this.router.url.includes('admin') ? '/admin/moderacion' : '/moderation';
     this.router.navigate([`${prefix}/articulos`]);
   }
+
+  //mog 03072026 -> mandar mensaje al dueño del artículo reportado
+  
+    enviarNotificacion() {
+      const articulo = this.articuloEnRevision(); // obtener valor del signal
+
+      if (!this.mensajeNotificacion.trim()) return;
+      if (!articulo) return;
+
+      this.enviando = true;
+
+      this.moderationService.enviarNotificacion(
+        articulo.reporte_id,     // ID del reporte (este sí existe)
+        articulo.id,             // ID del artículo (este sí existe en ArticleInReview)
+        this.mensajeNotificacion
+      ).subscribe({
+        next: () => {
+          this.exito = true;
+          this.mensajeResultado = 'Notificación enviada correctamente.';
+          this.enviando = false;
+          this.mensajeNotificacion = '';
+        },
+        error: () => {
+          this.exito = false;
+          this.mensajeResultado = 'Error al enviar la notificación.';
+          this.enviando = false;
+        }
+      });
+    }
+
+
+
 }
