@@ -131,7 +131,8 @@
                             <!-- Botón -->
                             <div class="d-grid gap-2">
                                 @if (puedeComprar) {
-                                <button class="btn btn-primary" (click)="comprarArticulo(); $event.stopPropagation()"
+                                <button class="btn btn-primary"
+                                    (click)="abrirConfirmacionCompra(); $event.stopPropagation()"
                                     [disabled]="compraDeshabilitada">
                                     {{ comprando() ? 'Procesando...' : 'Comprar' }}
                                 </button>
