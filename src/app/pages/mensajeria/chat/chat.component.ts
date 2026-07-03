@@ -2,10 +2,11 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef, signal } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ChatService } from '../../../services/chat.service';
 import { AuthService } from '../../../services/auth.service';
 import { ArticleService } from '../../../services/article.service';
+import { UserService } from '../../../services/user.service';
 import { ReportTypeComponent } from '../../../shared/report-type/report-type.component';
 
 interface Mensaje {
@@ -41,8 +42,10 @@ export class ChatComponent implements OnInit, OnDestroy {
   private chatService = inject(ChatService);
   private authService = inject(AuthService);
   private articleService = inject(ArticleService);
+  private userService = inject(UserService);
   private cdr = inject(ChangeDetectorRef);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   usuarioActualId: number = 0;
   articuloIdDesdeUrl: number | null = null;
@@ -63,6 +66,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   articuloVendido: boolean = false;
   esVendedor: boolean = false;
   esUsuario: boolean = false;
+
+  transaccionPendienteId: number | null | undefined = undefined;
 
   private pollingMensajes: any;
   private pollingConversaciones: any;
@@ -107,17 +112,25 @@ export class ChatComponent implements OnInit, OnDestroy {
     if (!this.conversacionActiva || !this.tipoPagoSeleccionado || !this.precioAcordado) return;
     this.marcandoVendido = true;
 
+    const compradorId = this.conversacionActiva.otro_usuario_id;
+
     this.articleService.marcarVendido(
       String(this.conversacionActiva.articulos_id),
-      { tipoPago: this.tipoPagoSeleccionado, precio: this.precioAcordado }
+      {
+        tipoPago: this.tipoPagoSeleccionado,
+        precio: this.precioAcordado,
+        compradorId
+      } as any
     ).subscribe({
-      next: () => {
+      next: (res: any) => {
         this.marcandoVendido = false;
         this.articuloVendido = true;
         this.cerrarModalVendido();
 
+        const transId = res?.transaccionId || res?.data?.transaccionId || 1;
+
         const mensaje = {
-          contenido: `✅ El artículo "${this.conversacionActiva?.titulo}" ha sido marcado como vendido por ${this.precioAcordado}€ mediante ${this.tipoPagoSeleccionado}. ¡Gracias por usar ReVendo!`,
+          contenido: `✅ ¡El artículo "${this.conversacionActiva?.titulo}" ha sido marcado como vendido por ${this.precioAcordado}€ mediante ${this.tipoPagoSeleccionado}! [TX_ID:${transId}]`,
           usuarios_id: this.usuarioActualId,
           articulos_id: this.conversacionActiva!.articulos_id
         };
@@ -125,6 +138,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.chatService.enviarMensaje(mensaje).subscribe({
           next: () => {
             this.cargarMensajes(this.conversacionActiva!.articulos_id);
+            this.refrescarTransaccionPendiente();
           }
         });
 
@@ -134,6 +148,52 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.marcandoVendido = false;
       }
     });
+  }
+
+  // Verifica con un regex si el mensaje contiene el tag [TX_ID:X]
+  obtenerTransaccionId(contenido: string): number | null {
+    const match = contenido.match(/\[TX_ID:(\d+)\]/);
+    return match ? Number(match[1]) : null;
+  }
+
+  // Limpia el contenido para que el comprador no vea el tag feo en la burbuja de chat
+  limpiarContenido(contenido: string): string {
+    return contenido.replace(/\[TX_ID:\d+\]/, '').trim();
+  }
+
+  // Redirecciona al componente Valoraciones con los queryParams necesarios
+  redireccionarAValoracion(mensaje: Mensaje, transaccionId: number) {
+    if (!this.conversacionActiva) return;
+
+    this.router.navigate(['/evaluar'], {
+      queryParams: {
+        vendedorId: mensaje.usuarios_id,
+        transaccionId: transaccionId,
+        titulo: this.conversacionActiva.titulo
+      }
+    });
+  }
+
+  // Consulta al backend si existe una transacción pendiente real entre ambos usuarios
+  refrescarTransaccionPendiente() {
+    if (this.conversacionActiva && !this.esVendedor) {
+      this.chatService.getArticuloPorId(this.conversacionActiva.articulos_id).subscribe({
+        next: (resp) => {
+          const articulo = resp.data;
+          const vendedorId = Number(articulo.usuarios_id);
+          this.userService.getTransaccionPendiente(vendedorId, this.usuarioActualId).subscribe({
+            next: (pendingTx) => {
+              this.transaccionPendienteId = pendingTx ? pendingTx.transaccion_id : null;
+              this.cdr.detectChanges();
+            },
+            error: (err) => {
+              console.error('Error al obtener estado pendiente de transaccion:', err);
+              this.transaccionPendienteId = null;
+            }
+          });
+        }
+      });
+    }
   }
 
   ngOnDestroy() {
@@ -207,6 +267,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   seleccionarConversacion(conv: Conversacion) {
     this.conversacionActiva = conv;
     this.articuloVendido = false;
+    this.transaccionPendienteId = undefined;
     this.cargarMensajes(conv.articulos_id);
 
     this.chatService.getArticuloPorId(conv.articulos_id).subscribe({
@@ -214,6 +275,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         const articulo = resp.data;
         this.esVendedor = Number(articulo.usuarios_id) === this.usuarioActualId;
         this.articuloVendido = articulo.estadoVenta === 'VENDIDO';
+        this.refrescarTransaccionPendiente();
         this.cdr.detectChanges();
       }
     });
@@ -222,6 +284,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.pollingMensajes = setInterval(() => {
       this.cargarMensajes(conv.articulos_id);
+      this.refrescarTransaccionPendiente();
     }, 3000);
   }
 

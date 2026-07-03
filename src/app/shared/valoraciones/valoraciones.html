@@ -18,9 +18,13 @@
                     <span>Transacción: <strong class="text-dark">{{ articuloTitulo }}</strong></span>
                 </div>
 
+                <!-- Alerta dinámica de error / estado de transacción ya calificada -->
                 @if (errorMessage) {
-                <div class="alert alert-danger custom-fs-7 border-0 rounded-3 mb-4" role="alert">
-                    <i class="fa fa-exclamation-circle me-1"></i> {{ errorMessage }}
+                <div class="alert"
+                    [ngClass]="yaValorada ? 'alert-success border-success-subtle text-success' : 'alert-danger'"
+                    class="custom-fs-7 border rounded-3 mb-4" role="alert">
+                    <i class="fa" [ngClass]="yaValorada ? 'fa-check-circle me-1' : 'fa-exclamation-circle me-1'"></i> {{
+                    errorMessage }}
                 </div>
                 }
 
@@ -28,11 +32,13 @@
 
                     <div class="text-center">
                         <label class="form-label d-block text-muted fw-semibold mb-2">¿Cómo fue tu experiencia?</label>
-                        <div class="stars-selector fs-2 d-inline-flex gap-1">
+                        <div class="stars-selector fs-2 d-inline-flex gap-1" [class.opacity-50]="yaValorada">
                             @for (star of [1, 2, 3, 4, 5]; track star) {
-                            <i class="fa cursor-pointer transition-all"
-                                [ngClass]="(ratingHover >= star || valoracionForm.get('puntuacion')?.value >= star) ? 'fa-star animate-scale colorrevendo' : 'fa-star text-muted'"
-                                (click)="setRating(star)" (mouseenter)="setHover(star)" (mouseleave)="setHover(0)">
+                            <i class="fa transition-all" [ngClass]="{
+                                    'cursor-pointer': !yaValorada,
+                                    'fa-star animate-scale colorrevendo': (ratingHover >= star || valoracionForm.get('puntuacion')?.value >= star),
+                                    'fa-star text-muted': !(ratingHover >= star || valoracionForm.get('puntuacion')?.value >= star)
+                                }" (click)="setRating(star)" (mouseenter)="setHover(star)" (mouseleave)="setHover(0)">
                             </i>
                             }
                         </div>
@@ -42,7 +48,7 @@
                         }
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" [class.opacity-50]="yaValorada">
                         <label for="comentario" class="form-label text-muted fw-semibold custom-fs-7">Cuéntanos más
                             detalles</label>
                         <textarea id="comentario" formControlName="comentario"
@@ -61,10 +67,14 @@
                     </div>
 
                     <div class="d-flex gap-2 mt-2">
-                        <button type="button" class="btn btn-light rounded-pill fw-semibold flex-grow-1 border"
-                            (click)="onCancel()" [disabled]="isSubmitting">
-                            Cancelar
+                        <!-- En caso de estar valorada, el botón de cancelar actúa como botón primario de volver -->
+                        <button type="button" class="btn rounded-pill fw-semibold flex-grow-1 border"
+                            [ngClass]="yaValorada ? 'btn-success text-white py-2' : 'btn-light'" (click)="onCancel()"
+                            [disabled]="isSubmitting">
+                            {{ yaValorada ? 'Volver al Inicio' : 'Cancelar' }}
                         </button>
+
+                        @if (!yaValorada) {
                         <button type="submit"
                             class="btn rounded-pill fw-semibold flex-grow-1 py-2 text-white btncolorrevendo"
                             [disabled]="isSubmitting">
@@ -75,6 +85,7 @@
                             Publicar Opinión
                             }
                         </button>
+                        }
                     </div>
 
                 </form>

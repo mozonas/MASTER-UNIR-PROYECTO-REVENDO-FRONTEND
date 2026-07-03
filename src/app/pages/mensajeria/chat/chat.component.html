@@ -59,8 +59,35 @@
       }
       <div class="mensaje" [class.mio]="esMio(mensaje)" [class.suyo]="!esMio(mensaje)">
         <div class="mensaje-burbuja">
-          {{ mensaje.contenido }}
+          <!-- Pintamos el contenido del mensaje limpiando el tag oculto [TX_ID:X] -->
+          <div class="mensaje-texto">
+            {{ limpiarContenido(mensaje.contenido) }}
+          </div>
           <span class="mensaje-hora">{{ horaMensaje(mensaje.created_at) }}</span>
+
+          <!-- Botón de redirección interactivo para valorar en página externa -->
+          @if (obtenerTransaccionId(mensaje.contenido); as txId) {
+          <!-- Validamos que el comprador no sea quien envió el mensaje para evitar autovaloraciones -->
+          @if (mensaje.usuarios_id !== usuarioActualId) {
+          <div class="mt-3 text-start">
+            @if (transaccionPendienteId === txId) {
+            <!-- Transacción aún pendiente: Muestra botón para ir a valorar -->
+            <button
+              class="btn btn-success btn-sm rounded-pill px-3 fw-bold d-flex align-items-center gap-1 shadow-sm border-0"
+              (click)="redireccionarAValoracion(mensaje, txId)" style="font-size: 0.8rem; background-color: #198754;">
+              <i class="fa fa-star text-warning animate-spin-slow"></i> Valorar vendedor
+            </button>
+            } @else if (transaccionPendienteId !== undefined) {
+            <!-- Solo si ya terminó de cargar el estado real y no coincide, mostramos "Transacción valorada" -->
+            <span
+              class="badge bg-light text-success border border-success-subtle rounded-pill px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1 shadow-sm"
+              style="font-size: 0.75rem;">
+              <i class="fa fa-check-circle text-success fs-6"></i> Transacción valorada
+            </span>
+            }
+          </div>
+          }
+          }
         </div>
       </div>
       }
