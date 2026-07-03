@@ -11,6 +11,7 @@ import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browse
 import { ReportType } from '../../interfaces/report-type.interface';
 import { FormsModule } from '@angular/forms';
 import { ReportTypeComponent } from '../../shared/report-type/report-type.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-article-detail-component',
@@ -233,7 +234,29 @@ export class ArticleDetailComponent implements OnInit {
     return value.startsWith('data:image/') ? this.sanitizer.bypassSecurityTrustUrl(value) : value;
   }
 
-  comprarArticulo(): void {
+  async abrirConfirmacionCompra(): Promise<void> {
+    const articulo = this.article();
+    if (!articulo) return;
+
+    this.mensajeCompra.set('');
+
+    const result = await Swal.fire({
+      title: 'Confirmar compra',
+      text: `Vas a proceder a la compra de ${articulo.titulo} por ${articulo.precio} €.`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#8cd86a',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar',
+    });
+
+    if (result.isConfirmed) {
+      this.comprarArticulo();
+    }
+  }
+
+  private comprarArticulo(): void {
     const articulo = this.article();
     const usuarioId = this.authService.getUserId();
 
