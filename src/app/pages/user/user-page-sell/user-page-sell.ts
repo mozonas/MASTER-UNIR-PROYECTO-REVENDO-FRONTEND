@@ -107,13 +107,19 @@ export class UserPageSell implements OnInit, OnChanges {
 
     this.articleService.getReportedUserArticles(userId).subscribe({
       next: (articles) => {
-        this.reportedArticles.set(articles);
+        this.reportedArticles.set(
+          articles.filter((article) => this.isInRevision(article))
+        );
       },
       error: (error) => {
         console.error('Error al cargar artículos reportados:', error);
         this.reportedArticles.set([]);
       }
     });
+  }
+
+  private isInRevision(article: Article): boolean {
+    return article.estadoVenta?.toUpperCase() === 'EN_REVISION';
   }
 
   setFilter(filter: 'all' | 'DISPONIBLE' | 'VENDIDO' | 'REPORTADO') {
