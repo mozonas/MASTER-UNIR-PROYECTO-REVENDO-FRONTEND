@@ -68,16 +68,17 @@ export class ArticleReportDetailComponent implements OnInit {
 
   resolverReporte(accion: 'aprobar' | 'descartar'): void {
   Swal.fire({
-    title: accion === 'aprobar' ? '¿Estás seguro que quieres retirar este artículo?' : '¿Quieres restaurar este artículo?',
+    title: accion === 'aprobar' ? '¿Estás seguro que quieres retirar este artículo?' : '¿Quieres restaurar este reporte?',
     text: accion === 'aprobar' 
       ? 'Esta acción eliminará el artículo de la plataforma de forma definitiva.' 
       : 'El reporte se archivará y el artículo seguirá visible.',
     icon: 'warning',
     showCancelButton: true,
-    confirmButtonColor: '#8cd86a',
+    confirmButtonColor: accion === 'aprobar' ? '#dc3545' : '#8cd86a', // Rojo para borrar, verde para descartar
     cancelButtonColor: '#6c757d',
-    confirmButtonText: accion === 'aprobar' ? 'Retirar artículo' : 'Restaurar',
+    confirmButtonText: accion === 'aprobar' ? 'Sí, retirar artículo' : 'Sí, restaurar',
     cancelButtonText: 'Cancelar',
+    reverseButtons: true
   }).then((result) => {
     
     if (result.isConfirmed) {
