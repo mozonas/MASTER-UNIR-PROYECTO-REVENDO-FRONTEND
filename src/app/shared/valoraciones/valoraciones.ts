@@ -19,21 +19,21 @@ export class ValoracionesComponent implements OnInit {
   private userService = inject(UserService);
   private authService = inject(AuthService);
 
-  // valoracionForm!: FormGroup;
   valoracionForm: FormGroup = this.fb.group({
     puntuacion: [0, [Validators.required, Validators.min(1), Validators.max(5)]],
     comentario: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]]
   });
   idVendedor!: number;
-  transaccionId!: number; // Cambiado para mapear directamente con la clave foránea de la BD
+  transaccionId!: number;
   articuloTitulo: string = '';
 
   ratingHover: number = 0;
   isSubmitting: boolean = false;
   errorMessage: string | null = null;
+  yaValorada: boolean = false;
 
   ngOnInit(): void {
-    // 1. Recuperamos TODO de forma segura de los queryParams
+    // 1. Recuperamos todo de los queryParams
     this.idVendedor = Number(this.route.snapshot.queryParamMap.get('vendedorId'));
     this.transaccionId = Number(this.route.snapshot.queryParamMap.get('transaccionId'));
     this.articuloTitulo = this.route.snapshot.queryParamMap.get('titulo') || 'Producto';
@@ -52,6 +52,7 @@ export class ValoracionesComponent implements OnInit {
     }
 
     this.initForm();
+    this.comprobarTransaccionActiva(currentUserId);
   }
 
   private initForm(): void {
@@ -61,16 +62,35 @@ export class ValoracionesComponent implements OnInit {
     });
   }
 
+  // Comprueba dinámicamente si esta transacción específica ya ha sido calificada en la BD
+  private comprobarTransaccionActiva(compradorId: number): void {
+    this.userService.getTransaccionPendiente(this.idVendedor, compradorId).subscribe({
+      next: (transaccionPendiente) => {
+        // Si no hay transacción pendiente, o la devuelta no coincide con la de la URL, significa que ya ha sido valorada
+        if (!transaccionPendiente || transaccionPendiente.transaccion_id !== this.transaccionId) {
+          this.yaValorada = true;
+          this.errorMessage = 'Esta transacción ya ha sido calificada previamente. ¡Gracias por participar!';
+          this.valoracionForm.disable();
+        }
+      },
+      error: (err) => {
+        console.error('Error al verificar estado de la valoración:', err);
+      }
+    });
+  }
+
   setRating(rating: number): void {
+    if (this.yaValorada) return;
     this.valoracionForm.patchValue({ puntuacion: rating });
   }
 
   setHover(rating: number): void {
+    if (this.yaValorada) return;
     this.ratingHover = rating;
   }
 
   onSubmit(): void {
-    if (this.valoracionForm.invalid) {
+    if (this.valoracionForm.invalid || this.yaValorada) {
       this.valoracionForm.markAllAsTouched();
       return;
     }
@@ -78,18 +98,16 @@ export class ValoracionesComponent implements OnInit {
     this.isSubmitting = true;
     this.errorMessage = null;
 
-    // Ajustamos las claves exactamente a lo que destructura tu controlador 'createValoracion'
     const payload = {
-      vendedor_id: this.idVendedor, // Usado por el servicio Angular para armar la URL del endpoint
+      vendedor_id: this.idVendedor,
       puntuacion: this.valoracionForm.value.puntuacion,
       comentario: this.valoracionForm.value.comentario,
-      transaccionId: this.transaccionId // Clave requerida por el backend e insertada en la tabla
+      transaccionId: this.transaccionId
     };
 
     this.userService.guardarValoracionUsuario(payload).subscribe({
       next: (res) => {
         console.log('✅ Valoración guardada con éxito', res);
-        // Redirige de vuelta al perfil de información del vendedor
         this.router.navigate(['/home']);
       },
       error: (err) => {

@@ -41,7 +41,12 @@ export class AdminUserService {
     return this.http.get<any>(`${this.apiUrl}/search/email/${email}`);
   }
 
+  //mog 02072026 -> funcion para bloquear a un usuario por el admin, desde el id del reporte
+  blockUserFromReport(reportId: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/block/${reportId}`, {});
   }
+
+}
 
 
 
