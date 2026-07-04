@@ -26,7 +26,8 @@
       <div class="flex-shrink-0 dropdown avatar-dropdown">
         <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
           aria-expanded="false">
-          <img src="/images/profile-avatar.svg" alt="Avatar de perfil" width="38" height="38" class="rounded-circle" />
+          <img [src]="this.user().foto ? 'http://localhost:3000/uploads/' + this.user().foto : 'images/profile-avatar.svg'"
+            alt="Avatar de perfil" width="38" height="38" class="rounded-circle" />
         </a>
         <ul class="dropdown-menu dropdown-menu-end text-small shadow">
           <li><a class="dropdown-item" [routerLink]="['/user-info']">Perfil</a></li>
@@ -38,7 +39,7 @@
       <div class="flex-shrink-0 dropdown avatar-dropdown">
         <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
           aria-expanded="false">
-          <img src="/images/profile-avatar.svg" alt="Avatar de perfil" width="38" height="38" class="rounded-circle" />
+          <img [src]="this.user().foto ? 'http://localhost:3000/uploads/' + this.user().foto : 'images/profile-avatar.svg'" alt="Avatar de perfil" width="38" height="38" class="rounded-circle" />
         </a>
         <ul class="dropdown-menu dropdown-menu-end text-small shadow">
           <li><a class="dropdown-item" (click)="openNewArticle()" style="cursor: pointer;">Nuevo artículo</a></li>
