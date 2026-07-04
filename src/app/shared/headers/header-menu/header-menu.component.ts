@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
 import { AsideComponent } from "../../aside/aside.component";
+import { UserService } from '../../../services/user.service';
 
 interface Categoria { id: number; nombre: string; }
 interface GrupoCategoria { label: string; ids: number[]; subcategorias: Categoria[]; }
@@ -28,6 +29,7 @@ export class HeaderMenuComponent implements OnInit {
   @Input() mostrarMenu: boolean = true;
 
   private authService = inject(AuthService);
+  private userService = inject(UserService);
   private router = inject(Router);
   private http = inject(HttpClient);
 
@@ -36,6 +38,7 @@ export class HeaderMenuComponent implements OnInit {
   role = signal(this.authService.getUserRole() ?? 'USUARIO');
   username = signal(this.authService.getUserName() ?? '');
   isStaff = computed(() => ['ADMIN', 'MODERADOR'].includes(this.role()));
+  user = signal<any | null>(null);
 
   getHomeRoute(): string {
     const role = this.authService.getUserRole(); // ADMIN | MODERADOR | USUARIO
@@ -71,6 +74,11 @@ export class HeaderMenuComponent implements OnInit {
       error: () => {
         // Sin conexión al back: mostrar grupos sin subcategorías
         this.gruposCategorias.set(GRUPOS_CONFIG.map(g => ({ label: g.label, ids: g.ids, subcategorias: [] as Categoria[] })));
+      }
+    });
+    const user = this.userService.getPerfilUsuario(Number(this.authService.getUserId())).subscribe({
+      next: (user) => {
+        this.user.set(user);
       }
     });
   }
