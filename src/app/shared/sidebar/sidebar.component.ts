@@ -1,26 +1,36 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarOption } from '../../interfaces/sidebar.interface';
+
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.css',
+  styleUrls: ['./sidebar.component.css']
 })
-
 export class SidebarComponent {
-  // Titulo del menú lateral
   @Input() title: string = 'Menu';
-  // Opciones del menú lateral
   @Input() options: SidebarOption[] = [];
   @Input() activeTab: string = '';
+  @Input() isCollapsible: boolean = false;
 
   @Output() optionSelected = new EventEmitter<string>();
 
+  isExpanded = signal<boolean>(true);
+
   onOptionClick(optionId: string): void {
-    // Emitir el evento con el ID de la opción seleccionada
     this.optionSelected.emit(optionId);
   }
+
+  toggleMenu(): void {
+    this.isExpanded.set(!this.isExpanded());
+  }
+
+  trackByOption(_: number, option: SidebarOption) {
+    return option.id;
+  }
 }
+
+

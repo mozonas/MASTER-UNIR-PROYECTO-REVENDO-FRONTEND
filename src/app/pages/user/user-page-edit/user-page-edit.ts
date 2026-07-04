@@ -8,6 +8,7 @@ import { Usuario } from '../../../interfaces/user.interface';
 
 // Importamos PlaceKit Autocomplete
 import placekitAutocomplete from '@placekit/autocomplete-js';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-user-page-edit',
@@ -25,6 +26,8 @@ export class UserPageEditComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private ngZone = inject(NgZone);
 
+  isAdminViewing: boolean = false;
+
   isLoaded: boolean = false;
   editForm!: FormGroup;
   currentUser!: Usuario;
@@ -33,7 +36,6 @@ export class UserPageEditComponent implements OnInit, OnDestroy {
   fotoPreview: string | null = null;
   userIdParaEditar: number | null = null;
 
-  // Instancia para limpiar el plugin
   private pkInstance: any = null;
 
   ngOnInit(): void {
@@ -43,7 +45,6 @@ export class UserPageEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Limpieza de la instancia al destruir el componente
     if (this.pkInstance && typeof this.pkInstance.destroy === 'function') {
       this.pkInstance.destroy();
     }
@@ -67,8 +68,12 @@ export class UserPageEditComponent implements OnInit, OnDestroy {
     const idRuta = this.route.snapshot.paramMap.get('id');
     if (idRuta) {
       this.userIdParaEditar = Number(idRuta);
+      this.isAdminViewing = true;
+      console.log(`📋 Modo Admin: Editando usuario desde URL con ID: ${this.userIdParaEditar}`);
     } else {
       this.userIdParaEditar = this.authService.getUserId();
+      this.isAdminViewing = false;
+      console.log(`👤 Modo Usuario: Editando perfil propio con ID: ${this.userIdParaEditar}`);
     }
   }
 
@@ -107,7 +112,6 @@ export class UserPageEditComponent implements OnInit, OnDestroy {
           this.isLoaded = true;
           this.cdr.detectChanges();
 
-          // Un pequeño timeout para dar tiempo a que la directiva estructural (ej: *ngIf="isLoaded") dibuje el input en el DOM
           setTimeout(() => {
             this.initPlaceKit();
           }, 50);
@@ -130,10 +134,10 @@ export class UserPageEditComponent implements OnInit, OnDestroy {
       this.pkInstance.on('pick', (value: string, item: any) => {
         this.ngZone.run(() => {
           // 1. Extraemos de forma segura los metadatos desglosados de PlaceKit
-          const calleYNumero = item.name || value; // Ej: "Calle Gema, 4"
-          const codigoPostal = item.zipcode && item.zipcode.length > 0 ? item.zipcode[0] : ''; // Ej: "41015"
-          const localidad = item.city || ''; // Ej: "Sevilla"
-          const pais = item.country || 'España'; // Ej: "España"
+          const calleYNumero = item.name || value;
+          const codigoPostal = item.zipcode && item.zipcode.length > 0 ? item.zipcode[0] : '';
+          const localidad = item.city || '';
+          const pais = item.country || 'España';
 
           // 2. Construimos una cadena de texto postal perfecta e inequívoca
           let direccionCompleta = `${calleYNumero}`;
@@ -142,7 +146,6 @@ export class UserPageEditComponent implements OnInit, OnDestroy {
           }
           direccionCompleta += `, ${pais}`;
 
-          // Limpiamos espacios extraños o comas repetidas si algún dato faltase
           direccionCompleta = direccionCompleta.replace(/,\s*,/g, ',').trim();
 
           // 3. Insertamos el valor formateado completo en el Formulario Reactivo
@@ -202,21 +205,34 @@ export class UserPageEditComponent implements OnInit, OnDestroy {
 
     this.userService.updatePerfilUsuario(this.currentUser.id, formData as unknown as Partial<Usuario>).subscribe({
       next: (response) => {
-        if (this.route.snapshot.paramMap.get('id')) {
-          this.router.navigate(['/admin/users']);
-        } else {
-          this.router.navigate(['/user-info']);
-        }
+        Swal.fire({
+          title: 'Los cambios han sido guardados',
+          icon: 'success',
+          confirmButtonColor: '#8cd86a',
+          allowOutsideClick: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            if (this.isAdminViewing) {
+              this.router.navigate(['/admin/users']);
+            } else {
+              this.router.navigate(['/user-info']);
+            }
+          }
+        });
       },
       error: (err) => {
         console.error('❌ Error al guardar los cambios en el servidor:', err);
-        alert('Hubo un error al intentar guardar los cambios del perfil.');
+        Swal.fire({
+          title: 'Error al guardar los cambios',
+          icon: 'error',
+          confirmButtonColor: '#dc3545'
+        });
       }
     });
   }
 
   onCancelar(): void {
-    if (this.route.snapshot.paramMap.get('id')) {
+    if (this.isAdminViewing) {
       this.router.navigate(['/admin/users']);
     } else {
       this.router.navigate(['/user-info']);

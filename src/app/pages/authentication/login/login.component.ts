@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { inject } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
-import {signal} from '@angular/core';
+import { signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -19,6 +19,8 @@ export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
 
+  private location = inject(Location);
+
   loading = signal(false);
   errorMessage = signal('');
 
@@ -27,18 +29,11 @@ export class LoginComponent {
     password: ['', Validators.required],
   });
 
-  // DEV ONLY — eliminar antes de producción
-  devLogin() {
-    const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
-      .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-    const payload = btoa(JSON.stringify({ perfil: 'USUARIO', userId: 45, username: 'TestUser' }))
-      .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-    sessionStorage.setItem('token', `${header}.${payload}.dev_fake_sig`);
-    this.router.navigate(['/user-info']);
-  }
-
   onSubmit() {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
     this.loading.set(true);
     this.errorMessage.set('');
@@ -51,26 +46,32 @@ export class LoginComponent {
         this.loading.set(false);
         sessionStorage.setItem('token', resp.token);
         // Obtener rol desde el token
-      const role = this.authService.getUserRole();
+        const role = this.authService.getUserRole();
 
-      console.log('ROL DECODIFICADO =>', role);
-              // Redirección según rol
-      switch (role) {
-        //redireccionar al dashboard del administrador
-        case 'ADMIN':
-          this.router.navigate(['/admin']);
-          break;
-        //redireccionar al dashboard de moderador
-        case 'MODERADOR':
-          this.router.navigate(['/moderation/panel']); //VCB - ruta modificada para redirigir a la pantalla principal de moderacion
-          break;
-        //redireccionar a la página de usuario que se decida, yo lo redireccionaría al listado de productos a vender
-        default:
-          this.router.navigate(['/home']);
-          break;
-      }
+        console.log('ROL DECODIFICADO =>', role);
+        // Redirección según rol
+        switch (role) {
+          //redireccionar al dashboard del administrador
+          case 'ADMIN':
+            this.router.navigate(['/admin/dashboard']);
+            break;
+          //redireccionar al dashboard de moderador
+          case 'MODERADOR':
+            this.router.navigate(['/moderation/panel']); //VCB - ruta modificada para redirigir a la pantalla principal de moderacion
+            break;
+          //redireccionar a la página de usuario que se decida, yo lo redireccionaría al listado de productos a vender
+          default:
+            this.router.navigate(['/home']);
+            break;
+        }
       },
       error: (err) => {
+        if (err.status === 403) {
+          //MOG 290626 -> implementación para userIsBlocked
+          this.errorMessage.set('Tu cuenta ha sido bloqueada y está siendo investigada');
+          return;
+        }
+
         console.error('LOGIN ERROR =>', err);
         this.loading.set(false);
         this.errorMessage.set('Credenciales incorrectas');
@@ -78,5 +79,10 @@ export class LoginComponent {
     });
   }
 
-  
+  // Método para volver atrás
+  onBack() {
+    this.location.back();
+  }
+
+
 }

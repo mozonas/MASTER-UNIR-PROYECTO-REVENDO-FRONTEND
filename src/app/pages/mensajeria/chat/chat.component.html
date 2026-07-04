@@ -1,0 +1,153 @@
+<div class="chat-wrapper">
+
+  <div class="conversaciones-panel">
+    <div class="conversaciones-header">
+      <h5>Mensajes</h5>
+    </div>
+
+    <div class="buscador-wrapper">
+      <input type="text" class="form-control buscador" placeholder="Buscar conversación..." [(ngModel)]="busqueda" />
+    </div>
+
+    <div class="conversaciones-lista">
+      @for (conv of conversacionesFiltradas; track conv.articulos_id) {
+      <div class="conversacion-item" [class.activa]="conversacionActiva?.articulos_id === conv.articulos_id"
+        (click)="seleccionarConversacion(conv)">
+        <img [src]="'/images/' + conv.foto" (error)="onImageError($event)" alt="avatar" class="conv-avatar" />
+        <div class="conv-info">
+          <span class="conv-nombre">{{ conv.usuario }}</span>
+          <span class="conv-articulo">{{ conv.titulo }}</span>
+          <span class="conv-ultimo">{{ conv.ultimo_mensaje }}</span>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <div class="chat-panel">
+
+    @if (conversacionActiva) {
+    <div class="chat-header">
+      <!-- CGM290626 implementa boton reportar en el chat-->
+      <div class="chat-header-user-info">
+        <img [src]="'/images/' + conversacionActiva.foto" (error)="onImageError($event)" alt="avatar"
+          class="conv-avatar" />
+        <div class="chat-header-info">
+          <span class="conv-nombre">{{ conversacionActiva.usuario }}</span>
+          <span class="conv-articulo">{{ conversacionActiva.titulo }}</span>
+        </div>
+      </div>
+      <div class="chat-header-acciones">
+        @if (esVendedor && !articuloVendido) {
+        <button class="btn btn-outline-success btn-sm" (click)="abrirModalVendido()">
+          <i class="fa fa-check me-1"></i> Marcar vendido
+        </button>
+        }
+        @if (perfilUser === 'USUARIO') {
+        <button class="btn btn-outline-danger btn-sm" (click)="onReportar()">
+          <i class="fa fa-flag me-1"></i> Reportar usuario
+        </button>
+        }
+      </div>
+    </div>
+    <div class="mensajes-container">
+      @for (mensaje of mensajesActivos; track mensaje.id) {
+      @if (mostrarFecha(mensajesActivos, $index)) {
+      <div class="fecha-separador">
+        <span>{{ etiquetaFecha(mensaje.created_at) }}</span>
+      </div>
+      }
+      <div class="mensaje" [class.mio]="esMio(mensaje)" [class.suyo]="!esMio(mensaje)">
+        <div class="mensaje-burbuja">
+          <!-- Pintamos el contenido del mensaje limpiando el tag oculto [TX_ID:X] -->
+          <div class="mensaje-texto">
+            {{ limpiarContenido(mensaje.contenido) }}
+          </div>
+
+          <!-- Botón de redirección interactivo para valorar en página externa -->
+          @if (obtenerTransaccionId(mensaje.contenido); as txId) {
+          <!-- Validamos que el comprador no sea quien envió el mensaje para evitar autovaloraciones -->
+          @if (mensaje.usuarios_id !== usuarioActualId) {
+          <div class="mt-4 text-center mx-auto">
+            @if (transaccionPendienteId === txId) {
+            <!-- Transacción aún pendiente: Muestra botón para ir a valorar -->
+            <button
+              class="btn btn-success btn-sm rounded-pill px-3 fw-bold d-flex align-items-center gap-1 shadow-sm border-0 mx-auto"
+              (click)="redireccionarAValoracion(mensaje, txId)" style="font-size: 0.8rem; background-color: #198754;">
+              <i class="fa fa-star text-warning animate-spin-slow"></i> Valorar vendedor
+            </button>
+            } @else if (transaccionPendienteId !== undefined) {
+            <!-- Solo si ya terminó de cargar el estado real y no coincide, mostramos "Transacción valorada" -->
+            <span
+              class="badge bg-light text-success border border-success-subtle rounded-pill px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1 shadow-sm"
+              style="font-size: 0.75rem;">
+              <i class="fa fa-check-circle text-success fs-6"></i> Transacción valorada
+            </span>
+            }
+          </div>
+          }
+          <span class="mensaje-hora">{{ horaMensaje(mensaje.created_at) }}</span>
+          }
+        </div>
+      </div>
+      }
+    </div>
+
+    <div class="chat-input">
+      <input type="text" class="form-control" placeholder="Escribe un mensaje..." [(ngModel)]="nuevoMensaje"
+        (keyup)="enviarConEnter($event)" />
+      <button class="btn btn-enviar" (click)="enviarMensaje()">
+        Enviar
+      </button>
+    </div>
+
+    } @else {
+    <div class="chat-vacio">
+      <p>Selecciona una conversación para empezar</p>
+    </div>
+    }
+
+  </div>
+
+  <!--CGM 290626 COMPONENTE COMPARTIDO-->
+  @if (mostrarModalReporte() && conversacionActiva) {
+  <app-report-type targetType="USUARIO" [targetId]="+conversacionActiva.articulos_id"
+    [targetTitle]="conversacionActiva.usuario" (closeModal)="cerrarModalReporte()"
+    (onReportSuccess)="reportado.set(true)">
+  </app-report-type>
+  }
+
+  @if (mostrarModalVendido) {
+  <div class="modal-reporte-backdrop" (click)="cerrarModalVendido()">
+    <div class="modal-reporte" (click)="$event.stopPropagation()">
+      <h5 class="modal-reporte-titulo">Marcar como vendido</h5>
+      <p class="modal-reporte-subtitulo">{{ conversacionActiva?.titulo }}</p>
+
+      <div class="mb-3">
+        <label class="form-label">Método de pago</label>
+        <select class="form-select" [(ngModel)]="tipoPagoSeleccionado">
+          <option value="Efectivo">Efectivo</option>
+          <option value="Tarjeta">Tarjeta</option>
+          <option value="Bizum">Bizum</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Precio acordado (€)</label>
+        <input type="number" class="form-control" [(ngModel)]="precioAcordado" placeholder="0.00" min="0">
+      </div>
+
+      <div class="modal-reporte-acciones">
+        <button class="btn btn-secondary btn-sm" (click)="cerrarModalVendido()">
+          Cancelar
+        </button>
+        <button class="btn btn-success btn-sm" (click)="marcarVendido()"
+          [disabled]="!precioAcordado || precioAcordado <= 0 || marcandoVendido">
+          {{ marcandoVendido ? 'Procesando...' : 'Confirmar venta' }}
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+</div>

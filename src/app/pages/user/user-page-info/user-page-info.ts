@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
@@ -18,15 +18,17 @@ import { DetailSeller } from "../../../shared/detail-seller/detail-seller";
 
 export class UserPageInfoComponent implements OnInit {
   private router = inject(Router);
-  private route = inject(ActivatedRoute); // 👈 Inyectamos la ruta activa
+  private route = inject(ActivatedRoute);
   private userService = inject(UserService);
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
   private sanitizer = inject(DomSanitizer);
+  private location = inject(Location);
 
   isLoaded: boolean = false;
   mapUrl: SafeResourceUrl | null = null;
   isAdminViewing: boolean = false;
+  isExternalProfileViewing: boolean = false; // Usuario normal viendo perfil ajeno
 
   activeTab: 'productos' | 'valoraciones' = 'productos';
 
@@ -51,6 +53,8 @@ export class UserPageInfoComponent implements OnInit {
   personalDetails: { label: string; value: string; lowercase?: boolean }[] = [];
   listaValoraciones: any[] = [];
   idVendedor!: number;
+  transaccionPendiente: any = null;
+  puedeValorar: boolean = false;
 
   ngOnInit(): void {
     console.log('🔄 Iniciando carga del perfil del usuario...');
@@ -60,13 +64,24 @@ export class UserPageInfoComponent implements OnInit {
     // 1. Intentamos obtener el ID desde los parámetros de la URL (ruta de Admin)
     const idFromRoute = this.route.snapshot.paramMap.get('id');
 
+    // Recuperamos el ID del usuario logueado actualmente y su rol
+    const currentLoggedUserId = this.authService.getUserId();
+    const isUserAdmin = this.authService.getUserRole() === 'ADMIN';
+
     if (idFromRoute) {
       userIdParaCargar = Number(idFromRoute);
-      this.isAdminViewing = true; // El admin está auditando un perfil ajeno
-      console.log(`📋 Modo Admin: Visualizando usuario desde URL con ID: ${userIdParaCargar}`);
+
+      // Visualización de Admin si el que está logueado es verdaderamente un ADMIN
+      if (isUserAdmin) {
+        this.isAdminViewing = true;
+        console.log(`📋 Modo Admin: Visualizando usuario desde URL con ID: ${userIdParaCargar}`);
+      } else {
+        this.isExternalProfileViewing = true;
+        console.log(`👁️ Modo Común: Un usuario está viendo el perfil del vendedor ID: ${userIdParaCargar}`);
+      }
     } else {
       // 2. Si no hay ID en la URL, mantenemos tu comportamiento original (Perfil propio del usuario logueado)
-      userIdParaCargar = this.authService.getUserId();
+      userIdParaCargar = Number(currentLoggedUserId);
       console.log(`👤 Modo Usuario: Visualizando perfil propio con ID: ${userIdParaCargar}`);
     }
 
@@ -96,8 +111,22 @@ export class UserPageInfoComponent implements OnInit {
           this.generarDetallesPersonales();
           this.generarUrlMapa();
 
-          // Traemos las estadísticas del ID seleccionado
+          // Traemos las estadísticas e integraciones reales
           this.cargarEstadisticasReales(userIdParaCargar!);
+
+          const miUsuarioId = Number(this.authService.getUserId());
+          if (this.isExternalProfileViewing && miUsuarioId) {
+            this.userService.getTransaccionPendiente(this.idVendedor, miUsuarioId).subscribe({
+              next: (data) => {
+                if (data) {
+                  this.transaccionPendiente = data;
+                  this.puedeValorar = true;
+                  this.cdr.detectChanges();
+                }
+              },
+              error: (err) => console.error('❌ Error al comprobar transacciones pendientes:', err)
+            });
+          }
         }
       },
       error: (err) => {
@@ -139,6 +168,18 @@ export class UserPageInfoComponent implements OnInit {
     });
   }
 
+  irAValorar(): void {
+    if (!this.transaccionPendiente) return;
+
+    this.router.navigate(['/evaluar'], {
+      queryParams: {
+        vendedorId: this.idVendedor,
+        transaccionId: this.transaccionPendiente.transaccion_id,
+        titulo: this.transaccionPendiente.articulo_titulo
+      }
+    });
+  }
+
   private generarUrlMapa(): void {
     const direccionCompleta = this.currentUser.direccion ? this.currentUser.direccion.trim() : '';
 
@@ -153,15 +194,15 @@ export class UserPageInfoComponent implements OnInit {
           const [lat, lng] = coordSection.split(',');
 
           // Url exacta para embeber coordenadas con una sola chincheta (q=) y centrado (ll=)
-          urlBase = `https://maps.google.com/maps?q=${lat.trim()},${lng.trim()}&ll=${lat.trim()},${lng.trim()}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+          urlBase = `https://maps.google.com/maps?q=${lat.trim()},${lng.trim()}&ll=${lat.trim()},${lng.trim()}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
         } catch (e) {
           console.error('Error al parsear las coordenadas de la dirección:', e);
           // Si falla el parseo por lo que sea, cae en el buscador clásico por texto
-          urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+          urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
         }
       } else {
         // Si es un usuario antiguo sin el tag de coordenadas, buscamos por texto plano
-        urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+        urlBase = `https://maps.google.com/maps?q=${encodeURIComponent(direccionCompleta)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
       }
 
       this.mapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(urlBase);
@@ -205,14 +246,25 @@ export class UserPageInfoComponent implements OnInit {
   }
 
   irAEditar(): void {
-    this.router.navigate(['/user-edit']);
+    if (this.isAdminViewing) {
+      // Si el admin está auditando, pasamos el ID del usuario en la ruta para mantener el modo admin
+      this.router.navigate(['/admin/users/editar/', this.idVendedor]);
+    } else {
+      // Si es el usuario común en su propio perfil, va directo a la ruta limpia
+      this.router.navigate(['/user-edit']);
+    }
   }
 
-    onCancelar(): void {
-    if (this.route.snapshot.paramMap.get('id')) {
+  onBack(): void {
+    if (this.isAdminViewing) {
+      // 1. Si es el admin auditando, lo devuelve estrictamente a la lista de gestión de usuarios
       this.router.navigate(['/admin/users']);
+    } else if (this.isExternalProfileViewing) {
+      // 2. Si es un usuario normal que venía de ver un artículo, vuelve atrás en el historial (al detalle del artículo)
+      this.location.back();
     } else {
-      this.router.navigate(['/user-info']);
+      // 3. Si estaba revisando su propio perfil desde el menú de navegación habitual, va al Home
+      this.router.navigate(['/home']);
     }
   }
 }

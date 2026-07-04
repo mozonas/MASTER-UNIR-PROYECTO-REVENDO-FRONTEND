@@ -1,7 +1,8 @@
-<div class="py-5">
-  <div class="container-max-width">
+<div class="container-max-width">
+  <div class="bg-white rounded-4 p-2 mb-4 shadow-sm">
+
     @if (!isAdminViewing) {
-    <div class="card rounded-4 border-0 shadow-sm mb-4">
+    <div class="card rounded-4 border-0 mb-4">
       <div class="card-body py-4 px-4">
         <div
           class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
@@ -39,53 +40,51 @@
         <span class="badge bg-light text-dark ms-2">{{ getFilterCount('VENDIDO') }}</span>
         }
       </button>
-      <button type="button" class="nav-link text-dark rounded-pill" [class.active]="selectedFilter() === 'RESERVADO'"
-        (click)="setFilter('RESERVADO')">
+      <button type="button" class="nav-link text-dark rounded-pill" [class.active]="selectedFilter() === 'REPORTADO'"
+        (click)="setFilter('REPORTADO')">
         Reportados
-        @if (selectedFilter() === 'RESERVADO') {
-        <span class="badge bg-light text-dark ms-2">{{ getFilterCount('RESERVADO') }}</span>
+        @if (selectedFilter() === 'REPORTADO') {
+        <span class="badge bg-light text-dark ms-2">{{ getFilterCount('REPORTADO') }}</span>
         }
       </button>
     </nav>
+  </div>
 
-    @if (filteredArticles().length === 0) {
-    <div class="row">
-      <div class="col-12">
-        <div class="alert alert-info text-center shadow-sm" role="alert">
-          <h5 class="mb-1">No hay artículos en esta categoría</h5>
-          <p class="mb-0">Intenta con otro filtro o añade un nuevo artículo.</p>
-        </div>
+  @if (filteredArticles().length === 0) {
+  <div class="row">
+    <div class="col-12">
+      <div class="alert alert-info text-center shadow-sm" role="alert">
+        <h5 class="mb-1">No hay artículos en esta categoría</h5>
+        <p class="mb-0">Intenta con otro filtro o añade un nuevo artículo.</p>
       </div>
     </div>
-    } @else {
-    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
-      @for (article of currentPageArticles(); track article.id) {
-      <div class="col">
-        <app-product-card [article]="article" [showActions]="true" (editClicked)="onEdit(article)"
-          (deleteClicked)="onDelete(article)"></app-product-card>
-      </div>
-      }
+  </div>
+  } @else {
+  <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+    @for (article of currentPageArticles(); track article.id) {
+    <div class="col">
+      <app-article-card [article]="article" [showActions]="true" (editClicked)="onEdit(article)"
+        (deleteClicked)="onDelete(article)" />
     </div>
-
-    @if (pageCount() > 1) {
-    <nav aria-label="Paginación de artículos" class="mt-4">
-      <ul class="pagination justify-content-center">
-        <li class="page-item" [class.disabled]="currentPage() === 1">
-          <button type="button" class="page-link" (click)="setPage(currentPage() - 1)">Anterior</button>
-        </li>
-        @for (page of pageNumbers(); track page) {
-        <li class="page-item" [class.active]="currentPage() === page">
-          <button type="button" class="page-link" (click)="setPage(page)">{{ page }}</button>
-        </li>
-        }
-        <li class="page-item" [class.disabled]="currentPage() === pageCount()">
-          <button type="button" class="page-link" (click)="setPage(currentPage() + 1)">Siguiente</button>
-        </li>
-      </ul>
-    </nav>
-    }
     }
   </div>
-</div>
 
-<!-- <app-footer></app-footer> -->
+  @if (pageCount() > 1) {
+  <nav aria-label="Paginación de artículos" class="mt-4">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="currentPage() === 1">
+        <button type="button" class="page-link" (click)="setPage(currentPage() - 1)">Anterior</button>
+      </li>
+      @for (page of pageNumbers(); track page) {
+      <li class="page-item" [class.active]="currentPage() === page">
+        <button type="button" class="page-link" (click)="setPage(page)">{{ page }}</button>
+      </li>
+      }
+      <li class="page-item" [class.disabled]="currentPage() === pageCount()">
+        <button type="button" class="page-link" (click)="setPage(currentPage() + 1)">Siguiente</button>
+      </li>
+    </ul>
+  </nav>
+  }
+  }
+</div>

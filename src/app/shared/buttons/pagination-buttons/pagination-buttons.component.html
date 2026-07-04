@@ -1,8 +1,21 @@
 <div class="d-flex gap-2">
-  <button class="btn-pag" (click)="onPageChange(-1)" [disabled]="isFirstPage()">
-    ◀
+  
+  <!-- Botón Anterior -->
+  <button type="button" 
+          class="btn btn-sm d-inline-flex align-items-center justify-content-center py-2 px-2.5 rounded"
+          (click)="onPageChange(-1)" 
+          [disabled]="isFirstPage()"
+          aria-label="Página anterior">
+    <img src="images/ico-anterior.svg" alt="Anterior" width="16" height="16" />
   </button>
-  <button class="btn-pag" (click)="onPageChange(1)" [disabled]="isLastPage()">
-    ▶
+
+  <!-- Botón Siguiente -->
+  <button type="button" 
+          class="btn btn-sm d-inline-flex align-items-center justify-content-center py-2 px-2.5 rounded"
+          (click)="onPageChange(1)" 
+          [disabled]="isLastPage()"
+          aria-label="Página siguiente">
+    <img src="images/ico-siguiente.svg" alt="Siguiente" width="16" height="16" />
   </button>
+
 </div>

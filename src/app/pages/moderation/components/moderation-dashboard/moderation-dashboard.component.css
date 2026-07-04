@@ -1,33 +1,38 @@
-
-.card-header {
-  background-color: #8cd86a !important;
-  border-bottom: none !important;
+.table-container {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-.badge-incidencias {
-  background-color: #dc3545 !important;
-  color: #ffffff !important;
+.text-dark-custom {
+    color: #0f172a;
 }
 
-.badge-limpio {
-  background-color: var(--gray-100) !important;
-  color: var(--gray-500) !important;
-  border: 1px solid var(--gray-200) !important;
+.letter-spacing-05 {
+    letter-spacing: 0.05em;
 }
 
-.font-badge {
-  font-size: 11px;
-  letter-spacing: 0.5px;
+.filter-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
 }
 
-.animate-pulse {
-  animation: pulse 2s infinite;
+.profile-indicator {
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.02); opacity: 0.95; }
-  100% { transform: scale(1); }
+.profile-indicator.is-admin {
+    color: #ef4444;
 }
 
-
+.profile-indicator.is-moderator {
+    color: #16a34a;
+}

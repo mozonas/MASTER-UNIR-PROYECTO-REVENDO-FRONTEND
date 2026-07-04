@@ -1,4 +1,4 @@
-export interface iArticle {
+export interface Article {
   id: string;
   titulo: string;
   descripcion: string;
@@ -17,9 +17,10 @@ export interface iArticle {
   seller?: {
     nombre?: string;
     apellidos?: string;
+    direccion?: string;
   };
   // AÑADIDO PARA COMPATIBILIDAD CON Article
-  ubicacion: string;
+  // ubicacion: string;
   foto?: string;
 
 }

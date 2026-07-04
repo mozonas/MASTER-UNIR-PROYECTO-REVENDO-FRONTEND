@@ -1,94 +1,100 @@
-<div class="filters">
+<div class="row g-3 filters mb-4">
 
-  <!-- Buscar por ID -->
-  <div class="filter-item">
-    <input type="text" 
-    placeholder="Buscar por id usuario" 
-    [(ngModel)]="searchId" 
-    (keyup.enter)="searchById()">
-    <button (click)="searchById()">
-      <img src="/images/lupa.png" alt="Buscar ID" />
-    </button>
+  <div class="col-12 col-md-3 filter-item">
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="Buscar por id usuario" [(ngModel)]="searchId"
+        (keyup.enter)="searchById()">
+      <button class="btn btn-outline-secondary" type="button" (click)="searchById()">
+        <img src="/images/lupa.png" alt="Buscar ID" style="width: 20px; height: 20px;" />
+      </button>
+    </div>
   </div>
 
-  <!-- Buscar por usuario -->
-  <div class="filter-item">
-    <input 
-    type="text" 
-    placeholder="Buscar usuario" 
-    [(ngModel)]="searchUsername" 
-    (keyup.enter)="searchByUsername()" 
-    />
-    <button (click)="searchByUsername()">
-      <img src="/images/lupa.png" alt="Buscar usuario" />
-    </button>
+  <div class="col-12 col-md-4 filter-item">
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="Buscar usuario" [(ngModel)]="searchUsername"
+        (keyup.enter)="searchByUsername()">
+      <button class="btn btn-outline-secondary" type="button" (click)="searchByUsername()">
+        <img src="/images/lupa.png" alt="Buscar usuario" style="width: 20px; height: 20px;" />
+      </button>
+    </div>
   </div>
 
-  <!-- Buscar por email -->
-  <div class="filter-item">
-    <input 
-    type="text" 
-    placeholder="Buscar email" 
-    [(ngModel)]="searchEmail" 
-    (keyup.enter)="searchByEmail()" 
-    />
-    <button (click)="searchByEmail()">
-      <img src="/images/lupa.png" alt="Buscar email" />
-    </button>
+  <div class="col-12 col-md-5 filter-item">
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="Buscar email" [(ngModel)]="searchEmail"
+        (keyup.enter)="searchByEmail()">
+      <button class="btn btn-outline-secondary" type="button" (click)="searchByEmail()">
+        <img src="/images/lupa.png" alt="Buscar email" style="width: 20px; height: 20px;" />
+      </button>
+    </div>
   </div>
 
 </div>
 
+<div class="table-container mb-4">
+  <div class="table-responsive">
+    <table class="table table-minimal align-middle mb-0">
+      <thead>
+        <tr>
+          <th scope="col" class="ps-4">ID</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Apellidos</th>
+          <th scope="col">Email</th>
+          <th scope="col">Usuario</th>
+          <th scope="col">Perfil</th>
+          <th scope="col" class="text-center pe-4" style="width: 160px;">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of users; track u.id) {
+        <tr class="user-row-minimal" (click)="onViewInfo(u.id)">
+          <td class="ps-4 text-muted fs-7">{{ u.id }}</td>
+          <td class="text-dark-custom fw-medium">{{ u.nombre }}</td>
+          <td class="text-dark-custom">{{ u.apellidos }}</td>
+          <td class="fs-7">{{ u.email }}</td>
+          <td><span class="user-username">@{{ u.usuario }}</span></td>
+          <td>
+            <span class="profile-indicator" [class.is-admin]="u.perfil === 'ADMIN'" ,
+              [class.is-moderator]="u.perfil === 'MODERADOR'" , [class.is-user]="u.perfil === 'USUARIO'">
+              {{ u.perfil }}
+            </span>
+          </td>
 
+          <td class="pe-4" (click)="$event.stopPropagation()">
+            <div class="d-flex justify-content-center gap-1">
+              <button class="btn btn-mini-action" (click)="onEdit(u.id)" title="Editar">
+                <img src="/images/ico-editar.svg" alt="Editar" width="18" height="18" />
+              </button>
 
+              <button class="btn btn-mini-action btn-mini-delete" (click)="onDelete(u.id)" title="Eliminar">
+                <img src="/images/ico-eliminar.svg" alt="Eliminar" width="18" height="18" />
+              </button>
 
+              <button class="btn btn-mini-action btn-mini-lock" [class.is-blocked]="u.isBlocked" (click)="onToggleBlock(u)"
+                title="Bloquear/Desbloquear">
+                <img [src]="u.isBlocked ? '/images/ico-bloquear.svg' : '/images/ico-desbloquear.svg'"
+                  [alt]="u.isBlocked ? 'Bloqueado' : 'Desbloqueado'" width="18" height="18" />
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
 
-<ul class="user-list">
+<div class="d-flex justify-content-center align-items-center gap-3 my-4">
+  <button class="btn" (click)="prevPage()" [disabled]="page === 1">
+    <i class="bi bi-chevron-left me-1"></i> Anterior
+  </button>
 
-  <li class="header">
-    <span>id</span>
-    <span>nombre</span>
-    <span>apellidos</span>
-    <span>email</span>
-    <span>usuario</span>
-    <span>perfil</span>
-    <span class="actions">Acciones</span>
-  </li>
+  <span class="fw-semibold text-secondary bg-light px-3 py-1">
+    Página <span class="text-dark">{{ page }}</span> de {{ totalPages }}
+  </span>
 
-  @for (u of users; track u.id) {
-  <li class="row clickable" (click)="onViewInfo(u.id)">
-    <span>{{ u.id }}</span>
-    <span>{{ u.nombre }}</span>
-    <span>{{ u.apellidos }}</span>
-    <span>{{ u.email }}</span>
-    <span>{{ u.usuario }}</span>
-    <span>{{ u.perfil }}</span>
-
-    <span class="actions" (click)="$event.stopPropagation()">
-      <button class="icon-btn edit" (click)="onEdit(u.id)">
-        <img src="/images/ico-editar.svg" alt="Editar" />
-      </button>
-
-      <button class="icon-btn delete" (click)="onDelete(u.id)">
-        <img src="/images/ico-eliminar.svg" alt="Eliminar" />
-      </button>
-
-      <button class="icon-btn block" (click)="onToggleBlock(u)">
-        <img 
-          [src]="u.isBlocked ? '/images/ico-bloquear.svg' : '/images/ico-desbloquear.svg'"
-          [alt]="u.isBlocked ? 'Bloqueado' : 'Desbloqueado'" />
-      </button>
-    </span>
-  </li>
-  }
-
-
-</ul>
-
-<div class="pagination">
-  <button (click)="prevPage()" [disabled]="page === 1">Anterior</button>
-
-  <span>Página {{ page }} de {{ totalPages }}</span>
-
-  <button (click)="nextPage()" [disabled]="page === totalPages">Siguiente</button>
+  <button class="btn" (click)="nextPage()" [disabled]="page === totalPages">
+    Siguiente <i class="bi bi-chevron-right ms-1"></i>
+  </button>
 </div>

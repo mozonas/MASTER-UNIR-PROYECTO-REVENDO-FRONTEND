@@ -1,38 +1,87 @@
-
-.custom-table th {
-  color: var(--gray-700);
-  font-weight: 600;
-  background-color: var(--gray-100);
-  border-bottom: 2px solid var(--gray-200);
-  padding: 12px 8px;
+/* --- Contenedor y Estructura Sutil --- */
+.table-container {
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    overflow: hidden;
 }
 
-.custom-table td {
-  color: var(--gray-900);
-  border-bottom: 1px solid var(--gray-200);
-  padding: 12px 8px;
-  font-size: 14px; 
+.table-minimal {
+    width: 100%;
 }
 
-.txt-error { color: var(--semantic-error) !important; }
-.txt-success { color: var(--dark-green) !important; }
-
-.col-fecha { width: 16%; }
-.col-caso { width: 8%; }
-.col-resolucion { width: 14%; }
-.col-articulo { width: 24%; }
-.col-motivo { width: 28%; }
-/* .col-acciones { width: 10%; } */
-
-.col-text-notes { 
-  max-width: 320px; 
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: inline-block;
-  width: 100%;
+.fs-7 {
+    font-size: 0.85rem;
 }
 
+.text-dark-custom {
+    color: #0f172a;
+}
 
+/* Cabecera Verde Identitaria */
+.table-minimal thead th {
+    background-color: #8cd86a;
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+}
 
+/* Filas y Efectos */
+.row-minimal td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background-color 0.15s ease;
+}
 
+.row-minimal:hover td {
+    background-color: #f8fafc;
+}
+
+.row-minimal:last-child td {
+    border-bottom: none;
+}
+
+/* --- Badges de Estado Sutiles --- */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+}
+
+.status-badge.is-retirado {
+    background-color: #fef2f2;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+}
+
+.status-badge.is-activo {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+/* Control de anchos relativos */
+.w-10 {
+    width: 10%;
+}
+
+.w-15 {
+    width: 15%;
+}
+
+.w-25 {
+    width: 25%;
+}
+
+.w-35 {
+    width: 35%;
+}

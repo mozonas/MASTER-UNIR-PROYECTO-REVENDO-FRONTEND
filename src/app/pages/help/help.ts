@@ -1,4 +1,6 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
+import Swal from 'sweetalert2';
+
 
 interface FAQ {
   category: string;
@@ -13,6 +15,7 @@ interface FAQ {
   styleUrl: './help.css'
 })
 export class HelpComponent {
+
   // Categoría seleccionada por el usuario (por defecto 'Todas')
   selectedCategory = signal<string>('Todas');
 
@@ -65,6 +68,36 @@ export class HelpComponent {
     return this.faqs().filter(f => f.category === activeCategory);
   });
 
+  // Acción para mostrar popup con éxito y formateo de formulario
+
+  async sendHelp(event: Event) {
+    event.preventDefault(); 
+    
+    const form = <HTMLFormElement>event.target;
+    const formData = new FormData(form);
+
+    try {
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData
+      });
+      Swal.fire({
+        title: '¡Mensaje enviado!',
+        text: 'Nos pondremos en contacto contigo pronto.',
+        icon: 'success',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#8cd86a',
+        customClass: {
+          popup: 'rounded-4 shadow'
+        }
+      });
+      form.reset(); 
+
+    } catch (error) {
+      console.error('Error en el envío:', error);
+    }
+  }
+  
   onContactSupport(): void {
     console.log('Redirigiendo al canal de soporte técnico de ReVendo...');
   }

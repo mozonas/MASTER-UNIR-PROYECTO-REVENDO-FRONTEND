@@ -79,40 +79,78 @@
         </a>
       </li>
     </ul>
-    <!-- ACTIVIDAD RECIENTE -->
-    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-uppercase">
-      <span>Actividad reciente</span>
-      <a (click)="desplegarMenu(); $event.stopPropagation(); $event.preventDefault()" class="d-flex align-items-center dropdown-arrow">
-    <img class="dropdown-icon" src="/images/flecha_abajo.svg" alt="flecha_abajo">
-      </a>
-    </h6>
-    @if (actividadOpen){
-      <ul id="actividad-menu" class="listado">
-        <li>
-          <a class="nav-link d-flex align-items-center gap-2"
-          routerLink="/admin/activity/daily"
-          routerLinkActive="active">
-         <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg>
-            Diaria
-          </a>
-        </li>
-        <li>
-          <a class="nav-link d-flex align-items-center gap-2"
-          routerLink="/admin/activity/weekly"
-          routerLinkActive="active">
-          <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg>
-            Semanal
-          </a>
-        </li>
-        <li>
-          <a class="nav-link d-flex align-items-center gap-2"
-          routerLink="/admin/activity/monthly"
-          routerLinkActive="active">
-         <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg>
-            Mensual
-          </a>
-        </li>
-      </ul>
-   }
-  </div>
+
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center justify-content-between gap-2 py-2" 
+           (click)="desplegarMenu(); $event.stopPropagation(); $event.preventDefault()"
+           style="cursor: pointer;">
+          
+          <span class="d-flex align-items-center gap-2">
+            <svg class="bi" width="16" height="16"><use xlink:href="#calendar3"></use></svg>
+            <span>Actividad reciente</span>
+          </span>
+          
+          <svg class="bi dropdown-arrow-svg" width="16" height="16" style="transform: rotate(90deg); transition: transform 0.2s;">
+            <use xlink:href="#chevron-right"></use>
+          </svg>
+        </a>
+      </li>
+
+      @if (actividadOpen) {
+        <ul id="actividad-menu" class="listado">
+          <li>
+            <a class="nav-link d-flex align-items-center gap-2" routerLink="/admin/activity/daily" routerLinkActive="active">
+              <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg> Diaria
+            </a>
+          </li>
+          <li>
+            <a class="nav-link d-flex align-items-center gap-2" routerLink="/admin/activity/weekly" routerLinkActive="active">
+              <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg> Semanal
+            </a>
+          </li>
+          <li>
+            <a class="nav-link d-flex align-items-center gap-2" routerLink="/admin/activity/monthly" routerLinkActive="active">
+              <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg> Mensual
+            </a>
+          </li>
+        </ul>
+      }
+
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center justify-content-between gap-2 py-2" 
+           (click)="desplegarModeracion(); $event.stopPropagation(); $event.preventDefault()"
+           style="cursor: pointer;">
+          
+          <span class="d-flex align-items-center gap-2 fw-bold">
+            <svg class="bi" width="16" height="16"><use xlink:href="#gear-wide-connected"></use></svg>
+            <span>Sección Moderación</span>
+          </span>
+          
+          <svg class="bi dropdown-arrow-svg" width="16" height="16" style="transform: rotate(90deg); transition: transform 0.2s;">
+            <use xlink:href="#chevron-right"></use>
+          </svg>
+        </a>
+      </li>
+
+      @if (moderacionOpen) {
+        <ul id="moderation-menu" class="listado">
+          <li>
+            <a class="nav-link d-flex align-items-center gap-2" routerLink="/admin/moderacion/panel" routerLinkActive="active">
+              <svg class="bi"><use xlink:href="#graph-up"></use></svg> Panel principal
+            </a>
+          </li>
+          <li>
+            <a class="nav-link d-flex align-items-center gap-2" routerLink="/admin/moderacion/articulos" routerLinkActive="active">
+              <svg class="bi"><use xlink:href="#puzzle"></use></svg> Gestión de artículos
+            </a>
+          </li>
+          <li>
+            <a class="nav-link d-flex align-items-center gap-2" routerLink="/admin/moderacion/chat" routerLinkActive="active">
+              <svg class="bi"><use xlink:href="#file-earmark-text"></use></svg> Gestión de mensajería
+            </a>
+          </li>
+        </ul>
+      }
+
+
 </div>

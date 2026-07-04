@@ -1,74 +1,56 @@
-
-<div class="table-responsive">
-  <table class="table table-hover table-striped mb-0 align-middle custom-table">
-    <thead>
-      <tr>
-
-        <th class="col-fecha">Fecha</th> 
-        <th class="col-caso">Caso</th>
-        <th class="col-resolucion">Resolución</th>
-        <th class="col-articulo">Artículo</th>
-        <th class="col-motivo">Motivo del Reporte</th>
-        <!-- VCB - desactivar columna acciones
-        <th class="col-acciones text-center">Acciones</th>
-        --> 
-      </tr>
-    </thead>
-    <tbody>
-      @for (history of paginatedHistory(); track $index) {
+<div class="table-container mb-4">
+  <div class="table-responsive">
+    <table class="table table-minimal align-middle mb-0">
+      <thead>
         <tr>
+          <th scope="col" class="w-10">Caso</th>
+          <th scope="col" class="ps-4 w-15">Fecha</th>
+          <th scope="col" class="w-15">Resolución</th>
+          <th scope="col" class="w-25">Artículo</th>
+          <th scope="col" class="pe-4 w-35">Motivo del Reporte</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (history of paginatedHistory(); track history.id) {
+        <tr class="row-minimal">
+          <td class="text-dark-custom fw-semibold">#{{ history.id }}</td>
 
-          <td><span class="text-muted">{{ history.created_at | date:'dd/MM/yyyy HH:mm' }}</span></td>
-          
-          <td><strong>#{{ history.id }}</strong></td>
-          
+          <td class="ps-4 text-muted fs-7">{{ history.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
+
           <td>
-            <strong [ngClass]="history.estado === 'retirado' ? 'txt-error' : 'txt-success'">
-              {{ history.estado === 'retirado' ? '❌ RETIRADO' : '✅ ACTIVO' }}
-            </strong>
+            <span class="status-badge" [ngClass]="history.estado === 'retirado' ? 'is-retirado' : 'is-activo'">
+              {{ history.estado === 'retirado' ? 'Retirado' : 'Activo' }}
+            </span>
           </td>
-          
-          <td>{{ history.titulo }}</td>
-          
-          <td>
-            <span class="col-text-notes">
+
+          <td class="text-dark-custom fw-medium">{{ history.titulo }}</td>
+
+          <td class="pe-4">
+            <span class="text-muted text-truncate d-inline-block w-100 fs-7" style="max-width: 350px;"
+              [title]="history.motivo">
               {{ history.motivo }}
             </span>
           </td>
-          <!-- VCB - Desactivar botón de vista detalle de los articulos reportados gestionados
-          <td class="text-center">
-            <app-action-button 
-              [itemId]="history.id" 
-              (actionTriggered)="viewDetail.emit($event)">
-            </app-action-button>
-          </td>
-          -->
         </tr>
-      } @empty {
+        } @empty {
         <tr>
-          <td colspan="5" class="text-center py-4 text-muted"> <!-- VCB - excluir la columna de acciones -->
+          <td colspan="5" class="text-center py-4 text-muted fs-7">
             No se encontraron registros en el historial.
           </td>
         </tr>
-      }
-    </tbody>
-  </table>
+        }
+      </tbody>
+    </table>
+  </div>
 </div>
 
 @if (rawHistoryLength > itemsPerPage) {
-  <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 border-top">
-    <span class="small text-muted fw-bold">Página {{ historyPage() }} de {{ totalHistoryPages() }}</span>
-    <app-pagination-buttons 
-      [isFirstPage]="historyPage() === 1" 
-      [isLastPage]="historyPage() === totalHistoryPages()" 
-      (pageOffset)="changeHistoryPage($event)">
-    </app-pagination-buttons>
-  </div>
+<div class="d-flex justify-content-between align-items-center px-2 py-3">
+  <span class="fw-semibold text-secondary bg-light px-3 py-1 rounded fs-7">
+    Página <span class="text-dark">{{ historyPage() }}</span> de {{ totalHistoryPages() }}
+  </span>
+  <app-pagination-buttons [isFirstPage]="historyPage() === 1" [isLastPage]="historyPage() === totalHistoryPages()"
+    (pageOffset)="changeHistoryPage($event)">
+  </app-pagination-buttons>
+</div>
 }
-
-
-
-
-
-
-

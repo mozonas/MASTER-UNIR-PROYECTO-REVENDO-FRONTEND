@@ -13,12 +13,13 @@ export class ModerationService {
         return this.http.get<BadgesResponse>(`${this.apiUrl}/reports/badges-counters`);
     }
 
-    reportArticle(articleId: number, motivo: string, usuarioId: number): Observable<{ message: string; reporteId: number }> {
+    reportArticle(articleId: number, motivo: string, reportType: number, usuarioId: number): Observable<{ message: string; reporteId: number }> {
         return this.http.post<{ message: string; reporteId: number }>(
             `${this.apiUrl}/reports/report-article/${articleId}`,
-            { motivo, usuarioId }
+            { motivo, reportType, usuarioId }
         );
     }
+    
 
     getArticlesInReview(): Observable<ArticleInReview[]> {
         return this.http.get<ArticleInReview[]>(`${this.apiUrl}/reports/articles-in-review`);
@@ -59,5 +60,36 @@ export class ModerationService {
         );
     }
 
-    
+    /**
+     * Función que pide a la API los tipos de reporte
+     * @param categoria string que contiene 'ARTÍCULO' | 'USUARIO' para diferenciar la lista de reportes que es necesario devolver
+     * @returns 
+     */
+    getReportTypes(categoria: 'ARTICULO' | 'USUARIO') {
+        console.log(`${this.apiUrl}/reports/types/${categoria}`);
+        
+        return this.http.get(
+            `${this.apiUrl}/reports/types/${categoria}`
+        );
+    }
+
+    enviarNotificacion(reporteId: number, articuloId: number, contenido: string): Observable<any> {
+        return this.http.post(`${this.apiUrl}/reports/chats/notificar/${reporteId}`, {
+            contenido,
+            articulos_id: articuloId
+        });
+    }
+
+    // Reportar usuario desde el chat
+    reportarUsuarioChat(motivo: string, usuariosId: number, articulosId: number): Observable<any> {
+        return this.http.post(`${this.apiUrl}/reports/chats/reportar-usuario`, {
+            motivo,
+            usuarios_id: usuariosId,
+            articulos_id: articulosId
+        });
+    }
+
+    resolveReportChat(reporteId: number, accion: 'archivar' | 'bloquear'): Observable<any> {
+        return this.http.put(`${this.apiUrl}/reports/chats/resolve/${reporteId}`, { accion });
+    }
 }

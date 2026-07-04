@@ -2,6 +2,8 @@
 .chart-container {
   height: 450px; 
   position: relative;
+  background-color: white;
+  border-radius: 12px;
 }
 .chart-wrapper-sm {
   max-width: 400px; 

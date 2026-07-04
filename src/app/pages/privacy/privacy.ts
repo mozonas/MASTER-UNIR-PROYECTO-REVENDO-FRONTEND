@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 @Component({
   selector: 'app-privacy',
@@ -7,6 +7,7 @@ import { Component } from '@angular/core';
   styleUrl: './privacy.css'
 })
 export class PrivacyComponent {
+
   currentDate: string = new Date().toLocaleDateString('es-ES', {
     day: 'numeric',
     month: 'long',

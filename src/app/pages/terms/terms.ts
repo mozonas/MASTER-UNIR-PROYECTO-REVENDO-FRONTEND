@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { CommonModule, Location } from '@angular/common'; // <-- Añadido Location aquí
 
 @Component({
   selector: 'app-terms',
@@ -15,6 +15,8 @@ export class TermsComponent {
     month: 'long',
     day: 'numeric'
   });
+  
+  private location = inject(Location); // <-- Inyectamos el servicio
 
   /**
    * Dispara la acción de impresión nativa del navegador.
@@ -22,5 +24,9 @@ export class TermsComponent {
    */
   printDocument(): void {
     window.print();
+  }
+
+  onBack(): void {
+    this.location.back(); // Now it works!
   }
 }

@@ -1,144 +1,201 @@
 <!-- Artículo -->
-<div class="row justify-content-center mt-4 mb-5 w-100">
+<div class="row justify-content-center mt-5 mb-articledetail w-100">
     <div class="col-12 col-xl-11">
+        <button type="button" (click)="onBack()" class="btn btn-outline-secondary btn-sm mb-4">
+            <i class="fa fa-arrow-left me-1"></i> Volver
+        </button>
         <div class="card shadow-sm">
             <div class="card-body">
-                <!-- Estado -->
-                <span class="badge estado-articulo mb-3 text-white text-uppercase fw-bold">
-                    <h3>{{article()?.estadoVenta}}</h3>
-                </span>
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <!-- Estado -->
+                    <span class="badge estado-articulo mb-3 text-white text-uppercase fw-bold"
+                        [class.estado-articulo--revision]="estaEnRevision">
+                        <h3>{{estadoLabel}}</h3>
+                    </span>
+                    @if(article() && !estaReportado && !estaEnRevision && !estaVendido && !esPropietario){
+                    <button class="btn btn-outline-danger btn-lg" (click)="onReportar()">
+                        <i class="fa fa-flag me-1"></i> Reportar
+                    </button>
+                    }
+                </div>
 
                 <!-- Carrusel -->
-                <div class="row justify-content-center ">
+                @if (article()?.fotos && article()?.fotos?.length) {
+                <div class="row justify-content-center">
                     <div class="col-12 col-xl-10">
-                        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+
+                        <div class="carousel slide altura">
+
                             <div class="carousel-inner">
-                                @for (foto of galleryImages(); track $index) {
-                                <div class="carousel-item" [class.active]="$first">
-                                    <img class="d-block w-100" [src]="getSafeImageUrl(foto)"
-                                        (click)="openImageModal(foto)" (error)="onImageError($event)">
+                                @for (foto of article()?.fotos; track $index; let i = $index) {
+                                <div class="carousel-item" [class.active]="i === subindiceActivo">
+                                    <img class="altura d-block mx-auto w-auto"
+                                        [src]="'http://localhost:3000/' + foto.url"
+                                        (click)="openImageModal('http://localhost:3000/' + foto.url)"
+                                        alt="Foto del artículo" style="cursor: pointer; object-fit: contain;">
                                 </div>
                                 }
                             </div>
-                            <button class="carousel-control-prev" type="button"
-                                data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon"></span>
+
+                            <button class="carousel-control-prev" type="button" (click)="anteriorFoto()">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             </button>
-
-                            <button class="carousel-control-next" type="button"
-                                data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                                <span class="carousel-control-next-icon"></span>
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Información -->
-                <div class="row g-4 mt-2">
-
-                    <!-- Artículo -->
-                    <div class="col-lg-5">
-
-                        <div class="d-flex justify-content-between align-items-start">
-                            <h3 class="fw-bold">
-                                {{article()?.titulo}}
-                            </h3>
-
-                            <button *ngIf="!estaReportado && !estaVendido" class="btn btn-outline-danger btn-sm"
-                                (click)="onReportar()">
-                                <i class="fa fa-flag me-1"></i> Reportar
+                            <button class="carousel-control-next" type="button" (click)="siguienteFoto()">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             </button>
                         </div>
 
-                        <p class="text-muted">
-                            {{article()?.descripcion}}
-                        </p>
-
-                        <p class="mb-1">
-                            <strong>Estado:</strong> {{article()?.estadoProducto}}
-                        </p>
-
-                        <p class="mb-1">
-                            <strong>Envío:</strong> {{article()?.tipoEntrega}}
-                        </p>
-
-                        <p>
-                            <strong>Pago:</strong> {{article()?.tipoPago}}
-                        </p>
-
-                        <span class="badge categoria-badge">
-                            {{article()?.categoria_nombre}}
-                        </span>
-
-                    </div>
-
-                    <!-- Precio -->
-                    <div class="col-lg-2 d-flex justify-content-center align-items-start">
-                        <h1 class="fw-bold">
-                            {{article()?.precio}}€
-                        </h1>
-                    </div>
-
-                    <!-- Vendedor -->
-                    <div class="col-lg-5">
-                        <div class="card">
-                            <div class="card-body">
-
-                                <!-- Información del vendedor -->
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-
-                                    <div>
-                                        <small class="text-muted">Vendedor/a</small>
-                                        <p class="mb-0 fw-bold">
-                                            {{ article()?.seller?.nombre }}
-                                            {{ article()?.seller?.apellidos }}
-                                        </p>
-                                    </div>
-
-                                    <app-detail-seller [sellerId]="article()!.usuarios_id">
-                                    </app-detail-seller>
-
-                                </div>
-
-                                <!-- Botón -->
-                                <div class="d-grid">
-                                    <button class="btn btn-success">
-                                        Mensaje directo
-                                    </button>
-                                </div>
-
-                            </div>
-                        </div>
                     </div>
                 </div>
+                }
             </div>
-        </div>
-    </div>
 
-    <!-- Modal -->
-    <div class="modal modal-dialog-centered fade" tabindex="-1" role="dialog" [ngClass]="{ show: modalOpen }"
-        [ngStyle]="{ display: modalOpen ? 'block' : 'none' }">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                        (click)="closeModal()"></button>
-                </div>
-                <div class="modal-body">
-                    <img [src]="getSafeImageUrl(selectedImage)" class="img-fluid" (error)="onImageError($event)" />
+            <!-- Información -->
+            <div class="row g-4 mt-2 mb-3 px-4">
+
+                <!-- Artículo -->
+                <div class="col-lg-5">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h2 class="fw-bold mt-4 mb-4">
+                            {{article()?.titulo}}
+                        </h2>
+                    </div>
+
+                    <p class="text-muted mb-4">
+                        {{article()?.descripcion}}
+                    </p>
+
+                    <p class="mb-1">
+                        <strong>Estado:</strong> {{article()?.estadoProducto}}
+                    </p>
+
+                    <p class="mb-1">
+                        <strong>Envío:</strong> {{article()?.tipoEntrega}}
+                    </p>
+
+                    <p>
+                        <strong>Pago:</strong> {{article()?.tipoPago}}
+                    </p>
+
+                    <span class="badge categoria-badge mt-3">
+                        {{article()?.categoria_nombre}}
+                    </span>
                 </div>
 
+                <!-- Precio -->
+                <div class="col-lg-2 d-flex justify-content-center align-items-start">
+                    <p class="fw-bold precio">
+                        {{article()?.precio}}€
+                    </p>
+                </div>
+
+                <!-- Vendedor -->
+                <div class="col-lg-5">
+                    <div class="card" (click)="verPerfilVendedor()"
+                        style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;"
+                        onmouseover="this.style.transform='scale(1.01)'; this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)'"
+                        onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                        <div class="card-body">
+
+                            <!-- Información del vendedor -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <small class="text-muted">Vendedor/a</small>
+                                    <p class="mb-0 fw-bold">
+                                        {{ article()?.seller?.nombre }}
+                                        {{ article()?.seller?.apellidos }}
+                                    </p>
+                                </div>
+
+                                @if ((article()?.usuarios_id ?? 0) > 0) {
+                                <app-detail-seller [sellerId]="article()?.usuarios_id ?? 0"
+                                    (click)="verPerfilVendedor()">
+                                </app-detail-seller>
+                                }
+                            </div>
+
+                            @if (mapUrl) {
+                            <div class="map-container overflow-hidden rounded-3 border border-light shadow-sm mb-3">
+                                <iframe width="100%" height="120" loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade" [src]="mapUrl"
+                                    title="Ubicación del vendedor">
+                                </iframe>
+                            </div>
+                            } @else {
+                            <div class="alert alert-light text-center border rounded-3 p-3 mt-3 text-muted"
+                                style="font-size: 0.825rem;">
+                                <i class="fa fa-map-marker me-1"></i> Ubicación no especificada por el vendedor
+                            </div>
+                            }
+
+                            <!-- Botón -->
+                            <div class="d-grid gap-2">
+                                @if (puedeComprar) {
+                                <button class="btn btn-primary"
+                                    (click)="abrirConfirmacionCompra(); $event.stopPropagation()"
+                                    [disabled]="compraDeshabilitada">
+                                    {{ comprando() ? 'Procesando...' : 'Comprar' }}
+                                </button>
+                                
+                                <button class="btn btn-success" (click)="contactarVendedor(); $event.stopPropagation()">
+                                    Mensaje directo
+                                </button>
+                                }
+                            </div>
+                            @if (mensajeCompra()) {
+                            <p class="mt-2 mb-0 text-danger small fw-medium">{{ mensajeCompra() }}</p>
+                            }
+
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal de reporte -->
+<!-- Modal -->
+<div class="modal modal-dialog-centered fade" tabindex="-1" role="dialog" [ngClass]="{ show: modalOpen }"
+    [ngStyle]="{ display: modalOpen ? 'block' : 'none' }">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="closeModal()"></button>
+            </div>
+            <div class="modal-body">
+                <img [src]="selectedImage" class="img-fluid" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--CGM 290626 COMPONENTE COMPARTIDO-->
+@if (mostrarModalReporte() && article()) {
+<app-report-type targetType="ARTICULO" [targetId]="+article()!.id" [targetTitle]="article()?.titulo || ''"
+    (closeModal)="cerrarModalReporte()" (onReportSuccess)="redireccion()">
+</app-report-type>
+}
+
+
+<!-- Modal de reporte 
 <div class="report-modal-backdrop" *ngIf="mostrarModalReporte()" (click)="cerrarModalReporte()">
     <div class="report-modal" (click)="$event.stopPropagation()">
         <h5 class="report-modal__title">Reportar artículo</h5>
         <p class="report-modal__subtitle">{{article()?.titulo}}</p>
+        <div class="mb-3">
+            <label for="treporte" class="form-label">Tipo de reporte:</label>
+            <select id="treporte" class="form-select" [(ngModel)]="selectedTypeReport">
+                <option value="" disabled selected>
+                    Selecciona el tipo de reporte
+                </option>
+                @for (item of listReportTypes; track $index) {
+                <option [ngValue]="item.id">
+                    {{ item.tipo }}
+                </option>
+                }
+            </select>
+        </div>
         <textarea class="report-modal__textarea" placeholder="Describe el motivo del reporte..."
             [value]="motivoReporte()" (input)="motivoReporte.set($any($event.target).value)" rows="4"
             maxlength="500"></textarea>
@@ -151,4 +208,4 @@
         </div>
         <p class="report-modal__success" *ngIf="mensajeReporte()">{{mensajeReporte()}}</p>
     </div>
-</div>
+</div>-->

@@ -1,36 +1,48 @@
-.mt4-moderator {
-  margin-top: 1.5rem !important;
-  min-height: 75vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+.text-dark-custom {
+    color: #0f172a;
 }
 
-.card-header {
-  background-color: #8cd86a !important;
-  border-bottom: none !important;
+.letter-spacing-05 {
+    letter-spacing: 0.05em;
 }
 
-.btn-volver {
-  background-color: #ffffff !important;
-  border: 2px solid #8cd86a !important;
-  color: #8cd86a !important;
-  height: 38px !important;
-  padding: 0 16px !important;
-  border-radius: 6px !important;
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9rem !important;
-  font-weight: bold !important;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  outline: none !important;
-  box-shadow: none !important;
+.btn-link-minimal {
+    background: none;
+    border: none;
+    color: #64748b;
+    padding: 6px 12px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.15s ease;
 }
 
-.btn-volver:hover {
-  background-color: #8cd86a !important;
-  color: #ffffff !important;
+.btn-link-minimal:hover {
+    color: #0f172a;
 }
 
+.dashboard-section {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.section-title-bar {
+    padding: 16px 20px;
+    background-color: #8cd86a;
+}
+
+.section-title {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}

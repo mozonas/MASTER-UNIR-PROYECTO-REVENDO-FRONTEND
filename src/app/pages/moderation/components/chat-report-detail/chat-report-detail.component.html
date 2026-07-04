@@ -1,0 +1,114 @@
+<div class="container mt-4">
+
+  <button class="btn btn-outline-secondary mb-3" (click)="volver()">
+    ← Volver a incidencias
+  </button>
+
+  @if (reporte) {
+    <div class="card shadow-sm mb-4">
+      <div class="card-header">
+        <h5 class="mb-0">Detalle de incidencia #{{ reporte.id }}</h5>
+      </div>
+      <div class="card-body">
+        <p><strong>Usuario:</strong> @{{ reporte.usuario }}</p>
+        <p><strong>Motivo:</strong> {{ reporte.motivo }}</p>
+        <p><strong>Estado:</strong> 
+          <span class="badge" 
+            [class.bg-warning]="reporte.estado === 'pendiente'"
+            [class.bg-success]="reporte.estado === 'activo'"
+            [class.bg-danger]="reporte.estado === 'retirado'">
+            {{ reporte.estado }}
+          </span>
+        </p>
+        <p><strong>Fecha:</strong> {{ reporte.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
+      </div>
+    </div>
+
+    @if (reporte.estado === 'pendiente') {
+      <div class="card shadow-sm mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Resolver incidencia</h5>
+        </div>
+        <div class="card-body d-flex gap-2">
+          <button class="btn btn-outline-success"
+            (click)="resolverIncidencia('archivar')"
+            [disabled]="resolviendo">
+            Archivar (sin acción)
+          </button>
+          @if (isAdmin) {
+          <button class="btn btn-outline-danger"
+            (click)="resolverIncidencia('bloquear')"
+            [disabled]="resolviendo">
+            Bloquear usuario
+          </button>
+          }
+        </div>
+      </div>
+    }
+
+    @if (reporte.articulos_id) {
+      <div class="card shadow-sm mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Conversación reportada</h5>
+        </div>
+        <div class="card-body" style="max-height: 350px; overflow-y: auto;">
+          @if (cargandoMensajes) {
+            <p class="text-muted text-center">Cargando mensajes...</p>
+          } @else if (mensajesConversacion.length === 0) {
+            <p class="text-muted text-center">No hay mensajes en esta conversación.</p>
+          } @else {
+            @for (mensaje of mensajesConversacion; track mensaje.id) {
+              <div class="mb-2 p-2 rounded" style="background-color: #f8f9fa;">
+                <div class="d-flex justify-content-between">
+                  <strong>@{{ mensaje.usuario }}</strong>
+                  <small class="text-muted">{{ mensaje.created_at | date:'dd/MM/yyyy HH:mm' }}</small>
+                </div>
+                <p class="mb-0">{{ mensaje.contenido }}</p>
+              </div>
+            }
+          }
+        </div>
+      </div>
+    } @else {
+      <div class="alert alert-secondary mb-4">
+        Esta incidencia no tiene una conversación asociada.
+      </div>
+    }
+
+    <div class="card shadow-sm">
+      <div class="card-header">
+        <h5 class="mb-0">Enviar notificación al usuario</h5>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label class="form-label">Mensaje para el usuario</label>
+          <textarea class="form-control" rows="4"
+            placeholder="Escribe aquí la decisión tomada y el motivo..."
+            [(ngModel)]="mensajeNotificacion">
+          </textarea>
+        </div>
+
+        @if (mensajeResultado) {
+          <div class="alert" [class.alert-success]="exito" [class.alert-danger]="!exito">
+            {{ mensajeResultado }}
+          </div>
+        }
+
+        <div class="text-end">
+          <button class="btn"
+            style="background-color: #6ab03b; color: white; border: none; padding: 8px 24px; border-radius: 6px; font-weight: 600;"
+            (click)="enviarNotificacion()"
+            [disabled]="!mensajeNotificacion.trim() || enviando">
+            {{ enviando ? 'Enviando...' : 'Enviar notificación' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+  } @else {
+    <div class="text-center text-muted mt-5">
+      <p>Cargando incidencia...</p>
+    </div>
+  }
+
+</div>

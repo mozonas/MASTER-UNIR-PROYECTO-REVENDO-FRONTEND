@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, DestroyRef, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, DestroyRef, signal, viewChildren, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ArticleService } from '../../../services/article.service';
 import { AuthService } from '../../../services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
         selector: 'app-article-form',
@@ -24,14 +25,18 @@ export class ArticleFormComponent implements OnInit {
         articleForm!: FormGroup;
         isEditing = false;
         currentArticleId: string | null = null;
-        userId: number | null = null;
         submitted = false;
         activeErrorField: string | null = null;
+        selectedImageFiles = signal<File[]>([]);
+        existingImageUrls = signal<string[]>([]);
+        imagesMarkedForDeletion = signal<string[]>([]);
+        private readonly maxImages = 5;
 
         tipoEntregaOptions = signal<string[]>([]);
         tipoPagoOptions = signal<string[]>([]);
         estadoProductoOptions = signal<string[]>([]);
         categoriasOptions = signal<Array<{ id: number; nombre: string }>>([]);
+        private readonly formFields = viewChildren<ElementRef<HTMLElement>>('formField')
 
         private readonly fieldValidationOrder = [
                 'titulo',
@@ -40,10 +45,15 @@ export class ArticleFormComponent implements OnInit {
                 'categorias_id',
                 'tipoEntrega',
                 'tipoPago',
-                'image1',
+                'estadoProducto',
+                'imageFiles',
         ] as const;
+        currentUserId: number | null = null;
+        loadedArticleOwnerId: number | null = null;
 
         ngOnInit(): void {
+                this.currentUserId = this.authService.getUserId();
+
                 this.articleService.getArticleEnums()
                         .pipe(takeUntilDestroyed(this.destroyRef))
                         .subscribe({
@@ -60,24 +70,12 @@ export class ArticleFormComponent implements OnInit {
                         titulo: ['', [Validators.required, Validators.maxLength(120)]],
                         descripcion: ['', [Validators.required, Validators.minLength(20)]],
                         precio: [0, [Validators.required, Validators.min(1)]],
-                        estadoProducto: [''],
+                        estadoProducto: ['', Validators.required],
                         tipoEntrega: ['', Validators.required],
                         tipoPago: ['', Validators.required],
                         categorias_id: ['', [Validators.required]],
-                        image1: ['', [Validators.required]],
-                        image2: [''],
-                        image3: [''],
-                        image4: [''],
-                        image5: [''],
-                        usuarios_id: [null],
+                        imageFiles: [null],
                 });
-
-                this.route.queryParamMap
-                        .pipe(takeUntilDestroyed(this.destroyRef))
-                        .subscribe((queryParams) => {
-                                this.userId = Number(queryParams.get('userId')) || this.authService.getUserId();
-                        });
-
                 this.route.paramMap
                         .pipe(takeUntilDestroyed(this.destroyRef))
                         .subscribe((params) => {
@@ -93,28 +91,30 @@ export class ArticleFormComponent implements OnInit {
                                         tipoEntrega: '',
                                         tipoPago: '',
                                         categorias_id: '',
-                                        image1: '',
-                                        image2: '',
-                                        image3: '',
-                                        image4: '',
-                                        image5: '',
-                                        usuarios_id: null,
+                                        imageFiles: null,
                                 });
+                                this.selectedImageFiles.set([]);
+                                this.existingImageUrls.set([]);
+                                this.imagesMarkedForDeletion.set([]);
 
                                 if (articleId) {
                                         this.isEditing = true;
-                                        this.articleForm.get('image1')?.clearValidators();
-                                        this.articleForm.get('image1')?.updateValueAndValidity({ emitEvent: false });
                                         this.currentArticleId = articleId;
                                         this.loadArticle(articleId);
                                         return;
                                 }
 
                                 this.isEditing = false;
-                                this.articleForm.get('image1')?.setValidators([Validators.required]);
-                                this.articleForm.get('image1')?.updateValueAndValidity({ emitEvent: false });
                                 this.currentArticleId = null;
                         });
+        }
+
+        private canManageOwnerArticle(ownerId: number | null | undefined): boolean {
+                if (this.authService.getUserRole() === 'MODERADOR') {
+                        return true;
+                }
+
+                return this.currentUserId !== null && ownerId !== null && ownerId !== undefined && this.currentUserId === ownerId;
         }
 
         private loadArticle(articleId: string): void {
@@ -123,7 +123,23 @@ export class ArticleFormComponent implements OnInit {
                                 if (!article) {
                                         return;
                                 }
+
+                                this.loadedArticleOwnerId = article.usuarios_id;
+
+                                if (!this.canManageOwnerArticle(this.loadedArticleOwnerId)) {
+                                        void Swal.fire({
+                                                title: 'Acceso denegado',
+                                                text: 'No tienes permisos para editar este artículo.',
+                                                icon: 'error',
+                                                confirmButtonColor: '#8cd86a'
+                                        });
+                                        void this.router.navigate(['/forbidden']);
+                                        return;
+                                }
+
                                 const imageUrls = article.fotos?.map((foto) => foto.url).slice(0, 5) ?? [];
+                                this.existingImageUrls.set(imageUrls.length ? imageUrls : (article.image ? [article.image] : []));
+                                this.imagesMarkedForDeletion.set([]);
                                 this.articleForm.patchValue({
                                         titulo: article.titulo,
                                         descripcion: article.descripcion,
@@ -132,12 +148,7 @@ export class ArticleFormComponent implements OnInit {
                                         tipoEntrega: article.tipoEntrega,
                                         tipoPago: article.tipoPago,
                                         categorias_id: article.categorias_id ?? '',
-                                        image1: imageUrls[0] ?? article.image ?? '',
-                                        image2: imageUrls[1] ?? '',
-                                        image3: imageUrls[2] ?? '',
-                                        image4: imageUrls[3] ?? '',
-                                        image5: imageUrls[4] ?? '',
-                                        usuarios_id: article.usuarios_id ?? null,
+                                        imageFiles: null,
                                 });
                         },
                         error: (error) => {
@@ -146,60 +157,177 @@ export class ArticleFormComponent implements OnInit {
                 });
         }
 
-        onSubmit(): void {
-                if (!this.userId) {
-                        alert('No se pudo identificar al usuario para guardar el artículo.');
+        onImagesSelected(event: Event): void {
+                const input = event.target as HTMLInputElement;
+                const files = Array.from(input.files ?? []);
+
+                if (files.length === 0) {
+                        this.selectedImageFiles.set([]);
+                        this.articleForm.get('imageFiles')?.setValue(null);
                         return;
                 }
 
+                const validImageFiles = files.filter((file) => this.isAllowedImageFile(file));
+                const invalidFiles = files.filter((file) => !this.isAllowedImageFile(file));
+
+                if (invalidFiles.length > 0) {
+                        void Swal.fire({
+                                title: 'Formato no valido',
+                                text: 'Solo se permiten archivos de imagen (jpg, jpeg, png, webp, gif, bmp, svg).',
+                                icon: 'warning',
+                                confirmButtonColor: '#8cd86a'
+                        });
+                }
+
+                const limitedFiles = validImageFiles.slice(0, this.maxImages);
+                if (validImageFiles.length > this.maxImages) {
+                        void Swal.fire({
+                                title: 'Limite de imagenes',
+                                text: `Solo se permiten ${this.maxImages} imágenes como máximo.`,
+                                icon: 'warning',
+                                confirmButtonColor: '#8cd86a'
+                        });
+                }
+
+                this.selectedImageFiles.set(limitedFiles);
+                this.articleForm.get('imageFiles')?.setValue(limitedFiles.length ? limitedFiles : null);
+        }
+
+        clearSelectedImages(): void {
+                this.selectedImageFiles.set([]);
+                this.articleForm.get('imageFiles')?.setValue(null);
+        }
+
+        isImageMarkedForDeletion(imageUrl: string): boolean {
+                return this.imagesMarkedForDeletion().includes(imageUrl);
+        }
+
+        toggleImageDeletion(imageUrl: string, checked: boolean): void {
+                this.imagesMarkedForDeletion.update((current) => {
+                        if (checked) {
+                                return current.includes(imageUrl) ? current : [...current, imageUrl];
+                        }
+
+                        return current.filter((url) => url !== imageUrl);
+                });
+        }
+
+        private getRemainingExistingImages(): string[] {
+                const markedForDeletion = this.imagesMarkedForDeletion();
+                return this.existingImageUrls().filter((url) => !markedForDeletion.includes(url));
+        }
+
+        private isAllowedImageFile(file: File): boolean {
+                if (file.type.startsWith('image/')) {
+                        return true;
+                }
+
+                return /\.(jpg|jpeg|png|webp|gif|bmp|svg)$/i.test(file.name);
+        }
+
+        private async buildFormData(): Promise<FormData> {
+                const formValue = this.articleForm.value;
+                const formData = new FormData();
+
+                formData.append('titulo', String(formValue.titulo ?? ''));
+                formData.append('descripcion', String(formValue.descripcion ?? ''));
+                formData.append('precio', String(formValue.precio ?? ''));
+                formData.append('estadoProducto', String(formValue.estadoProducto ?? ''));
+                formData.append('tipoEntrega', String(formValue.tipoEntrega ?? ''));
+                formData.append('tipoPago', String(formValue.tipoPago ?? ''));
+                formData.append('categorias_id', String(formValue.categorias_id ?? ''));
+
+                const remainingExistingImages = this.getRemainingExistingImages();
+                if (this.isEditing && remainingExistingImages.length > 0) {
+                        const existingFiles = await Promise.all(
+                                remainingExistingImages.map((imageUrl, index) => this.imageUrlToFile(imageUrl, index))
+                        );
+
+                        for (const file of existingFiles) {
+                                if (file) {
+                                        formData.append('images', file, file.name);
+                                }
+                        }
+                }
+
+                for (const file of this.selectedImageFiles()) {
+                        formData.append('images', file, file.name);
+                }
+
+                return formData;
+        }
+
+        async onSubmit(): Promise<void> {
                 this.submitted = true;
                 this.activeErrorField = this.getFirstInvalidField();
 
                 if (this.articleForm.invalid || this.activeErrorField) {
-                        return;
-                }
+                        if (this.activeErrorField) {
+                                // MODIFICADO: Ahora busca por formControlName o por tu nuevo data-field
+                                const targetField = this.formFields().find(field => {
+                                        const el = field.nativeElement;
+                                        return el.getAttribute('formControlName') === this.activeErrorField || 
+                                        el.getAttribute('data-field') === this.activeErrorField;
+                                });
+                                
+                                if (targetField) {
+                                        const element = targetField.nativeElement;
+                                        const scrollOffset = 120;
+                                        const top = element.getBoundingClientRect().top + window.scrollY - scrollOffset;
 
-                const formValue = this.articleForm.value;
-                const images = [
-                        formValue.image1,
-                        formValue.image2,
-                        formValue.image3,
-                        formValue.image4,
-                        formValue.image5,
-                ]
-                        .map((url: string | null | undefined) => (url ?? '').trim())
-                        .filter((url: string) => !!url)
-                        .slice(0, 5);
-
-                const articlePayload = {
-                        titulo: formValue.titulo,
-                        descripcion: formValue.descripcion,
-                        precio: formValue.precio,
-                        estadoProducto: formValue.estadoProducto,
-                        tipoEntrega: formValue.tipoEntrega,
-                        tipoPago: formValue.tipoPago,
-                        categorias_id: formValue.categorias_id,
-                        images,
-                };
-                if (this.isEditing && this.currentArticleId) {
-                        this.articleService.updateArticle(this.currentArticleId, articlePayload).subscribe({
-                                next: () => this.router.navigate(['/user-sell', this.userId!]),
-                                error: (error) => {
-                                        console.error('Error al actualizar el artículo:', error);
-                                        alert(error?.error?.message || 'No se pudo guardar el artículo. Intente de nuevo.');
+                                        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+                                        element.focus({ preventScroll: true });
                                 }
-                        });
+                        }
                         return;
-                }
+        }
 
-                this.articleService.createArticle(articlePayload, this.userId).subscribe({
-                        next: () => this.router.navigate(['/user-sell', this.userId!]),
+        const articlePayload = await this.buildFormData();
+        if (this.isEditing && this.currentArticleId) {
+                this.articleService.updateArticle(this.currentArticleId, articlePayload).subscribe({
+                        next: async () => {
+                                await Swal.fire({
+                                        title: 'Guardado',
+                                        text: 'Sus cambios han sido guardados',
+                                        icon: 'success',
+                                        confirmButtonColor: '#8cd86a'
+                                });
+                                void this.router.navigate(['/user-info']);
+                        },
                         error: (error) => {
-                                console.error('Error al crear el artículo:', error);
-                                alert(error?.error?.message || 'No se pudo crear el artículo. Intente de nuevo.');
+                                console.error('Error al actualizar el artículo:', error);
+                                void Swal.fire({
+                                        title: 'Error',
+                                        text: error?.error?.message || 'Error al guardar los cambios.',
+                                        icon: 'error',
+                                        confirmButtonColor: '#8cd86a'
+                                });
                         }
                 });
+                return;
         }
+
+        this.articleService.createArticle(articlePayload).subscribe({
+                next: async () => {
+                        await Swal.fire({
+                                title: 'Creado',
+                                text: 'Su artículo ha sido creado',
+                                icon: 'success',
+                                confirmButtonColor: '#8cd86a'
+                        });
+                        void this.router.navigate(['/user-info']);
+                },
+                error: (error) => {
+                        console.error('Error al crear el artículo:', error);
+                        void Swal.fire({
+                                title: 'Error',
+                                text: error?.error?.message || 'No se pudo crear el artículo. Intente de nuevo.',
+                                icon: 'error',
+                                confirmButtonColor: '#8cd86a'
+                        });
+                }
+        });
+}
 
         isControlInvalid(controlName: string): boolean {
                 if (!this.submitted || this.activeErrorField !== controlName) {
@@ -221,11 +349,50 @@ export class ArticleFormComponent implements OnInit {
                 return null;
         }
 
-        cancel(): void {
-                if (this.userId) {
-                        this.router.navigate(['/user-sell', this.userId]);
-                } else {
-                        this.router.navigate(['/home']);
+        goBack(): void {
+        window.history.back();
+        }
+
+        private async imageUrlToFile(imageUrl: string, index: number): Promise<File | null> {
+                try {
+                        const resolvedUrl = this.articleService.resolveImageUrl(imageUrl);
+                        const response = await fetch(resolvedUrl);
+                        if (!response.ok) {
+                                return null;
+                        }
+
+                        const blob = await response.blob();
+                        const fileName = this.getFileNameFromUrl(imageUrl, index, blob.type);
+                        return new File([blob], fileName, { type: blob.type || 'image/jpeg' });
+                } catch {
+                        return null;
+                }
+        }
+
+        private getFileNameFromUrl(imageUrl: string, index: number, mimeType: string): string {
+                const lastSegment = imageUrl.split('?')[0].split('/').pop()?.trim();
+                if (lastSegment) {
+                        return lastSegment;
+                }
+
+                const extension = this.getExtensionFromMimeType(mimeType);
+                return `image-${index + 1}.${extension}`;
+        }
+
+        private getExtensionFromMimeType(mimeType: string): string {
+                switch (mimeType) {
+                        case 'image/png':
+                                return 'png';
+                        case 'image/webp':
+                                return 'webp';
+                        case 'image/gif':
+                                return 'gif';
+                        case 'image/bmp':
+                                return 'bmp';
+                        case 'image/svg+xml':
+                                return 'svg';
+                        default:
+                                return 'jpg';
                 }
         }
 }

@@ -11,10 +11,13 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 export class AsideComponent {
   actividadOpen: boolean = false;
 
+  moderacionOpen: boolean = false;
+
   desplegarMenu():void {
   this.actividadOpen = !this.actividadOpen;
   }
 
-
-
+  desplegarModeracion(): void {
+    this.moderacionOpen = !this.moderacionOpen;
+  }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { AdminCategoryService } from '../../../services/admin/admin-category.service';
 import { FormsModule } from '@angular/forms';
 import {DatePipe} from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-admin-category-management',
@@ -73,6 +74,12 @@ export class AdminCategoryManagementComponent implements OnInit {
     this.editMode = true;
     this.editId = cat.id;
     this.nombreCategoria = cat.nombre;
+
+    // Scroll al input
+    setTimeout(() => {
+    const el = document.getElementById('categoria-input');
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 0);
   }
 
   updateCategory() {
@@ -90,14 +97,43 @@ export class AdminCategoryManagementComponent implements OnInit {
   }
 
   // ELIMINAR
-  deleteCategory(id: number) {
-    if (!confirm('¿Seguro que quieres eliminar esta categoría?')) return;
-
-    this.categoryService.deleteCategory(id).subscribe({
-      next: () => this.loadCategories(),
-      error: (err) => console.error(err)
-    });
-  }
+ deleteCategory(id: number) {
+  
+  Swal.fire({
+    title: '¿Seguro que quieres eliminar esta categoría?',
+    text: 'Esta acción no se puede deshacer y podría afectar a los productos asociados.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#dc3545', 
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    reverseButtons: true
+  }).then((result) => {
+    
+    //Si el usuario confirma la eliminación:
+    if (result.isConfirmed) {
+      this.categoryService.deleteCategory(id).subscribe({
+        next: () => {
+          // 3. Alerta de éxito cuando el backend responda
+          Swal.fire({
+            title: '¡Eliminada!',
+            text: 'La categoría ha sido eliminada correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#8cd86a'
+          });
+          
+          // Recargamos la lista de categorías
+          this.loadCategories();
+        },
+        error: (err) => {
+          console.error(err);
+          
+        }
+      });
+    }
+  });
+}
 
   // CANCELAR
   cancelEdit() {
