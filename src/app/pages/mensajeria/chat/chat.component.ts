@@ -65,7 +65,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   marcandoVendido: boolean = false;
   articuloVendido: boolean = false;
   esVendedor: boolean = false;
-  esUsuario: boolean = false;
+  perfilUser: string = '';
 
   transaccionPendienteId: number | null | undefined = undefined;
 
@@ -77,9 +77,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.articuloIdDesdeUrl = Number(this.route.snapshot.queryParamMap.get('articuloId')) || null;
     this.cargarConversaciones();
     const role = this.authService.getUserRole();
-    if (role === 'USUARIO') {
-      this.esUsuario = true;
-    }
 
     this.pollingConversaciones = setInterval(() => {
       this.cargarConversaciones();
@@ -253,6 +250,15 @@ export class ChatComponent implements OnInit, OnDestroy {
         console.error('Error al cargar conversaciones:', err);
       }
     });
+    const id = this.conversacionActiva?.otro_usuario_id;
+    if (id) {
+      this.userService.getPerfilUsuario(id).subscribe({
+        next: (userData: any) => {
+          this.perfilUser = userData.perfil;
+        },
+        error: (err) => console.error('❌ Error al recuperar los datos del usuario:', err)
+      });
+    }
   }
 
   get conversacionesFiltradas(): Conversacion[] {
