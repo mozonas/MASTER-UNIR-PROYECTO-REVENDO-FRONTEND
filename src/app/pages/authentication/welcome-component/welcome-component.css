@@ -28,7 +28,7 @@
 
 /* Ancho controlado para la botonera */
 .action-group {
-    max-width: 400px;
+    width: 500px;
     padding: 0 1rem;
     /* Margen de seguridad interno para los botones en móvil */
 }
